@@ -8,7 +8,6 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Logo from "./Logo";
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -32,7 +31,6 @@ export default function NavBar() {
     <>
       {/* Desktop Top Navbar */}
       <nav className="hidden md:flex justify-center gap-8 py-4 bg-white shadow sticky top-0 z-50">
-        <Logo/>
         {links.map((link) => (
           <Link
             key={link.href}

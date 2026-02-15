@@ -85,7 +85,7 @@ export default function HomePage() {
               href="https://app.tippified.com/creator/signup"
               className="px-8 py-4 bg-white text-purple-600 font-bold rounded-lg shadow-lg hover:bg-gray-100 transition"
             >
-              Sign Up as Creator
+              Signup as Creator
             </a>
 
             <a
