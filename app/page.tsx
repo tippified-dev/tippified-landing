@@ -9,7 +9,7 @@ export default function HomePage() {
 
       <main className="bg-white text-gray-900 pb-20 md:pb-0">
         {/* Hero Section */}
-        <section className="bg-purple-600 text-white min-h-screen flex flex-col justify-center items-center px-6 text-center">
+        <section className="bg-purple-600 text-white py-20 flex flex-col justify-center items-center px-6 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
             Welcome to Tippified
           </h1>
