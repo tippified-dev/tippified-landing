@@ -136,7 +136,7 @@ export default function HomePage() {
           }`}
         >
           <h2 className="text-3xl font-bold mb-6">About Tippified</h2>
-          <p className="text-xs text-gray-700 md:text-lg">
+          <p className="text-sm text-gray-700 md:text-lg">
             Tippified empowers creators to monetize their work while giving fans
             a seamless way to show support.
           </p>
@@ -149,7 +149,7 @@ export default function HomePage() {
             ctaVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <h2 className="text-xs font-bold mb-5 md:text-lg">
+          <h2 className="text-sm font-bold mb-5 md:text-lg">
             Ready to start getting tips from your fans and supporters?
           </h2>
 
