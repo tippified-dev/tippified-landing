@@ -1,15 +1,78 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import NavBar from "./components/NavBar";
 
 export default function HomePage() {
+  // Refs for each section
+  const heroRef = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<Array<HTMLDivElement | null>>([]);
+  const aboutRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [featuresVisible, setFeaturesVisible] = useState([false, false, false]);
+  const [aboutVisible, setAboutVisible] = useState(false);
+  const [ctaVisible, setCtaVisible] = useState(false);
+
+  const features = [
+    {
+      title: "Fast Tips",
+      desc: "Support creators instantly with our simple tipping platform.",
+    },
+    {
+      title: "Secure Wallet",
+      desc: "Your money is safe with our encrypted wallet system.",
+    },
+    {
+      title: "Discover Creators",
+      desc: "Find and support creators from around the world.",
+    },
+  ];
+
+  // Helper function for intersection observer
+  const observeElement = (el: HTMLElement | null, callback: () => void) => {
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          callback();
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(el);
+  };
+
+  useEffect(() => {
+    observeElement(heroRef.current, () => setHeroVisible(true));
+    observeElement(aboutRef.current, () => setAboutVisible(true));
+    observeElement(ctaRef.current, () => setCtaVisible(true));
+
+    featuresRef.current.forEach((el, i) =>
+      observeElement(el, () =>
+        setFeaturesVisible((prev) => {
+          const newState = [...prev];
+          newState[i] = true;
+          return newState;
+        })
+      )
+    );
+  }, []);
+
   return (
     <>
       <NavBar />
 
       <main className="bg-white text-gray-900 pb-20 md:pb-0">
         {/* Hero Section */}
-        <section className="bg-purple-600 text-white py-20 flex flex-col justify-center items-center px-6 text-center">
+        <section
+          ref={heroRef}
+          className={`bg-purple-600 text-white py-20 flex flex-col justify-center items-center px-6 text-center transition-all duration-700 ease-out ${
+            heroVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
+          }`}
+        >
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
             Welcome to Tippified
           </h1>
@@ -45,25 +108,33 @@ export default function HomePage() {
         <section className="py-20 px-6 bg-gray-50">
           <h2 className="text-3xl font-bold text-center mb-12">Why Tippified?</h2>
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white text-xs p-6 rounded-lg  shadow hover:shadow-lg transition md:text-lg">
-              <h3 className="text-lg font-semibold mb-2">Fast Tips</h3>
-              <p>Support creators instantly with our simple tipping platform.</p>
-            </div>
-
-            <div className="bg-white p-6 text-xs rounded-lg shadow hover:shadow-lg transition md:text-lg">
-              <h3 className="text-lg font-semibold mb-2">Secure Wallet</h3>
-              <p>Your money is safe with our encrypted wallet system.</p>
-            </div>
-
-            <div className="bg-white p-6 text-xs rounded-lg shadow hover:shadow-lg transition md:text-lg">
-              <h3 className="text-xl font-semibold mb-2">Discover Creators</h3>
-              <p>Find and support creators from around the world.</p>
-            </div>
+            {features.map((feature, i) => (
+              <div
+                key={feature.title}
+                ref={(el) => {
+                  if (el) featuresRef.current[i] =el;
+                }}
+                className={`bg-white p-6 rounded-lg shadow hover:shadow-lg transition-transform duration-700 ease-out ${
+                  featuresVisible[i]
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-10"
+                }`}
+                style={{ transitionDelay: `${i * 200}ms` }}
+              >
+                <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+                <p>{feature.desc}</p>
+              </div>
+            ))}
           </div>
         </section>
 
         {/* About Section */}
-        <section className="py-7 px-6 max-w-4xl mx-auto text-center">
+        <section
+          ref={aboutRef}
+          className={`py-7 px-6 max-w-4xl mx-auto text-center transition-all duration-700 ease-out ${
+            aboutVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          }`}
+        >
           <h2 className="text-3xl font-bold mb-6">About Tippified</h2>
           <p className="text-xs text-gray-700 md:text-lg">
             Tippified empowers creators to monetize their work while giving fans
@@ -72,7 +143,12 @@ export default function HomePage() {
         </section>
 
         {/* CTA Footer */}
-        <section className="py-20 px-6 bg-purple-600 text-white text-center">
+        <section
+          ref={ctaRef}
+          className={`py-20 px-6 bg-purple-600 text-white text-center transition-all duration-700 ease-out ${
+            ctaVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          }`}
+        >
           <h2 className="text-xs font-bold mb-5 md:text-lg">
             Ready to start getting tips from your fans and supporters?
           </h2>
@@ -97,7 +173,9 @@ export default function HomePage() {
         {/* Footer */}
         <footer className="py-6 bg-gray-800 text-gray-300 text-center text-sm md:text-base">
           &copy; {new Date().getFullYear()} Tippified. All rights reserved.
-          <p className="text-xs text-gray-500 text-center">A product of Grundex Limited.</p>
+          <p className="text-xs text-gray-500 text-center">
+            A product of Grundex Limited.
+          </p>
         </footer>
       </main>
     </>
