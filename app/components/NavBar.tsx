@@ -3,6 +3,7 @@
 import {
     DocumentTextIcon,
     HomeIcon,
+    MagnifyingGlassIcon,
     PhoneIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -13,6 +14,7 @@ export default function NavBar() {
 
   const links = [
     { label: "Home", href: "/", icon: <HomeIcon className="w-6 h-6" /> },
+    { label: "Search", href: "/", icon: <MagnifyingGlassIcon className="w-6 h-6" /> },
     {
       label: "Privacy",
       href: "/privacy-policy",
