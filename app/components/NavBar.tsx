@@ -1,6 +1,7 @@
 "use client";
 
 import {
+    BriefcaseIcon,
     DocumentTextIcon,
     HomeIcon,
     MagnifyingGlassIcon,
@@ -19,6 +20,11 @@ export default function NavBar() {
       label: "Privacy",
       href: "/privacy-policy",
       icon: <DocumentTextIcon className="w-6 h-6" />,
+    },
+    {
+      label: "T&C",
+      href: "/terms-conditions",
+      icon: <BriefcaseIcon className="w-6 h-6" />,
     },
     {
       label: "Contact",

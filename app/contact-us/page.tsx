@@ -25,6 +25,14 @@ export default function ContactUs() {
     <main className="bg-white text-gray-900 min-h-screen px-6 py-20 max-w-4xl mx-auto">
       <h1 className="text-4xl font-bold mb-6 text-center">Contact Us</h1>
 
+      <div className="flex justify-end">
+        <p>
+            <b>Email: </b> support@tippified.com
+            
+        </p>
+
+      </div>
+
       {submitted ? (
         <p className="text-green-600 text-center text-lg">
           Thank you! Your message has been submitted.

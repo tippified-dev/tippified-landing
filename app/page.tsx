@@ -18,15 +18,15 @@ export default function HomePage() {
   const features = [
     {
       title: "Fast Tips",
-      desc: "Support creators instantly with our simple tipping platform.",
+      desc: "Fans can easily send tips very quickly and in different currencies, made possible by Paystack.",
     },
     {
       title: "Secure Wallet",
-      desc: "Your money is safe with our encrypted wallet system.",
+      desc: "As a creator you see first hand and in real time all your tips from fans boldly displayed in your transaction history and also in your wallets which are strongly encypted. .",
     },
     {
       title: "Discover Creators",
-      desc: "Find and support creators from around the world.",
+      desc: "Find and support creators who have set goals that might just interest you, these could be either goals to support a philantrophic cause or goals for personal reasons.",
     },
   ];
 
@@ -137,8 +137,12 @@ export default function HomePage() {
         >
           <h2 className="text-3xl font-bold mb-6">About Tippified</h2>
           <p className="text-sm text-gray-700 md:text-lg">
-            Tippified empowers creators to monetize their work while giving fans
-            a seamless way to show support.
+            <span className="text-purple-500 font-bold">Tippified</span> is Nigeria`s premier platform for empowering creators and connecting them with their fans. 
+            Our mission is simple: help creators monetize their talent while giving fans a seamless way to show appreciation through instant tips.
+
+Whether you are an influencer, artist, gamer, or content creator, <span className="text-purple-500 font-bold">Tippified</span> makes it effortless for your supporters to reward your work. Built on a secure and reliable payment system powered by <b>Paystack</b>, every tip reaches you safely and instantly.
+
+We are dedicated to growing the Nigerian creator ecosystem by providing the tools and infrastructure creators need to thrive. With <span className="text-purple-500 font-bold">Tippified</span>, turning passion into sustainable income has never been easier.
           </p>
         </section>
 
