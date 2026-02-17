@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Pacifico } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 
@@ -14,14 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tippified- Nigeria's No 1 tipping platform for creators",
-  description: "Tippified is a Nigerian creator tipping platform that let fans tip their favorite content creators quickly and without stress",
+  title: "Tippified- Nigeria's No 1 tipping platform for creators.",
+  description: "Tippified is a Nigerian creator tipping platform that let fans tip their favorite content creators quickly and without stress.",
 };
 
-export const pacifico = Pacifico({
-  subsets: ["latin"],
-  weight: "400",
-});
 
 export default function RootLayout({
   children,
@@ -30,6 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/logo.png"/>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import NavBar from "./components/NavBar";
+import { pacifico } from "./font";
+
 
 export default function HomePage() {
   // Refs for each section
@@ -68,40 +70,47 @@ export default function HomePage() {
       <main className="bg-white text-gray-900 pb-20 md:pb-0">
         {/* Hero Section */}
         <section
-          ref={heroRef}
-          className={`bg-purple-600 text-white py-20 flex flex-col justify-center items-center px-6 text-center transition-all duration-700 ease-out ${
-            heroVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
-          }`}
-        >
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            Welcome to Tippified
-          </h1>
-          <p className="text-lg md:text-2xl mb-6 max-w-xl">
-            Empower your content and monetize your audience effortlessly.
-          </p>
+  ref={heroRef}
+  className={`bg-purple-600 text-white py-16 px-6 transition-all duration-700 ease-out ${
+    heroVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
+  }`}
+ >
+          <div className="max-w-4xl max-auto text-left">
+  <p className={`text-white text-sm mb-8 -ml-4 ${pacifico.className}`}>
+    tippified.
+  </p>
 
-          <div className="flex flex-col md:flex-row gap-4">
-            <a
-              href="https://app.tippified.com/creator/signup"
-              className="px-8 py-4 bg-white text-purple-600 font-bold rounded-lg shadow-lg hover:bg-gray-100 transition"
-            >
-              Signup as Creator
-            </a>
+  <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-3">
+    Welcome to Tippified
+  </h1>
 
-            <a
-              href="/privacy-policy"
-              className="px-8 py-4 bg-gray-100 text-purple-600 font-bold rounded-lg shadow hover:bg-gray-200 transition"
-            >
-              Privacy Policy
-            </a>
+  <p className="text-lg md:text-2xl mb-6 max-w-xl">
+   Dear creators! let your fans support you with tips from anywhere and in any currency.
+  </p>
 
-            <a
-              href="/contact-us"
-              className="px-8 py-4 bg-gray-100 text-purple-600 font-bold rounded-lg shadow hover:bg-gray-200 transition"
-            >
-              Contact Us
-            </a>
-          </div>
+  <div className="flex flex-col md:flex-row gap-4">
+    <a
+      href="https://app.tippified.com/creator/signup"
+      className="px-8 py-4 bg-white text-purple-600 font-bold rounded-lg shadow-lg hover:bg-gray-100 transition"
+    >
+      Signup as Creator
+    </a>
+
+    <a
+      href="/privacy-policy"
+      className="px-8 py-4 bg-gray-100 text-purple-600 font-bold rounded-lg shadow hover:bg-gray-200 transition"
+    >
+      Privacy Policy
+    </a>
+
+    <a
+      href="/contact-us"
+      className="px-8 py-4 bg-gray-100 text-purple-600 font-bold rounded-lg shadow hover:bg-gray-200 transition"
+    >
+      Contact Us
+    </a>
+  </div>
+ </div>
         </section>
 
         {/* Features Section */}
