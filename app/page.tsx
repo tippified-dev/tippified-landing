@@ -76,7 +76,7 @@ export default function HomePage() {
   }`}
  >
           <div className="max-w-4xl max-auto text-left">
-  <p className={`text-white text-sm mb-6 -ml-4 ${pacifico.className}`}>
+  <p className={`text-white text-sm mb-8 -ml-4 ${pacifico.className}`}>
     tippified.
   </p>
 
