@@ -71,7 +71,7 @@ export default function HomePage() {
         {/* Hero Section */}
         <section
   ref={heroRef}
-  className={`bg-purple-600 text-white pt-6 pb-16 px-6 transition-all duration-700 ease-out ${
+  className={`bg-purple-600 text-white pt-4 pb-16 px-6 transition-all duration-700 ease-out ${
     heroVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
   }`}
  >
