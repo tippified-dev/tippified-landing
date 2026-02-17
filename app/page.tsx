@@ -71,12 +71,12 @@ export default function HomePage() {
         {/* Hero Section */}
         <section
   ref={heroRef}
-  className={`bg-purple-600 text-white py-16 px-6 transition-all duration-700 ease-out ${
+  className={`bg-purple-600 text-white pt-6 pb-16 px-6 transition-all duration-700 ease-out ${
     heroVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
   }`}
  >
           <div className="max-w-4xl max-auto text-left">
-  <p className={`text-white text-sm mb-8 -ml-4 ${pacifico.className}`}>
+  <p className={`text-white text-sm mb-6 -ml-4 ${pacifico.className}`}>
     tippified.
   </p>
 
