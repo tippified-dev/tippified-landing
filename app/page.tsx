@@ -3,6 +3,7 @@
 import { ArrowUpIcon, BanknotesIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
 import NavBar from "./components/NavBar";
+import StatsCounterSection from "./components/StatsCounterSection";
 import { pacifico } from "./font";
 
 
@@ -161,6 +162,8 @@ export default function HomePage() {
   </div>
  </div>
         </section>
+      
+       <StatsCounterSection/>
 
         {/* Features Section */}
         <section className="py-20 px-6 bg-gray-50">
