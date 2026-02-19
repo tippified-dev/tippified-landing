@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import NavBar from "./components/NavBar";
-import { pacifico } from "./font";
+// import { pacifico } from "./font";
+import Image from "next/image";
 
 
 export default function HomePage() {
@@ -76,9 +77,13 @@ export default function HomePage() {
   }`}
  >
           <div className="max-w-4xl max-auto text-left">
-  <p className={`text-white text-sm mb-8 -ml-4 ${pacifico.className}`}>
-    tippified.
-  </p>
+  <Image
+   src="/logo.png"
+   alt="Tippified"
+   width={128}
+   height={128}
+   className="w-24 md:w-32 mb-8"
+  />
 
   <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-3">
     Welcome to Tippified
