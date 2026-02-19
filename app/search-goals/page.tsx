@@ -24,6 +24,8 @@ export default function SearchGoalsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef<HTMLDivElement | null>(null);
+ 
+  const [modalGoal, setModalGoal] = useState<PublicGoal | null>(null);
 
   const fetchGoals = async (pageNum = 1, query = "") => {
     try {
@@ -135,15 +137,48 @@ export default function SearchGoalsPage() {
                   Created: {new Date(goal.created_at).toLocaleDateString()}
                 </p>
 
-                <a
-                  href={`https://app.tippified.com/tip/${goal.referral_code}`}
-                  className="block text-center mt-3 bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700 transition"
-                >
-                  Support
-                </a>
+                <div className="flex gap-2 mt-3">
+                  <a
+            href={`https://app.tippified.com/tip/${goal.referral_code}`}
+            className="flex-1 text-center text-xs bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700 transition"
+          >
+            Support 
+          </a>
+
+          <button
+            className="flex-1 text-center text-xs bg-gray-100 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-200 transition"
+            onClick={() => setModalGoal(goal)}
+          >
+            About
+          </button>
+                </div>
               </div>
             ))}
           </div>
+
+          {modalGoal && (
+  <div
+    className="fixed inset-0 bg-purple-500 bg-opacity-50 flex items-center justify-center p-4 z-50"
+    onClick={() => setModalGoal(null)}
+  >
+    <div
+      className="bg-white rounded-lg max-w-md w-full p-6 relative"
+      onClick={(e) => e.stopPropagation()} // Prevent modal close when clicking inside
+    >
+      <button
+        className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+        onClick={() => setModalGoal(null)}
+      >
+        ✖
+      </button>
+      <h3 className="text-xl font-bold mb-4">{capitalizeWords(modalGoal.title)}</h3>
+      <p className="text-gray-700 mb-2">
+        By: <span className="font-semibold">{capitalizeWords(modalGoal.username)}</span>
+      </p>
+      <p className="text-gray-700">{modalGoal.about}</p>
+    </div>
+  </div>
+ )}
 
           {/* Loader div for infinite scroll */}
           <div ref={loaderRef} className="h-10 mt-4 flex justify-center items-center">
