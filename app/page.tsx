@@ -243,7 +243,9 @@ export default function HomePage() {
   </div>
 </div>
  </section>
- <section className="py-12 px-6 bg-white">
+ {
+  goals && (
+    <section className="py-3 px-6 bg-white">
   <a
       href="/search-goals"
       className="px-3 py-3 bg-gray-100 text-xs text-purple-600 font-bold rounded-lg shadow hover:bg-purple-800 transition"
@@ -251,6 +253,8 @@ export default function HomePage() {
       see more to support
     </a>
  </section>
+  )
+ }
 
         {/* About Section */}
         <section
