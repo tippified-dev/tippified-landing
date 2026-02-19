@@ -244,15 +244,15 @@ export default function HomePage() {
 </div>
  </section>
  {
-  goals && (
-    <section className="py-4 px-6 bg-white">
+  !loadingGoals && goals.length > 0 && (
+    <div className="mt-3 flex justify-center">
   <a
       href="/search-goals"
-      className="px-3 py-1 bg-gray-100 text-xs text-purple-600 font-bold rounded-lg shadow hover:bg-purple-800 transition"
+      className="px-3 py-2 bg-gray-100 text-xs text-purple-600 font-bold rounded-lg shadow hover:bg-purple-800 transition"
     >
       see more to support
     </a>
- </section>
+ </div>
   )
  }
 
