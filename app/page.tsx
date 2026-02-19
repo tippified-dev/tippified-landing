@@ -1,15 +1,18 @@
 "use client";
 
+import { ArrowDownRightIcon, CurrencyDollarIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
 import NavBar from "./components/NavBar";
 import { pacifico } from "./font";
 
 
-interface PublicGoal {
+interface PublicGoal { 
+
   id: number;
   username: string;
   referral_code: string;
   title: string;
+  about: string;
   target_amount: string;
   current_amount: string;
   current_foreign_usd: string;
@@ -31,6 +34,7 @@ export default function HomePage() {
   const [ctaVisible, setCtaVisible] = useState(false);
   const [goals, setGoals] = useState<PublicGoal[]>([]);
   const [loadingGoals, setLoadingGoals] = useState(false);
+  const [modalGoal, setModalGoal] = useState<PublicGoal | null>(null);
 
 
 
@@ -50,6 +54,16 @@ export default function HomePage() {
 
   fetchGoals();
  }, []);
+
+ 
+  const capitalizeWords = (text: string): string => {
+    if (!text) return "";
+    return text
+      .trim()
+      .split(/\s+/)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
 
 
   const features = [
@@ -173,7 +187,7 @@ export default function HomePage() {
         </section>
 
         {/* Public Goals Section */}
-<section className="py-16 px-6 bg-white">
+<section className="py-12 px-6 bg-white">
   <h2 className="text-3xl font-bold text-center mb-10">
     Support a Creator’s Goal
   </h2>
@@ -181,44 +195,52 @@ export default function HomePage() {
   {loadingGoals && (
     <p className="text-center text-gray-500">Loading goals...</p>
   )}
-
-  <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-    {goals.map((goal) => (
+ <div className="max-w-6xl mx-auto overflow-x-auto scrollbar-hide">
+  <div className="flex gap-4">
+    {goals.slice(0, 10).map((goal) => (
       <div
         key={goal.id}
-        className="border rounded-lg p-6 shadow hover:shadow-lg transition"
+        className="min-w-62.5 border rounded-lg p-6 shadow hover:shadow-lg transition shrink-0"
       >
-        <h3 className="font-bold text-lg mb-1">{goal.title}</h3>
-
+        <h3 className="font-bold text-lg mb-1">{capitalizeWords(goal.title)}</h3>
         <p className="text-sm text-gray-500 mb-2">
-          by <span className="font-semibold">{goal.username}</span>
+          by <span className="font-semibold">{capitalizeWords(goal.username)}</span>
         </p>
 
-        <p className="text-sm mb-1">
-          🎯 Target: ₦{goal.target_amount}
-        </p>
+        <p className="text-sm mb-1 flex items-center gap-1">
+  <ArrowDownRightIcon className="w-4 h-4 text-purple-600" /> Target: ₦{goal.target_amount}
+</p>
 
-        <p className="text-sm mb-1">
-          💰 Local: ₦{goal.current_amount}
-        </p>
+<p className="text-sm mb-1 flex items-center gap-1">
+  <CurrencyDollarIcon className="w-4 h-4 text-green-600" /> Local: ₦{goal.current_amount}
+</p>
 
-        <p className="text-sm mb-1">
-          🌍 Foreign: ${goal.current_foreign_usd}
-        </p>
-
+<p className="text-sm mb-1 flex items-center gap-1">
+  <GlobeAltIcon className="w-4 h-4 text-blue-600" /> Foreign: ${goal.current_foreign_usd}
+</p>
         <p className="text-xs text-gray-400 mt-2">
           Created: {new Date(goal.created_at).toLocaleDateString()}
         </p>
 
-        <a
-          href={`https://app.tippified.com/tip/${goal.referral_code}`}
-          className="block text-center mt-4 bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700 transition"
-        >
-          Support this goal
-        </a>
+        <div className="flex gap-2 mt-4">
+          <a
+            href={`https://app.tippified.com/tip/${goal.referral_code}`}
+            className="flex-1 text-center bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700 transition"
+          >
+            Support this goal
+          </a>
+
+          <button
+            className="flex-1 text-center bg-gray-100 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-200 transition"
+            onClick={() => setModalGoal(goal)}
+          >
+            About
+          </button>
+        </div>
       </div>
     ))}
   </div>
+</div>
  </section>
 
         {/* About Section */}
@@ -266,6 +288,30 @@ We are dedicated to growing the Nigerian creator ecosystem by providing the tool
             </a>
           </div>
         </section>
+
+        {modalGoal && (
+  <div
+    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+    onClick={() => setModalGoal(null)}
+  >
+    <div
+      className="bg-white rounded-lg max-w-md w-full p-6 relative"
+      onClick={(e) => e.stopPropagation()} // Prevent modal close when clicking inside
+    >
+      <button
+        className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+        onClick={() => setModalGoal(null)}
+      >
+        ✖
+      </button>
+      <h3 className="text-xl font-bold mb-4">{capitalizeWords(modalGoal.title)}</h3>
+      <p className="text-gray-700 mb-2">
+        By: <span className="font-semibold">{capitalizeWords(modalGoal.username)}</span>
+      </p>
+      <p className="text-gray-700">{modalGoal.about}</p>
+    </div>
+  </div>
+ )}
 
         {/* Footer */}
         <footer className="py-6 bg-gray-800 text-gray-300 text-center text-sm md:text-base">
