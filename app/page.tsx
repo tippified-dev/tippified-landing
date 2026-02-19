@@ -2,8 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 import NavBar from "./components/NavBar";
-// import { pacifico } from "./font";
-import Image from "next/image";
+import { pacifico } from "./font";
+
+
+interface PublicGoal {
+  id: number;
+  username: string;
+  referral_code: string;
+  title: string;
+  target_amount: string;
+  current_amount: string;
+  current_foreign_usd: string;
+  created_at: string;
+}
+
 
 
 export default function HomePage() {
@@ -17,6 +29,28 @@ export default function HomePage() {
   const [featuresVisible, setFeaturesVisible] = useState([false, false, false]);
   const [aboutVisible, setAboutVisible] = useState(false);
   const [ctaVisible, setCtaVisible] = useState(false);
+  const [goals, setGoals] = useState<PublicGoal[]>([]);
+  const [loadingGoals, setLoadingGoals] = useState(false);
+
+
+
+  useEffect(() => {
+  const fetchGoals = async () => {
+    try {
+      setLoadingGoals(true);
+      const res = await fetch("https://api.tippified.com/api/auth/public-goals/");
+      const data = await res.json();
+      setGoals(data.results || data); // supports pagination
+    } catch (err) {
+      console.error("Failed to load goals", err);
+    } finally {
+      setLoadingGoals(false);
+    }
+  };
+
+  fetchGoals();
+ }, []);
+
 
   const features = [
     {
@@ -77,13 +111,9 @@ export default function HomePage() {
   }`}
  >
           <div className="max-w-4xl max-auto text-left">
-  <Image
-   src="/logo.png"
-   alt="Tippified"
-   width={128}
-   height={128}
-   className="w-24 md:w-32 mb-8"
-  />
+  <p className={`text-white text-lg mb-12 -ml-5 ${pacifico.className}`}>
+    tippified.
+  </p>
 
   <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-3">
     Welcome to Tippified
@@ -141,6 +171,55 @@ export default function HomePage() {
             ))}
           </div>
         </section>
+
+        {/* Public Goals Section */}
+<section className="py-16 px-6 bg-white">
+  <h2 className="text-3xl font-bold text-center mb-10">
+    Support a Creator’s Goal
+  </h2>
+
+  {loadingGoals && (
+    <p className="text-center text-gray-500">Loading goals...</p>
+  )}
+
+  <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+    {goals.map((goal) => (
+      <div
+        key={goal.id}
+        className="border rounded-lg p-6 shadow hover:shadow-lg transition"
+      >
+        <h3 className="font-bold text-lg mb-1">{goal.title}</h3>
+
+        <p className="text-sm text-gray-500 mb-2">
+          by <span className="font-semibold">{goal.username}</span>
+        </p>
+
+        <p className="text-sm mb-1">
+          🎯 Target: ₦{goal.target_amount}
+        </p>
+
+        <p className="text-sm mb-1">
+          💰 Local: ₦{goal.current_amount}
+        </p>
+
+        <p className="text-sm mb-1">
+          🌍 Foreign: ${goal.current_foreign_usd}
+        </p>
+
+        <p className="text-xs text-gray-400 mt-2">
+          Created: {new Date(goal.created_at).toLocaleDateString()}
+        </p>
+
+        <a
+          href={`https://app.tippified.com/tip/${goal.referral_code}`}
+          className="block text-center mt-4 bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700 transition"
+        >
+          Support this goal
+        </a>
+      </div>
+    ))}
+  </div>
+ </section>
 
         {/* About Section */}
         <section
