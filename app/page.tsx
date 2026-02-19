@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowUpIcon, BanknotesIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import NavBar from "./components/NavBar";
 import StatsCounterSection from "./components/StatsCounterSection";
@@ -167,7 +168,7 @@ export default function HomePage() {
 
         {/* Features Section */}
         <section className="py-20 px-6 bg-gray-50">
-          <h2 className="text-3xl font-bold text-center mb-12">Why Tippified?</h2>
+          <h2 className="text-3xl font-bold text-center mb-7">Why Tippified?</h2>
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
             {features.map((feature, i) => (
               <div
@@ -258,6 +259,59 @@ export default function HomePage() {
  </div>
   )
  }
+  {/* Payments Section */}
+<section className="py-10 px-6 bg-gray-50 text-center">
+  <h2 className="text-xl md:text-2xl font-bold mb-4">
+    Seamless Payments for Fans Worldwide
+  </h2>
+
+  <p className="text-sm md:text-base text-gray-700 max-w-3xl mx-auto mb-8">
+    We have simplified the tipping experience so fans can support their favorite
+    creators without friction. To ensure every tip is processed smoothly and
+    securely, Tippified integrates trusted and globally recognized payment
+    gateways. This guarantees fast, reliable transactions while eliminating
+    failed payments and unnecessary delays — so creators get paid instantly and
+    supporters enjoy a seamless checkout experience.
+  </p>
+
+  <div className="flex justify-center items-center gap-4 flex-wrap md:flex-nowrap">
+    <Image
+      src="/mastercard.png"
+      alt="Mastercard"
+      width={80}
+      height={40}
+      className="object-contain"
+    />
+    <Image
+      src="/visa.png"
+      alt="Visa"
+      width={80}
+      height={40}
+      className="object-contain"
+    />
+    {/* <Image
+      src="/verve.png"
+      alt="Verve"
+      width={80}
+      height={40}
+      className="object-contain"
+    /> */}
+    <Image
+      src="/paystack.png"
+      alt="Paystack"
+      width={80}
+      height={40}
+      className="object-contain"
+    />
+    <Image
+      src="/stripe.png"
+      alt="Stripe"
+      width={80}
+      height={40}
+      className="object-contain"
+    />
+  </div>
+ </section>
 
         {/* About Section */}
         <section

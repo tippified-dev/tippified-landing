@@ -60,7 +60,7 @@ export default function StatsCounterSection() {
       </p>
 
       <p className="text-sm text-gray-500 mt-1 max-w-xs mx-auto">
-        From artists to influencers and entrepreneurs
+        From social media creators,influencers, artists and entrepreneurs.
       </p>
     </section>
   );
