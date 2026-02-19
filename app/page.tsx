@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDownRightIcon, CurrencyDollarIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
+import { ArrowUpIcon, BanknotesIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
 import NavBar from "./components/NavBar";
 import { pacifico } from "./font";
@@ -204,19 +204,20 @@ export default function HomePage() {
       >
         <h3 className="font-bold text-lg mb-1">{capitalizeWords(goal.title)}</h3>
         <p className="text-sm text-gray-500 mb-2">
-          by <span className="font-semibold">{capitalizeWords(goal.username)}</span>
+          by <span className="font-semibold">{capitalizeWords(goal.username)} </span>
+          - (<span className="font-semibold">{goal.referral_code} </span>)
         </p>
 
         <p className="text-sm mb-1 flex items-center gap-1">
-  <ArrowDownRightIcon className="w-4 h-4 text-purple-600" /> Target: ₦{goal.target_amount}
+  <ArrowUpIcon className="w-4 h-4 text-purple-600" /> Target: ₦{goal.target_amount}
 </p>
 
 <p className="text-sm mb-1 flex items-center gap-1">
-  <CurrencyDollarIcon className="w-4 h-4 text-green-600" /> Local: ₦{goal.current_amount}
+  <BanknotesIcon className="w-4 h-4 text-purple-600" /> Local: ₦{goal.current_amount}
 </p>
 
 <p className="text-sm mb-1 flex items-center gap-1">
-  <GlobeAltIcon className="w-4 h-4 text-blue-600" /> Foreign: ${goal.current_foreign_usd}
+  <CurrencyDollarIcon className="w-4 h-4 text-purple-600" /> Foreign: ${goal.current_foreign_usd}
 </p>
         <p className="text-xs text-gray-400 mt-2">
           Created: {new Date(goal.created_at).toLocaleDateString()}
@@ -225,13 +226,13 @@ export default function HomePage() {
         <div className="flex gap-2 mt-4">
           <a
             href={`https://app.tippified.com/tip/${goal.referral_code}`}
-            className="flex-1 text-center bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700 transition"
+            className="flex-1 text-center text-xs bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700 transition"
           >
-            Support this goal
+            Support 
           </a>
 
           <button
-            className="flex-1 text-center bg-gray-100 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-200 transition"
+            className="flex-1 text-center text-xs bg-gray-100 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-200 transition"
             onClick={() => setModalGoal(goal)}
           >
             About
@@ -241,6 +242,14 @@ export default function HomePage() {
     ))}
   </div>
 </div>
+ </section>
+ <section className="py-12 px-6 bg-white">
+  <a
+      href="/search-goals"
+      className="px-3 py-3 bg-gray-100 text-xs text-purple-600 font-bold rounded-lg shadow hover:bg-purple-800 transition"
+    >
+      see more to support
+    </a>
  </section>
 
         {/* About Section */}
@@ -291,7 +300,7 @@ We are dedicated to growing the Nigerian creator ecosystem by providing the tool
 
         {modalGoal && (
   <div
-    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+    className="fixed inset-0 bg-purple-500 bg-opacity-50 flex items-center justify-center p-4 z-50"
     onClick={() => setModalGoal(null)}
   >
     <div
