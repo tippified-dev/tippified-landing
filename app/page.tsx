@@ -200,7 +200,7 @@ export default function HomePage() {
     {goals.slice(0, 10).map((goal) => (
       <div
         key={goal.id}
-        className="min-w-62.5 border rounded-lg p-6 shadow hover:shadow-lg transition shrink-0"
+        className="min-w-62.5 border border-purple-500 rounded-lg p-6 shadow hover:shadow-lg transition shrink-0"
       >
         <h3 className="font-bold text-lg mb-1">{capitalizeWords(goal.title)}</h3>
         <p className="text-sm text-gray-500 mb-2">
@@ -245,10 +245,10 @@ export default function HomePage() {
  </section>
  {
   goals && (
-    <section className="py-3 px-6 bg-white">
+    <section className="py-4 px-6 bg-white">
   <a
       href="/search-goals"
-      className="px-3 py-3 bg-gray-100 text-xs text-purple-600 font-bold rounded-lg shadow hover:bg-purple-800 transition"
+      className="px-3 py-1 bg-gray-100 text-xs text-purple-600 font-bold rounded-lg shadow hover:bg-purple-800 transition"
     >
       see more to support
     </a>
