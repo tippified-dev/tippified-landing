@@ -2,7 +2,6 @@ import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://www.tippified.com";
-  const actionUrl = "app.tippified.com"
 
   return [
     {
@@ -10,11 +9,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
     },
     {
-      url: `${actionUrl}/creator/signup`,
+      url: `${baseUrl}/creator/signup`,
       lastModified: new Date(),
     },
     {
-      url: `${actionUrl}/creator/signin`,
+      url: `${baseUrl}/creator/signin`,
       lastModified: new Date(),
     },
     {
