@@ -117,6 +117,16 @@ export default function HomePage() {
   return (
     <>
       <NavBar />
+      <div className="w-full flex justify-center bg-gray-50 py-4">
+  <Image
+    src="/banner-tippified.png"
+    alt="Tippified promotion"
+    width={1200}
+    height={400}
+    className="rounded-lg w-full max-w-5xl"
+    priority
+  />
+ </div>
 
       <main className="bg-white text-gray-900 pb-20 md:pb-0">
         {/* Hero Section */}
@@ -296,7 +306,7 @@ export default function HomePage() {
       height={40}
       className="object-contain"
     />
-    
+
     <Image
       src="/paystack.png"
       alt="Paystack"
