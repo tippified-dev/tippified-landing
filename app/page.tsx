@@ -289,13 +289,14 @@ export default function HomePage() {
       height={40}
       className="object-contain"
     />
-    {/* <Image
+    <Image
       src="/verve.png"
       alt="Verve"
       width={80}
       height={40}
       className="object-contain"
-    /> */}
+    />
+    
     <Image
       src="/paystack.png"
       alt="Paystack"
