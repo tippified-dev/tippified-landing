@@ -157,13 +157,13 @@ export default function HomePage() {
           </div>
         </section>
 
-         <div className="block md:hidden">
+         <div className="block mt-1 px-3 md:hidden">
               <Image
                 src="/banner-tippified.png"
                 alt="Tippified tipping platform"
                 width={450}
                 height={500}
-                className="rounded-2xl shadow-xl"
+                className="rounded shadow-xl"
                 priority
               />
             </div>
