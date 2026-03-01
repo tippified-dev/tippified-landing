@@ -153,7 +153,11 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="block md:hidden">
+           
+          </div>
+        </section>
+
+         <div className="block md:hidden">
               <Image
                 src="/banner-tippified.png"
                 alt="Tippified tipping platform"
@@ -163,8 +167,6 @@ export default function HomePage() {
                 priority
               />
             </div>
-          </div>
-        </section>
 
         <StatsCounterSection />
 
