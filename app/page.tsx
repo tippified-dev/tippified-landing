@@ -234,7 +234,7 @@ export default function HomePage() {
     {goals.slice(0, 10).map((goal) => (
       <div
         key={goal.id}
-        className="min-w-62.5 border border-purple-500 rounded-lg p-6 shadow hover:shadow-lg transition shrink-0"
+        className="min-w-62.5 bg-purple-50 border border-black rounded-lg p-6 shadow hover:shadow-lg transition shrink-0"
       >
         <h3 className="font-bold text-lg mb-1">{capitalizeWords(goal.title)}</h3>
         <p className="text-sm text-gray-500 mb-2">
@@ -279,7 +279,7 @@ export default function HomePage() {
  </section>
 
  {!loadingGoals && goals.length > 0 && (
-  <div className="mt-5 flex justify-center">
+  <div className="mt-5 flex justify-center mb-1">
     <a
       href="/search-goals"
       className="flex items-center gap-2 px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl shadow hover:bg-purple-700 transition"
@@ -326,7 +326,7 @@ export default function HomePage() {
         >
           <h2 className="text-3xl font-bold mb-6">About Tippified</h2>
           <p className="text-gray-700 md:text-lg">
-            <span className="text-purple-600 font-bold">Tippified</span> is a
+            <span className="text-purple-600 font-bold"><a href="/about" className="text-purple-600">Tippified</a></span> is a
             Nigerian platform built to help creators receive tips directly from
             their fans. We provide creators with a unique tipping link that can
             be shared across social media and websites.
@@ -406,6 +406,14 @@ export default function HomePage() {
             and OPay.
           </p>
         </footer>
+
+        <a
+  href="/about"
+  className="fixed right-4 bottom-20 md:bottom-10 z-50 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-purple-600 text-white shadow-lg hover:bg-purple-700 transition transform hover:scale-105"
+  aria-label="About Tippified"
+>
+  <InformationCircleIcon className="w-7 h-7 md:w-8 md:h-8" />
+</a>
       </main>
     </>
   );
