@@ -27,9 +27,10 @@ interface PublicGoal {
 
 export default function HomePage() {
   const heroRef = useRef<HTMLDivElement>(null);
-  const featuresRef = useRef<Array<HTMLDivElement | null>>([]);
+  const featuresRef = useRef<(HTMLDivElement | null)[]>([]);
   const aboutRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+
 
   const [heroVisible, setHeroVisible] = useState(false);
   const [featuresVisible, setFeaturesVisible] = useState([false, false, false]);
@@ -80,7 +81,7 @@ export default function HomePage() {
     },
   ];
 
-  const observeElement = (el: HTMLElement | null, callback: () => void) => {
+  const observeElement = (el: Element | null, callback: () => void) => {
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -182,7 +183,7 @@ export default function HomePage() {
               return (
                 <div
                   key={feature.title}
-                  ref={(el) => (featuresRef.current[i] = el)}
+                  ref={(el: HTMLDivElement | null) => {featuresRef.current[i] = el}}
                   className={`bg-white p-8 rounded-2xl shadow hover:shadow-xl transition-all duration-700 ${
                     featuresVisible[i]
                       ? "opacity-100 translate-y-0"
