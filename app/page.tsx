@@ -155,7 +155,7 @@ export default function HomePage() {
 
             <div className="hidden md:block">
               <Image
-                src="/hero-phone.png"
+                src="/banner-tippified.png"
                 alt="Tippified tipping platform"
                 width={450}
                 height={500}

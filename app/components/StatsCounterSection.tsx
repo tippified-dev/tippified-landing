@@ -49,7 +49,7 @@ export default function StatsCounterSection() {
   return (
     <section
       ref={sectionRef}
-      className="py-12 px-6 bg-white text-center"
+      className="py-12 px-6 bg-gray-400 text-center"
     >
       <h2 className="text-4xl font-extrabold text-purple-600">
         {count.toLocaleString()}+
