@@ -153,7 +153,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="hidden md:block">
+            <div className="block md:hidden">
               <Image
                 src="/banner-tippified.png"
                 alt="Tippified tipping platform"
