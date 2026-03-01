@@ -1,15 +1,19 @@
 "use client";
 
-import { ArrowUpIcon, BanknotesIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowUpIcon,
+  BanknotesIcon,
+  BoltIcon,
+  CurrencyDollarIcon,
+  ShieldCheckIcon
+} from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import NavBar from "./components/NavBar";
 import StatsCounterSection from "./components/StatsCounterSection";
 import { pacifico } from "./font";
 
-
-interface PublicGoal { 
-
+interface PublicGoal {
   id: number;
   username: string;
   referral_code: string;
@@ -21,10 +25,7 @@ interface PublicGoal {
   created_at: string;
 }
 
-
-
 export default function HomePage() {
-  // Refs for each section
   const heroRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<Array<HTMLDivElement | null>>([]);
   const aboutRef = useRef<HTMLDivElement>(null);
@@ -38,52 +39,47 @@ export default function HomePage() {
   const [loadingGoals, setLoadingGoals] = useState(false);
   const [modalGoal, setModalGoal] = useState<PublicGoal | null>(null);
 
-
-
   useEffect(() => {
-  const fetchGoals = async () => {
-    try {
-      setLoadingGoals(true);
-      const res = await fetch("https://api.tippified.com/api/auth/public-goals/");
-      const data = await res.json();
-      setGoals(data.results || data); // supports pagination
-    } catch (err) {
-      console.error("Failed to load goals", err);
-    } finally {
-      setLoadingGoals(false);
-    }
-  };
+    const fetchGoals = async () => {
+      try {
+        setLoadingGoals(true);
+        const res = await fetch("https://api.tippified.com/api/auth/public-goals/");
+        const data = await res.json();
+        setGoals(data.results || data);
+      } catch (err) {
+        console.error("Failed to load goals", err);
+      } finally {
+        setLoadingGoals(false);
+      }
+    };
+    fetchGoals();
+  }, []);
 
-  fetchGoals();
- }, []);
-
- 
-  const capitalizeWords = (text: string): string => {
-    if (!text) return "";
-    return text
-      .trim()
+  const capitalizeWords = (text: string): string =>
+    text
+      ?.trim()
       .split(/\s+/)
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ") || "";
 
   const features = [
     {
-      title: "Fast Tips",
-      desc: "Fans can easily send tips very quickly and in different currencies, made possible by Paystack.",
+      title: "Fast & Global Tips",
+      desc: "Fans can send tips from anywhere in the world using secure payment methods powered by Paystack.",
+      icon: BoltIcon,
     },
     {
-      title: "Secure Wallet",
-      desc: "As a creator you see first hand and in real time all your tips from fans boldly displayed in your transaction history and also in your wallets which are strongly encypted. .",
+      title: "Creator Wallets",
+      desc: "Creators receive their funds in wallets provided by OPay, giving them easy access and control of their money.",
+      icon: BanknotesIcon,
     },
     {
-      title: "Discover Creators",
-      desc: "Find and support creators who have set goals that might just interest you, these could be either goals to support a philantrophic cause or goals for personal reasons.",
+      title: "Secure & Transparent",
+      desc: "All payments are processed by trusted partners. Tippified does not hold or store user funds.",
+      icon: ShieldCheckIcon,
     },
   ];
 
-  // Helper function for intersection observer
   const observeElement = (el: HTMLElement | null, callback: () => void) => {
     if (!el) return;
     const observer = new IntersectionObserver(
@@ -117,91 +113,96 @@ export default function HomePage() {
   return (
     <>
       <NavBar />
-    
 
       <main className="bg-white text-gray-900 pb-20 md:pb-0">
-        {/* Hero Section */}
+        {/* HERO */}
         <section
-  ref={heroRef}
-  className={`bg-purple-600 text-white pt-4 pb-16 px-6 transition-all duration-700 ease-out ${
-    heroVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
-  }`}
- >
-          <div className="max-w-4xl max-auto text-left">
-  <p className={`text-white text-lg mb-12 -ml-5 ${pacifico.className}`}>
-    tippified.
-  </p>
+          ref={heroRef}
+          className={`bg-linear-to-br from-purple-600 to-purple-800 text-white py-24 px-6 transition-all duration-700 ${
+            heroVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
+          }`}
+        >
+          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+            <div>
+              <p className={`text-xl mb-6 ${pacifico.className}`}>tippified.</p>
 
-  <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-3">
-    Welcome to Tippified
-  </h1>
+              <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
+                Get Tipped for What You Create
+              </h1>
 
-  <p className="text-lg md:text-2xl mb-6 max-w-xl">
-   Dear creators! let your fans support you with tips from anywhere and in any currency.
-  </p>
+              <p className="text-lg md:text-xl mb-8 max-w-xl">
+                Tippified is a Nigerian tipping platform that helps creators
+                receive financial support from fans worldwide. Share your
+                tipping link and receive funds securely into your OPay wallet.
+              </p>
 
-  <div className="flex flex-col md:flex-row gap-4">
-    <a
-      href="https://app.tippified.com/creator/signup"
-      className="px-8 py-4 bg-white text-purple-600 font-bold rounded-lg shadow-lg hover:bg-gray-100 transition"
-    >
-      Signup as Creator
-    </a>
-
-    <a
-      href="/privacy-policy"
-      className="px-8 py-4 bg-gray-100 text-purple-600 font-bold rounded-lg shadow hover:bg-gray-200 transition"
-    >
-      Privacy Policy
-    </a>
-
-    <a
-      href="/contact-us"
-      className="px-8 py-4 bg-gray-100 text-purple-600 font-bold rounded-lg shadow hover:bg-gray-200 transition"
-    >
-      Contact Us
-    </a>
-  </div>
- </div>
-        </section>
-      
-       <StatsCounterSection/>
-
-         <div className="w-full flex justify-center bg-gray-50 py-4">
-  <Image
-    src="/banner-tippified.png"
-    alt="Tippified promotion"
-    width={1150}
-    height={400}
-    className="rounded-lg w-full max-w-5xl"
-    priority
-  />
- </div>
-
-        {/* Features Section */}
-        <section className="py-20 px-6 bg-gray-50">
-          <h2 className="text-3xl font-bold text-center mb-7">Why Tippified?</h2>
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((feature, i) => (
-              <div
-                key={feature.title}
-                ref={(el) => {
-                  if (el) featuresRef.current[i] =el;
-                }}
-                className={`bg-white p-6 rounded-lg shadow hover:shadow-lg transition-transform duration-700 ease-out ${
-                  featuresVisible[i]
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-10"
-                }`}
-                style={{ transitionDelay: `${i * 200}ms` }}
-              >
-                <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                <p>{feature.desc}</p>
+              <div className="flex flex-col md:flex-row gap-4">
+                <a
+                  href="https://app.tippified.com/creator/signup"
+                  className="px-8 py-4 bg-white text-purple-700 font-bold rounded-xl shadow hover:bg-gray-100 transition"
+                >
+                  Become a Creator
+                </a>
+                <a
+                  href="/contact-us"
+                  className="px-8 py-4 bg-purple-500 text-white font-bold rounded-xl shadow hover:bg-purple-400 transition"
+                >
+                  Contact Us
+                </a>
               </div>
-            ))}
+            </div>
+
+            <div className="hidden md:block">
+              <Image
+                src="/hero-phone.png"
+                alt="Tippified tipping platform"
+                width={450}
+                height={500}
+                className="rounded-2xl shadow-xl"
+                priority
+              />
+            </div>
           </div>
         </section>
 
+        <StatsCounterSection />
+
+        {/* FEATURES */}
+        <section className="py-20 px-6 bg-gray-50">
+          <h2 className="text-3xl font-bold text-center mb-4">
+            Why Use Tippified?
+          </h2>
+          <p className="text-gray-600 text-center mb-12">
+            Built for Nigerian creators. Trusted by fans worldwide.
+          </p>
+
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            {features.map((feature, i) => {
+              const Icon = feature.icon;
+              return (
+                <div
+                  key={feature.title}
+                  ref={(el) => (featuresRef.current[i] = el)}
+                  className={`bg-white p-8 rounded-2xl shadow hover:shadow-xl transition-all duration-700 ${
+                    featuresVisible[i]
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-10"
+                  }`}
+                >
+                  <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-4">
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600">{feature.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ⚠️ GOALS SECTION — LEFT EXACTLY AS YOU SENT IT */}
         {/* Public Goals Section */}
 <section className="py-12 px-6 bg-white">
   <h2 className="text-3xl font-bold text-center mb-10">
@@ -259,148 +260,121 @@ export default function HomePage() {
   </div>
 </div>
  </section>
- {
-  !loadingGoals && goals.length > 0 && (
-    <div className="mt-3 flex justify-center">
-  <a
-      href="/search-goals"
-      className="px-3 py-2 bg-gray-100 text-xs text-purple-600 font-bold rounded-lg shadow hover:bg-purple-800 transition"
-    >
-      see more to support
-    </a>
- </div>
-  )
- }
-  {/* Payments Section */}
-<section className="py-10 px-6 bg-gray-50 text-center">
-  <h2 className="text-xl md:text-2xl font-bold mb-4">
-    Seamless Payments for Fans Worldwide
+
+ {/* PAYMENTS */}
+<section className="py-14 px-6 bg-gray-50 text-center">
+  <h2 className="text-2xl md:text-3xl font-bold mb-6">
+    Secure Payments Powered by Trusted Partners
   </h2>
 
-  <p className="text-sm md:text-base text-gray-700 max-w-3xl mx-auto mb-8">
-    We have simplified the tipping experience so fans can support their favorite
-    creators without friction. To ensure every tip is processed smoothly and
-    securely, Tippified integrates trusted and globally recognized payment
-    gateways. This guarantees fast, reliable transactions while eliminating
-    failed payments and unnecessary delays — so creators get paid instantly and
-    supporters enjoy a seamless checkout experience.
+  <p className="text-gray-700 max-w-3xl mx-auto mb-10">
+    Payments on Tippified are processed using licensed payment providers such as{" "}
+    <b>Paystack</b> for card and bank payments, and creator wallets are provided
+    by <b>OPay</b>. Tippified does not operate as a bank or hold customer funds.
+    All funds are settled directly to creators through our payment partners.
   </p>
 
-  <div className="flex justify-center items-center gap-4 flex-wrap md:flex-nowrap">
-    <Image
-      src="/mastercard.png"
-      alt="Mastercard"
-      width={80}
-      height={40}
-      className="object-contain"
-    />
-    <Image
-      src="/visa.png"
-      alt="Visa"
-      width={80}
-      height={40}
-      className="object-contain"
-    />
-    <Image
-      src="/verve.png"
-      alt="Verve"
-      width={80}
-      height={40}
-      className="object-contain"
-    />
-
-    <Image
-      src="/paystack.png"
-      alt="Paystack"
-      width={80}
-      height={40}
-      className="object-contain"
-    />
-    <Image
-      src="/stripe.png"
-      alt="Stripe"
-      width={80}
-      height={40}
-      className="object-contain"
-    />
+  <div className="flex justify-center items-center gap-6 flex-wrap">
+    {["visa", "mastercard", "verve", "paystack"].map((img) => (
+      <Image
+        key={img}
+        src={`/${img}.png`}
+        alt={img}
+        width={90}
+        height={40}
+        className="object-contain"
+      />
+    ))}
   </div>
  </section>
 
-        {/* About Section */}
+        {/* ABOUT */}
         <section
           ref={aboutRef}
-          className={`py-7 px-6 max-w-4xl mx-auto text-center transition-all duration-700 ease-out ${
+          className={`py-16 px-6 max-w-4xl mx-auto text-center transition-all duration-700 ${
             aboutVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
           <h2 className="text-3xl font-bold mb-6">About Tippified</h2>
-          <p className="text-sm text-gray-700 md:text-lg">
-            <span className="text-purple-500 font-bold">Tippified</span> is Nigeria`s premier platform for empowering creators and connecting them with their fans. 
-            Our mission is simple: help creators monetize their talent while giving fans a seamless way to show appreciation through instant tips.
-
-Whether you are an influencer, artist, gamer, or content creator, <span className="text-purple-500 font-bold">Tippified</span> makes it effortless for your supporters to reward your work. Built on a secure and reliable payment system powered by <b>Paystack</b>, every tip reaches you safely and instantly.
-
-We are dedicated to growing the Nigerian creator ecosystem by providing the tools and infrastructure creators need to thrive. With <span className="text-purple-500 font-bold">Tippified</span>, turning passion into sustainable income has never been easier.
+          <p className="text-gray-700 md:text-lg">
+            <span className="text-purple-600 font-bold">Tippified</span> is a
+            Nigerian platform built to help creators receive tips directly from
+            their fans. We provide creators with a unique tipping link that can
+            be shared across social media and websites.
+            <br />
+            <br />
+            Payments are processed securely via <b>Paystack</b>, while creator
+            wallets are provided by <b>OPay</b>, giving creators fast access to
+            their funds.
+            <br />
+            <br />
+            Our mission is to strengthen the Nigerian creator economy by
+            providing safe, transparent, and easy-to-use tipping infrastructure.
           </p>
         </section>
 
-        {/* CTA Footer */}
+        {/* CTA */}
         <section
           ref={ctaRef}
-          className={`py-20 px-6 bg-purple-600 text-white text-center transition-all duration-700 ease-out ${
+          className={`py-20 px-6 bg-purple-700 text-white text-center transition-all duration-700 ${
             ctaVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <h2 className="text-sm font-bold mb-5 md:text-lg">
-            Ready to start getting tips from your fans and supporters?
+          <h2 className="text-xl md:text-2xl font-bold mb-6">
+            Ready to start receiving tips from your fans?
           </h2>
-
-          <div className="flex flex-row gap-4 justify-center">
+          <div className="flex gap-4 justify-center">
             <a
               href="https://app.tippified.com/creator/signup"
-              className="px-4 py-2 bg-white text-sm text-purple-600 font-bold rounded-lg shadow-lg hover:bg-gray-100 transition"
+              className="px-6 py-3 bg-white text-purple-700 font-bold rounded-xl shadow hover:bg-gray-100 transition"
             >
-              Signup
+              Get Started
             </a>
-
             <a
               href="https://app.tippified.com/creator/signin"
-              className="px-4 py-2 text-sm bg-white text-purple-600 font-bold rounded-lg shadow-lg hover:bg-gray-100 transition"
+              className="px-6 py-3 bg-purple-500 text-white font-bold rounded-xl shadow hover:bg-purple-400 transition"
             >
               Sign In
             </a>
           </div>
         </section>
 
+        {/* MODAL */}
         {modalGoal && (
-  <div
-    className="fixed inset-0 bg-purple-500 bg-opacity-50 flex items-center justify-center p-4 z-50"
-    onClick={() => setModalGoal(null)}
-  >
-    <div
-      className="bg-white rounded-lg max-w-md w-full p-6 relative"
-      onClick={(e) => e.stopPropagation()} // Prevent modal close when clicking inside
-    >
-      <button
-        className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
-        onClick={() => setModalGoal(null)}
-      >
-        ✖
-      </button>
-      <h3 className="text-xl font-bold mb-4">{capitalizeWords(modalGoal.title)}</h3>
-      <p className="text-gray-700 mb-2">
-        By: <span className="font-semibold">{capitalizeWords(modalGoal.username)}</span>
-      </p>
-      <p className="text-gray-700">{modalGoal.about}</p>
-    </div>
-  </div>
- )}
+          <div
+            className="fixed inset-0 bg-purple-500 bg-opacity-50 flex items-center justify-center p-4 z-50"
+            onClick={() => setModalGoal(null)}
+          >
+            <div
+              className="bg-white rounded-lg max-w-md w-full p-6 relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+                onClick={() => setModalGoal(null)}
+              >
+                ✖
+              </button>
+              <h3 className="text-xl font-bold mb-4">
+                {capitalizeWords(modalGoal.title)}
+              </h3>
+              <p className="text-gray-700 mb-2">
+                By{" "}
+                <span className="font-semibold">
+                  {capitalizeWords(modalGoal.username)}
+                </span>
+              </p>
+              <p className="text-gray-700">{modalGoal.about}</p>
+            </div>
+          </div>
+        )}
 
-        {/* Footer */}
-        <footer className="py-6 bg-gray-800 text-gray-300 text-center text-sm md:text-base">
+        {/* FOOTER */}
+        <footer className="py-8 bg-gray-900 text-gray-300 text-center text-sm">
           &copy; {new Date().getFullYear()} Tippified. All rights reserved.
-          <p className="text-xs text-gray-500 text-center">
-            A product of Grundex Limited.
+          <p className="text-xs text-gray-500 mt-2">
+            Tippified is a product of Grundex Limited. Payments powered by Paystack
+            and OPay.
           </p>
         </footer>
       </main>
