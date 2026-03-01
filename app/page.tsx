@@ -5,7 +5,10 @@ import {
   BanknotesIcon,
   BoltIcon,
   CurrencyDollarIcon,
-  ShieldCheckIcon
+  InformationCircleIcon,
+  PhoneIcon,
+  ShieldCheckIcon,
+  UserPlusIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -119,13 +122,13 @@ export default function HomePage() {
         {/* HERO */}
         <section
           ref={heroRef}
-          className={`bg-linear-to-br from-purple-600 to-purple-800 text-white py-24 px-6 transition-all duration-700 ${
+          className={`bg-linear-to-br from-purple-600 to-purple-800 text-white py-16 px-6 transition-all duration-700 ${
             heroVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
           }`}
         >
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
             <div>
-              <p className={`text-xl mb-6 mt-1 ${pacifico.className}`}>tippified.</p>
+              <p className={`text-xl mb-4  ${pacifico.className}`}>tippified.</p>
 
               <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
                 Get Tipped for What You Create
@@ -138,26 +141,37 @@ export default function HomePage() {
               </p>
 
               <div className="flex flex-col md:flex-row gap-4">
-                <a
-                  href="https://app.tippified.com/creator/signup"
-                  className="px-8 py-4 bg-white text-purple-700 font-bold rounded-xl shadow hover:bg-gray-100 transition"
-                >
-                  Become a Creator
-                </a>
-                <a
-                  href="/contact-us"
-                  className="px-8 py-4 bg-purple-500 text-white font-bold rounded-xl shadow hover:bg-purple-400 transition"
-                >
-                  Contact Us
-                </a>
-              </div>
+  <a
+    href="https://app.tippified.com/creator/signup"
+    className="flex items-center justify-center gap-2 px-8 py-4 bg-white text-purple-700 font-bold rounded-xl shadow hover:bg-gray-100 transition"
+  >
+    <UserPlusIcon className="w-5 h-5" />
+    Become a Creator
+  </a>
+
+  <a
+    href="/how-it-works"
+    className="flex items-center justify-center gap-2 px-8 py-4 bg-purple-400 text-white font-bold rounded-xl shadow hover:bg-purple-500 transition"
+  >
+    <InformationCircleIcon className="w-5 h-5" />
+    How it works
+  </a>
+
+  <a
+    href="/contact-us"
+    className="flex items-center justify-center gap-2 px-8 py-4 bg-purple-500 text-white font-bold rounded-xl shadow hover:bg-purple-400 transition"
+  >
+    <PhoneIcon className="w-5 h-5" />
+    Contact Us
+  </a>
+</div>
             </div>
 
            
           </div>
         </section>
 
-         <div className="block mt-1 px-3 md:hidden">
+         <div className="block mt-2 px-3 md:hidden">
               <Image
                 src="/banner-tippified.png"
                 alt="Tippified tipping platform"
@@ -186,16 +200,16 @@ export default function HomePage() {
                 <div
                   key={feature.title}
                   ref={(el: HTMLDivElement | null) => {featuresRef.current[i] = el}}
-                  className={`bg-white p-8 rounded-2xl shadow hover:shadow-xl transition-all duration-700 ${
+                  className={`bg-purple-50 border border-l-purple-200 p-8 rounded-2xl shadow hover:shadow-xl transition-all duration-700 ${
                     featuresVisible[i]
                       ? "opacity-100 translate-y-0"
                       : "opacity-0 translate-y-10"
                   }`}
                 >
-                  <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 bg-purple-200 text-purple-700 rounded-xl flex items-center justify-center mb-4">
                     <Icon className="w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">
+                  <h3 className="text-xl font-semibold mb-2 text-purple-800">
                     {feature.title}
                   </h3>
                   <p className="text-gray-600">{feature.desc}</p>
@@ -263,6 +277,18 @@ export default function HomePage() {
   </div>
 </div>
  </section>
+
+ {!loadingGoals && goals.length > 0 && (
+  <div className="mt-8 flex justify-center">
+    <a
+      href="/search-goals"
+      className="flex items-center gap-2 px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl shadow hover:bg-purple-700 transition"
+    >
+      See more goals →
+    </a>
+  </div>
+)}
+ 
 
  {/* PAYMENTS */}
 <section className="py-14 px-6 bg-gray-50 text-center">
