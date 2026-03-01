@@ -122,7 +122,7 @@ export default function HomePage() {
         {/* HERO */}
         <section
           ref={heroRef}
-          className={`bg-linear-to-br from-purple-600 to-purple-800 text-white py-16 px-6 transition-all duration-700 ${
+          className={`bg-linear-to-br from-purple-600 to-purple-800 text-white py-8 px-6 transition-all duration-700 ${
             heroVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
           }`}
         >
@@ -221,8 +221,8 @@ export default function HomePage() {
 
         
         {/* Public Goals Section */}
-<section className="py-12 px-6 bg-white">
-  <h2 className="text-3xl font-bold text-center mb-10">
+<section className="py-2 px-6 bg-white">
+  <h2 className="text-3xl font-bold text-center mb-9">
     Support a Creator’s Goal
   </h2>
 
@@ -279,7 +279,7 @@ export default function HomePage() {
  </section>
 
  {!loadingGoals && goals.length > 0 && (
-  <div className="mt-8 flex justify-center">
+  <div className="mt-5 flex justify-center">
     <a
       href="/search-goals"
       className="flex items-center gap-2 px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl shadow hover:bg-purple-700 transition"
