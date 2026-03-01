@@ -1,5 +1,6 @@
 "use client";
 
+import { InformationCircleIcon } from "@heroicons/react/16/solid";
 import { ArrowUpIcon, BanknotesIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
 import NavBar from "../components/NavBar";
@@ -185,6 +186,14 @@ export default function SearchGoalsPage() {
             {loading && <p className="text-gray-500 text-sm">Loading more goals...</p>}
           </div>
         </section>
+
+         <a
+          href="/about"
+          className="fixed right-4 bottom-20 md:bottom-10 z-50 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-purple-600 text-white shadow-lg hover:bg-purple-700 transition transform hover:scale-105"
+          aria-label="About Tippified"
+        >
+          <InformationCircleIcon className="w-7 h-7 md:w-8 md:h-8" />
+        </a>
       </main>
     </>
   );

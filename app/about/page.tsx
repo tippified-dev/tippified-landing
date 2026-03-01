@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import NavBar from "../components/NavBar";
 
 export const metadata: Metadata = {
   title: "About Tippified | Nigerian Creator Tipping Platform",
@@ -7,6 +8,12 @@ export const metadata: Metadata = {
     "Tippified is a Nigerian tipping platform that enables creators to receive financial support from fans worldwide. Payments are processed via Paystack and creator wallets are provided by OPay. A product of Grundex Limited.",
   keywords: [
     "Tippified",
+    "tippified",
+    "tips",
+    "Nigerian influencers",
+    "fans support",
+    "No 1 tipping in Nigeria",
+    "content creators in Nigeria",
     "Nigerian creators",
     "creator tipping platform",
     "Paystack",
@@ -26,6 +33,9 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
+    <>
+    <NavBar/>
+
     <main className="bg-white text-gray-800 px-6 py-16">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold mb-6 text-purple-700">
@@ -103,7 +113,7 @@ export default function AboutPage() {
           Grundex Limited is registered with the Corporate Affairs Commission
           (CAC), Nigeria. You can verify our registration here:{" "}
           <Link
-            href="https://search.cac.gov.ng/home"
+            href="https://icrp.cac.gov.ng/public-search"
             target="_blank"
             className="text-purple-600 underline font-medium"
           >
@@ -124,11 +134,14 @@ export default function AboutPage() {
           <li>Transparent and secure transaction flow</li>
         </ul>
 
-        <p className="mt-10 text-sm text-gray-500">
-          © {new Date().getFullYear()} Tippified. All rights reserved. Tippified
-          is a product of Grundex Limited.
-        </p>
+        <footer className="py-6 bg-gray-800 text-gray-300 text-center text-sm md:text-base mt-16">
+          &copy; {new Date().getFullYear()} Tippified. All rights reserved.
+          <p className="text-xs text-gray-500 text-center">
+            A product of Grundex Limited.
+          </p>
+        </footer>
       </div>
     </main>
+    </>
   );
 }
