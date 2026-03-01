@@ -125,7 +125,7 @@ export default function HomePage() {
         >
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
             <div>
-              <p className={`text-xl mb-6 ${pacifico.className}`}>tippified.</p>
+              <p className={`text-xl mb-6 mt-1 ${pacifico.className}`}>tippified.</p>
 
               <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
                 Get Tipped for What You Create
@@ -203,7 +203,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ⚠️ GOALS SECTION — LEFT EXACTLY AS YOU SENT IT */}
+        
         {/* Public Goals Section */}
 <section className="py-12 px-6 bg-white">
   <h2 className="text-3xl font-bold text-center mb-10">
@@ -276,7 +276,7 @@ export default function HomePage() {
   </p>
 
   <div className="flex justify-center items-center gap-6 flex-wrap">
-    {["visa", "mastercard", "verve", "paystack"].map((img) => (
+    {["visa", "mastercard", "verve", "paystack", "opay"].map((img) => (
       <Image
         key={img}
         src={`/${img}.png`}
