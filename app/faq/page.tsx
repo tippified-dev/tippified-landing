@@ -99,7 +99,7 @@ export default function FAQPage() {
       <main className="bg-white text-gray-900 min-h-screen px-6 py-20 max-w-5xl mx-auto">
         {/* HERO */}
         <header className="text-center mb-14">
-          <QuestionMarkCircleIcon className="w-14 h-14 text-purple-600 mx-auto mb-4" />
+          <QuestionMarkCircleIcon className="w-16 h-16 md:w-14 md:h-14 text-purple-600 mx-auto mb-4" />
           <h1 className="text-4xl font-bold text-purple-700 mb-4">
             Frequently Asked Questions
           </h1>
@@ -120,7 +120,7 @@ export default function FAQPage() {
                 className="border border-purple-100 rounded-xl p-6 shadow-sm hover:shadow-md transition bg-purple-50"
               >
                 <div className="flex items-start gap-4">
-                  <Icon className="w-6 h-6 text-purple-600 mt-1" />
+                  <Icon className="w-8 h-8 md:w-6 md:h-6 text-purple-600 mt-1 shrink-0" />
                   <div>
                     <h2 className="text-xl font-semibold mb-2">{item.q}</h2>
                     <p className="text-gray-700 leading-relaxed">{item.a}</p>
