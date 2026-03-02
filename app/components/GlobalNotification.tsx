@@ -9,7 +9,7 @@ export default function GlobalNotification() {
 
   // Play beep sound
   const playSound = () => {
-    const audio = new Audio("/notification-beep.mp3"); // put your beep mp3 in public folder
+    const audio = new Audio("/notification-beep.mp3"); 
     audio.play();
   };
 
@@ -21,10 +21,10 @@ export default function GlobalNotification() {
       // Hide after 4 seconds
       const timer = setTimeout(() => {
         setVisible(false);
-      }, 4000);
+      }, 5000);
 
       return () => clearTimeout(timer);
-    }, 10000); // every 10 seconds
+    }, 30000); // every 10 seconds
 
     return () => clearInterval(interval);
   }, []);
