@@ -25,7 +25,7 @@ export default function GlobalNotification() {
       onClick={() => router.push("/search-goals")}
       className="fixed top-4 right-4 bg-purple-600 text-white px-4 py-3 rounded-lg shadow-lg cursor-pointer z-50 animate-fade-in"
     >
-      A creator has a new goal
+      A creator has a new goal,tap to view.
     </div>
   );
 }

@@ -111,7 +111,7 @@ export default function FAQPage() {
 
         {/* FAQ LIST */}
         <section className="space-y-6">
-            <dl>
+            
           {faqs.map((item, i) => {
             const Icon = item.icon;
             return (
@@ -120,7 +120,7 @@ export default function FAQPage() {
                 className="border border-purple-100 rounded-xl p-6 shadow-sm hover:shadow-md transition bg-purple-50"
               >
                 <div className="flex items-start gap-4">
-                  <Icon className="w-8 h-8 text-purple-600 mt-1" />
+                  <Icon className="w-6 h-6 text-purple-600 mt-1" />
                   <div>
                     <h2 className="text-xl font-semibold mb-2">{item.q}</h2>
                     <p className="text-gray-700 leading-relaxed">{item.a}</p>
@@ -129,7 +129,7 @@ export default function FAQPage() {
               </div>
             );
           })}
-          </dl>
+          
         </section>
 
         {/* FOOTER */}
