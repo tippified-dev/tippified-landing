@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function ActivityTeaserSection() {
   return (
-    <section className="py-14 px-6 bg-gradient-to-r from-purple-50 to-white text-center">
+    <section className="py-14 px-6 bg-linear-to-r from-purple-50 to-white text-center">
       <div className="max-w-3xl mx-auto">
         <div className="flex justify-center mb-3">
           <SparklesIcon className="w-10 h-10 text-purple-600 animate-pulse" />

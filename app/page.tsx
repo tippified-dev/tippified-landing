@@ -281,7 +281,7 @@ export default function HomePage() {
  </section>
 
  {!loadingGoals && goals.length > 0 && (
-  <div className="mt-5 flex justify-center mb-1">
+  <div className="mt-4 flex justify-center mb-2">
     <a
       href="/search-goals"
       className="flex items-center gap-2 px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl shadow hover:bg-purple-700 transition"
