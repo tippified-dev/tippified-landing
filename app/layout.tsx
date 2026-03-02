@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-
+import GlobalNotification from "./components/GlobalNotification";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -33,6 +33,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <GlobalNotification/>
         {children}
       </body>
     </html>
