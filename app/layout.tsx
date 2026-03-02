@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { usePathname } from "next/navigation";
-import GlobalNotification from "./components/GlobalNotification";
+
+import GlobalNotificationWrapper from "./components/GlobalNotificationWrapper";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -25,8 +25,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-   const pathname = usePathname();
-   const showNotification = pathname !== "/search-goals";
+   
+  
   return (
     <html lang="en">
       <head>
@@ -36,7 +36,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {showNotification && <GlobalNotification/>}
+         <GlobalNotificationWrapper/>
         {children}
       </body>
     </html>

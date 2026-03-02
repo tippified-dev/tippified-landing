@@ -4,40 +4,28 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function GlobalNotification() {
-  const [visible, setVisible] = useState(false);
+  const [show, setShow] = useState(false);
   const router = useRouter();
-
-  // Play beep sound
-  const playSound = () => {
-    const audio = new Audio("/notification-beep.mp3"); 
-    audio.play();
-  };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setVisible(true);
-      playSound();
-
-      // Hide after 4 seconds
-      const timer = setTimeout(() => {
-        setVisible(false);
-      }, 5000);
-
-      return () => clearTimeout(timer);
-    }, 30000); // every 10 seconds
+      setShow(true);
+      const audio = new Audio("/notification-beep.mp3");
+      audio.play().catch(() => {}); 
+      setTimeout(() => setShow(false), 5000); 
+    }, 50000); 
 
     return () => clearInterval(interval);
   }, []);
 
-  if (!visible) return null;
+  if (!show) return null;
 
   return (
     <div
-      className="fixed top-6 right-6 z-50 bg-purple-600 text-white px-4 py-3 rounded-lg shadow-lg cursor-pointer flex items-center gap-2 animate-fade-in-out"
       onClick={() => router.push("/search-goals")}
+      className="fixed top-4 right-4 bg-purple-600 text-white px-4 py-3 rounded-lg shadow-lg cursor-pointer z-50 animate-fade-in"
     >
-      
-      <span>A creator has a new goal!</span>
+      A creator has a new goal
     </div>
   );
 }
