@@ -40,7 +40,7 @@ export default function GlobalNotification() {
       audioRef.current?.play().catch(() => {});
 
       setTimeout(() => setShow(false), 5000);
-    }, 40000); 
+    }, 60000); 
 
     return () => clearInterval(interval);
   }, [unlocked]);
