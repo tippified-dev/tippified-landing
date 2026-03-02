@@ -111,6 +111,7 @@ export default function FAQPage() {
 
         {/* FAQ LIST */}
         <section className="space-y-6">
+            <dl>
           {faqs.map((item, i) => {
             const Icon = item.icon;
             return (
@@ -128,6 +129,7 @@ export default function FAQPage() {
               </div>
             );
           })}
+          </dl>
         </section>
 
         {/* FOOTER */}
