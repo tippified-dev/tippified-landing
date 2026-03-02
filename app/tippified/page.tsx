@@ -152,7 +152,7 @@ export default function TippifiedArticlePage() {
               href="/search-goals"
               className="border border-purple-600 text-purple-600 px-6 py-3 rounded-lg hover:bg-purple-50 transition"
             >
-              Find Creators on Tippified
+              Find Creators on tippified
             </Link>
           </div>
         </article>
