@@ -12,8 +12,9 @@ import {
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import ActivityTeaserSection from "./components/ActivityTeaserSection";
 import NavBar from "./components/NavBar";
-import StatsCounterSection from "./components/StatsCounterSection";
+import WhoUsesTippified from "./components/WhoUsesTippified";
 import { pacifico } from "./font";
 
 interface PublicGoal {
@@ -182,7 +183,8 @@ export default function HomePage() {
               />
             </div>
 
-        <StatsCounterSection />
+        <ActivityTeaserSection />
+        <WhoUsesTippified/>
 
         {/* FEATURES */}
         <section className="py-20 px-6 bg-gray-50">
