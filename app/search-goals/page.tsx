@@ -1,227 +1,45 @@
-"use client";
+import type { Metadata } from "next";
+import SearchGoalsClient from "./SearchGoalsClient";
 
-import { InformationCircleIcon } from "@heroicons/react/16/solid";
-import { ArrowUpIcon, BanknotesIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
-import { useEffect, useRef, useState } from "react";
-import NavBar from "../components/NavBar";
-// import { Pacifico } from "next/font/google";
-
-interface PublicGoal {
-  id: number;
-  username: string;
-  referral_code: string;
-  title: string;
-  about: string;
-  target_amount: string;
-  current_amount: string;
-  current_foreign_usd: string;
-  created_at: string;
-}
-
-
-function shuffleArray<T>(array: T[]): T[] {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
- }
+export const metadata: Metadata = {
+  title: "Support Nigerian Creators | Tip a Creator in Nigeria – Tippified",
+  description:
+    "Support Nigerian creators by tipping them directly. Discover creator goals and contribute securely. Tippified makes tipping in Nigeria simple and fast.",
+  keywords: [
+    "support Nigerian creators",
+    "tippified",
+    "tip my creator",
+    "content creators",
+    "content-creators",
+    "tip a creator",
+    "Nigeria tips",
+    "tipping in Nigeria",
+    "creator support",
+    "support a creator",
+    "Nigerian creators",
+    "send tips in Nigeria",
+  ],
+  openGraph: {
+    title: "Support Nigerian Creators | Tippified",
+    description:
+      "Find Nigerian creators and support their goals with secure tipping. Built for the Nigerian creator economy.",
+    url: "https://tippified.com/search-goals",
+    siteName: "Tippified",
+    locale: "en_NG",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Support Nigerian Creators | Tippified",
+    description:
+      "Tip Nigerian creators and support their goals using Tippified.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 export default function SearchGoalsPage() {
-  const [goals, setGoals] = useState<PublicGoal[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [hasMore, setHasMore] = useState(true);
-  const loaderRef = useRef<HTMLDivElement | null>(null);
- 
-  const [modalGoal, setModalGoal] = useState<PublicGoal | null>(null);
-
-  
-
- const fetchGoals = async (pageNum = 1, query = "") => {
-  try {
-    setLoading(true);
-
-    const res = await fetch(
-      `https://api.tippified.com/api/auth/public-goals/?page=${pageNum}&search=${query}`
-    );
-
-    if (!res.ok) {
-      console.warn("No more pages");
-      setHasMore(false);
-      return;
-    }
-
-    const data = await res.json();
-
-    const results = Array.isArray(data.results) ? data.results : [];
-
-   
-    const finalResults =
-      pageNum === 1 ? shuffleArray(results) : results;
-
-    if (pageNum === 1) {
-      setGoals(finalResults);
-    } else {
-      setGoals((prev) => [...prev, ...finalResults]);
-    }
-
-    setHasMore(results.length === 10);
-  } catch (err) {
-    console.error("Failed to fetch goals", err);
-  } finally {
-    setLoading(false);
-  }
- };
-
-
-  // Initial fetch and fetch on search query change
-  useEffect(() => {
-    setPage(1);
-    fetchGoals(1, searchQuery);
-  }, [searchQuery]);
-
-  // Infinite scroll observer
-  useEffect(() => {
-    if (!loaderRef.current) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loading && hasMore) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      { threshold: 1 }
-    );
-    observer.observe(loaderRef.current);
-    return () => observer.disconnect();
-  }, [loading, hasMore]);
-
-  // Fetch next page when page changes
-  useEffect(() => {
-    if (page === 1) return; 
-    fetchGoals(page, searchQuery);
-  }, 
-   // eslint-disable-next-line react-hooks/exhaustive-deps
-  [page]);
-
-  const capitalizeWords = (text: string) => {
-    if (!text) return "";
-    return text
-      .trim()
-      .split(/\s+/)
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(" ");
-  };
-
-  return (
-    <>
-      <NavBar />
-
-      <main className="bg-white text-gray-900 pt-16">
-        {/* Fixed search bar */}
-        <div className="fixed top-0 left-0 right-0 bg-white px-4 py-3 shadow z-50 flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Search goals..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-          <button className="bg-purple-600 text-white px-3 py-2 rounded-lg hover:bg-purple-700 transition">
-            Search
-          </button>
-        </div>
-
-        <section className="pt-7 px-4">
-          {goals.length === 0 && !loading && (
-            <p className="text-center text-gray-500 mt-10">No goals found</p>
-          )}
-
-          <div className="flex flex-col gap-4">
-            {goals.map((goal) => (
-              <div
-                key={goal.id}
-                className="group bg-white rounded-2xl p-5 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100"
-              >
-                <h3 className="font-bold text-lg mb-1">{capitalizeWords(goal.title)}</h3>
-                <p className="text-sm text-gray-500 mb-2">
-                  by <span className="font-semibold">{capitalizeWords(goal.username)}</span> - (
-                  <span className="font-semibold">{goal.referral_code}</span>)
-                </p>
-
-                <p className="text-sm mb-1 flex items-center gap-1">
-                  <ArrowUpIcon className="w-4 h-4 text-purple-600" /> Target: ₦{goal.target_amount}
-                </p>
-                <p className="text-sm mb-1 flex items-center gap-1">
-                  <BanknotesIcon className="w-4 h-4 text-purple-600" /> Local: ₦{goal.current_amount}
-                </p>
-                <p className="text-sm mb-1 flex items-center gap-1">
-                  <CurrencyDollarIcon className="w-4 h-4 text-purple-600" /> Foreign: ${goal.current_foreign_usd}
-                </p>
-
-                <p className="text-xs text-gray-400 mt-2">
-                  Created: {new Date(goal.created_at).toLocaleDateString()}
-                </p>
-
-                <div className="flex gap-2 mt-3">
-                  <a
-            href={`https://app.tippified.com/tip/${goal.referral_code}`}
-            className="flex-1 text-center text-xs bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700 transition"
-          >
-            Support 
-          </a>
-
-          <button
-            className="flex-1 text-center text-xs bg-gray-100 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-200 transition"
-            onClick={() => setModalGoal(goal)}
-          >
-            About
-          </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {modalGoal && (
-  <div
-    className="fixed inset-0 bg-purple-500 bg-opacity-50 flex items-center justify-center p-4 z-50"
-    onClick={() => setModalGoal(null)}
-  >
-    <div
-      className="bg-white rounded-lg max-w-md w-full p-6 relative"
-      onClick={(e) => e.stopPropagation()} // Prevent modal close when clicking inside
-    >
-      <button
-        className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
-        onClick={() => setModalGoal(null)}
-      >
-        ✖
-      </button>
-      <h3 className="text-xl font-bold mb-4">{capitalizeWords(modalGoal.title)}</h3>
-      <p className="text-gray-700 mb-2">
-        By: <span className="font-semibold">{capitalizeWords(modalGoal.username)}</span>
-      </p>
-      <p className="text-gray-700">{modalGoal.about}</p>
-    </div>
-  </div>
- )}
-
-          {/* Loader div for infinite scroll */}
-          <div ref={loaderRef} className="h-10 mt-4 flex justify-center items-center">
-            {loading && <p className="text-gray-500 text-sm">Loading more goals...</p>}
-          </div>
-        </section>
-
-         <a
-          href="/about"
-          className="fixed right-4 bottom-20 md:bottom-10 z-50 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-purple-600 text-white shadow-lg hover:bg-purple-700 transition transform hover:scale-105"
-          aria-label="About Tippified"
-        >
-          <InformationCircleIcon className="w-7 h-7 md:w-8 md:h-8" />
-        </a>
-      </main>
-    </>
-  );
+  return <SearchGoalsClient />;
 }
