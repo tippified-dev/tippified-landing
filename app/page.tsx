@@ -29,6 +29,16 @@ interface PublicGoal {
   created_at: string;
 }
 
+
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 export default function HomePage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -45,20 +55,26 @@ export default function HomePage() {
   const [modalGoal, setModalGoal] = useState<PublicGoal | null>(null);
 
   useEffect(() => {
-    const fetchGoals = async () => {
-      try {
-        setLoadingGoals(true);
-        const res = await fetch("https://api.tippified.com/api/auth/public-goals/");
-        const data = await res.json();
-        setGoals(data.results || data);
-      } catch (err) {
-        console.error("Failed to load goals", err);
-      } finally {
-        setLoadingGoals(false);
-      }
-    };
-    fetchGoals();
-  }, []);
+  const fetchGoals = async () => {
+    try {
+      setLoadingGoals(true);
+      const res = await fetch("https://api.tippified.com/api/auth/public-goals/");
+
+      const data: { results?: PublicGoal[] } | PublicGoal[] = await res.json();
+
+      const results = Array.isArray(data) ? data : data.results ?? [];
+      const shuffled = shuffleArray(results);
+
+      setGoals(shuffled);
+    } catch (err) {
+      console.error("Failed to load goals", err);
+    } finally {
+      setLoadingGoals(false);
+    }
+  };
+
+  fetchGoals();
+}, []);
 
   const capitalizeWords = (text: string): string =>
     text
@@ -66,6 +82,8 @@ export default function HomePage() {
       .split(/\s+/)
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(" ") || "";
+
+   
 
   const features = [
     {

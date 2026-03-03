@@ -18,6 +18,16 @@ interface PublicGoal {
   created_at: string;
 }
 
+
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+ }
+
 export default function SearchGoalsPage() {
   const [goals, setGoals] = useState<PublicGoal[]>([]);
   const [loading, setLoading] = useState(false);
@@ -28,27 +38,44 @@ export default function SearchGoalsPage() {
  
   const [modalGoal, setModalGoal] = useState<PublicGoal | null>(null);
 
-  const fetchGoals = async (pageNum = 1, query = "") => {
-    try {
-      setLoading(true);
-      const res = await fetch(
-        `https://api.tippified.com/api/auth/public-goals/?page=${pageNum}&search=${query}`
-      );
-      const data = await res.json();
-      if (data.results) {
-        if (pageNum === 1) setGoals(data.results);
-        else setGoals((prev) => [...prev, ...data.results]);
-        setHasMore(data.results.length === 10); // if less than 10 returned, no more pages
-      } else {
-        setGoals(data);
-        setHasMore(data.length === 10);
-      }
-    } catch (err) {
-      console.error("Failed to fetch goals", err);
-    } finally {
-      setLoading(false);
+  
+
+ const fetchGoals = async (pageNum = 1, query = "") => {
+  try {
+    setLoading(true);
+
+    const res = await fetch(
+      `https://api.tippified.com/api/auth/public-goals/?page=${pageNum}&search=${query}`
+    );
+
+    if (!res.ok) {
+      console.warn("No more pages");
+      setHasMore(false);
+      return;
     }
-  };
+
+    const data = await res.json();
+
+    const results = Array.isArray(data.results) ? data.results : [];
+
+   
+    const finalResults =
+      pageNum === 1 ? shuffleArray(results) : results;
+
+    if (pageNum === 1) {
+      setGoals(finalResults);
+    } else {
+      setGoals((prev) => [...prev, ...finalResults]);
+    }
+
+    setHasMore(results.length === 10);
+  } catch (err) {
+    console.error("Failed to fetch goals", err);
+  } finally {
+    setLoading(false);
+  }
+ };
+
 
   // Initial fetch and fetch on search query change
   useEffect(() => {
