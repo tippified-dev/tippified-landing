@@ -134,7 +134,7 @@ export default function SearchGoalsPage() {
           </button>
         </div>
 
-        <section className="pt-20 px-4">
+        <section className="pt-7 px-4">
           {goals.length === 0 && !loading && (
             <p className="text-center text-gray-500 mt-10">No goals found</p>
           )}
@@ -143,7 +143,7 @@ export default function SearchGoalsPage() {
             {goals.map((goal) => (
               <div
                 key={goal.id}
-                className="border border-purple-500 rounded-lg p-4 shadow hover:shadow-lg transition"
+                className="group bg-white rounded-2xl p-5 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100"
               >
                 <h3 className="font-bold text-lg mb-1">{capitalizeWords(goal.title)}</h3>
                 <p className="text-sm text-gray-500 mb-2">
