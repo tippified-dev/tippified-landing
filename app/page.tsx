@@ -17,6 +17,8 @@ import NavBar from "./components/NavBar";
 import WhoUsesTippified from "./components/WhoUsesTippified";
 import { pacifico } from "./font";
 
+import TipperSubscribeModal from "./components/TipperSubscribeModal";
+
 interface PublicGoal {
   id: number;
   username: string;
@@ -136,6 +138,7 @@ export default function HomePage() {
   return (
     <>
       <NavBar />
+      <TipperSubscribeModal/>
 
       <main className="bg-white text-gray-900 pb-20 md:pb-0">
         {/* HERO */}
