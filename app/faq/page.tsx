@@ -1,17 +1,18 @@
 
 
 import {
-    BanknotesIcon,
-    CreditCardIcon,
-    GlobeAltIcon,
-    InformationCircleIcon,
-    QuestionMarkCircleIcon,
-    ShieldCheckIcon,
-    UserGroupIcon,
-    WalletIcon,
+  BanknotesIcon,
+  CreditCardIcon,
+  GlobeAltIcon,
+  InformationCircleIcon,
+  QuestionMarkCircleIcon,
+  ShieldCheckIcon,
+  UserGroupIcon,
+  WalletIcon,
 } from "@heroicons/react/24/outline";
 import { Metadata } from "next";
 import NavBar from "../components/NavBar";
+
 
 /* ================= SEO ================= */
 export const metadata: Metadata = {

@@ -14,6 +14,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import ActivityTeaserSection from "./components/ActivityTeaserSection";
 import NavBar from "./components/NavBar";
+import TrendingCreatorsBar from "./components/TrendingCreatorsBar";
 import WhoUsesTippified from "./components/WhoUsesTippified";
 import { pacifico } from "./font";
 
@@ -206,6 +207,7 @@ export default function HomePage() {
 
         <ActivityTeaserSection />
         <WhoUsesTippified/>
+        <TrendingCreatorsBar/>
 
         {/* FEATURES */}
         <section className="py-20 px-6 bg-gray-50">
