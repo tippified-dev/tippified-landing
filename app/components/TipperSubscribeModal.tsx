@@ -1,24 +1,56 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function TipperSubscribeModal() {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
+  const [errors, setErrors] = useState({
+    name: false,
+    email: false,
+  });
+
+  const [shake, setShake] = useState(false);
+
+  const errorSound = useRef<HTMLAudioElement | null>(null);
+
   useEffect(() => {
     const subscribed = localStorage.getItem("tipper_subscribed");
 
     if (subscribed !== "true") {
-      setTimeout(() => setOpen(true), 1200); // small delay feels nicer
+      setTimeout(() => setOpen(true), 3500);
     }
+
+    errorSound.current = new Audio("/error.mp3");
   }, []);
 
-  const handleJoin = () => {
-    if (!email.trim()) return;
+  const triggerError = () => {
+    setShake(true);
 
-    // TODO: send to backend later
+    if (errorSound.current) {
+      errorSound.current.currentTime = 0;
+      errorSound.current.play();
+    }
+
+    setTimeout(() => setShake(false), 400);
+  };
+
+  const handleJoin = () => {
+    const nameEmpty = !name.trim();
+    const emailEmpty = !email.trim();
+
+    if (nameEmpty || emailEmpty) {
+      setErrors({
+        name: nameEmpty,
+        email: emailEmpty,
+      });
+
+      triggerError();
+      return;
+    }
+
     console.log("Tipper joined:", { name, email });
 
     localStorage.setItem("tipper_subscribed", "true");
@@ -35,11 +67,12 @@ export default function TipperSubscribeModal() {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-100 p-4">
       <div
-        className="
+        className={`
         bg-white rounded-2xl shadow-2xl
         max-w-md w-full p-6
         animate-modalPop
-        "
+        ${shake ? "animate-shake" : ""}
+        `}
       >
         <h2 className="text-xl font-bold text-purple-700 mb-2 text-center">
           Join Premium Tippers
@@ -52,18 +85,34 @@ export default function TipperSubscribeModal() {
         <div className="space-y-4">
           <input
             type="text"
-            placeholder="Name (optional)"
+            placeholder="Full name *"
             value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            onChange={(e) => {
+              setName(e.target.value);
+              setErrors((prev) => ({ ...prev, name: false }));
+            }}
+            className={`w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2
+            ${
+              errors.name
+                ? "border-red-500 bg-red-50"
+                : "focus:ring-purple-500"
+            }`}
           />
 
           <input
             type="email"
             placeholder="Email *"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setErrors((prev) => ({ ...prev, email: false }));
+            }}
+            className={`w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2
+            ${
+              errors.email
+                ? "border-red-500 bg-red-50"
+                : "focus:ring-purple-500"
+            }`}
           />
 
           <div className="flex gap-3 pt-2">
