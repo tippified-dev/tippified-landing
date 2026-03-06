@@ -16,19 +16,25 @@ export default function TrendingCreatorsBar() {
   // Auto scroll index
   const scrollInterval = useRef<number | null>(null);
 
-  useEffect(() => {
-    const fetchTrending = async () => {
-      try {
-        const res = await fetch("https://api.tippified.com/api/auth/goals/trending/");
-        const data = await res.json();
-        setCreators(data);
-      } catch (err) {
-        console.error("Failed to fetch trending creators", err);
-      }
-    };
+ useEffect(() => {
+  const fetchTrending = async () => {
+    try {
+      const res = await fetch(
+        "https://api.tippified.com/api/auth/goals/trending/"
+      );
+      const data = await res.json();
 
-    fetchTrending();
-  }, []);
+      // Make sure it's an array
+      const creatorsArray = Array.isArray(data) ? data : data.results ?? [];
+      setCreators(creatorsArray);
+    } catch (err) {
+      console.error("Failed to fetch trending creators", err);
+    }
+  };
+
+  fetchTrending();
+ }, []);
+
 
   useEffect(() => {
     if (!creators.length) return;
@@ -57,7 +63,8 @@ export default function TrendingCreatorsBar() {
         ref={containerRef}
         className="flex gap-4 items-center px-4"
       >
-        {creators.map((creator, i) => (
+        {Array.isArray(creators) && 
+         creators.map((creator, i) => (
           <div
             key={creator.referral_code}
             onClick={() => handleClick(i)}
