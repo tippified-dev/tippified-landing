@@ -11,7 +11,9 @@ interface Creator {
 export default function TrendingCreatorsBar() {
   const [creators, setCreators] = useState<Creator[]>([]);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [expandedPosition, setExpandedPosition] = useState<{top: number, left: number} | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const scrollInterval = useRef<number | null>(null);
 
@@ -41,7 +43,7 @@ export default function TrendingCreatorsBar() {
       if (!firstChild) return;
 
       containerRef.current.scrollBy({
-        left: firstChild.offsetWidth + 16, 
+        left: firstChild.offsetWidth + 16,
         behavior: "smooth",
       });
     }, 4000);
@@ -54,6 +56,10 @@ export default function TrendingCreatorsBar() {
   }, [creators]);
 
   const handleClick = (index: number) => {
+    const item = itemRefs.current[index];
+    if (!item) return;
+    const rect = item.getBoundingClientRect();
+    setExpandedPosition({ top: rect.bottom + 8, left: rect.left });
     setActiveIndex(index);
     setTimeout(() => setActiveIndex(null), 3000); // auto close after 3s
   };
@@ -63,7 +69,7 @@ export default function TrendingCreatorsBar() {
   };
 
   return (
-    <div className="py-6 bg-purple-50">
+    <div className="py-6 bg-purple-50 relative">
       <h2 className="text-2xl font-bold text-center mb-4 text-purple-700">
         Trending Creators
       </h2>
@@ -72,36 +78,46 @@ export default function TrendingCreatorsBar() {
         <div ref={containerRef} className="flex gap-4 items-center">
           {Array.isArray(creators) &&
             creators.map((creator, i) => (
-              <div key={creator.referral_code} className="relative">
-                {/* Collapsed view */}
+              <div
+                key={creator.referral_code}
+                ref={(el: HTMLDivElement | null) => {itemRefs.current[i] = el}}
+                className="shrink-0 relative"
+              >
                 <div
                   onClick={() => handleClick(i)}
-                  className={`shrink-0 rounded-full bg-purple-600 text-white px-4 py-2 cursor-pointer text-sm text-center transition-all duration-500 ease-in-out ${
-                    activeIndex === i ? "opacity-0 pointer-events-none" : ""
-                  }`}
+                  className={`rounded-full bg-purple-600 text-white px-4 py-2 cursor-pointer text-sm text-center transition-all duration-500 ease-in-out`}
                 >
                   {creator.referral_code}
                 </div>
-
-                {/* Expanded view */}
-                {activeIndex === i && (
-                  <div className="absolute top-12 left-0 w-56 bg-purple-700 text-white rounded-xl p-4 shadow-lg z-10 flex flex-col gap-2 animate-slideDown">
-                    <div className="flex justify-between items-center">
-                      <span className="font-semibold">{creator.username}</span>
-                      <button
-                        onClick={handleClose}
-                        className="text-white hover:text-gray-200 font-bold"
-                      >
-                        ✖
-                      </button>
-                    </div>
-                    <span className="text-sm">{creator.referral_code}</span>
-                  </div>
-                )}
               </div>
             ))}
         </div>
       </div>
+
+      {/* Expanded view rendered outside scroll container */}
+      {activeIndex !== null && expandedPosition && (
+        <div
+          style={{
+            position: "fixed",
+            top: expandedPosition.top,
+            left: expandedPosition.left,
+            width: 224, // same as w-56
+            zIndex: 50,
+          }}
+          className="bg-purple-700 text-white rounded-xl p-4 shadow-lg flex flex-col gap-2 animate-slideDown"
+        >
+          <div className="flex justify-between items-center">
+            <span className="font-semibold">{creators[activeIndex].username}</span>
+            <button
+              onClick={handleClose}
+              className="text-white hover:text-gray-200 font-bold"
+            >
+              ✖
+            </button>
+          </div>
+          <span className="text-sm">{creators[activeIndex].referral_code}</span>
+        </div>
+      )}
 
       <style jsx>{`
         .animate-slideDown {
