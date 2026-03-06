@@ -15,23 +15,49 @@ export default function TipperSubscribeModal() {
   const [shake, setShake] = useState(false);
 
   const errorSound = useRef<HTMLAudioElement | null>(null);
+  const triggered = useRef(false);
 
   useEffect(() => {
     const subscribed = localStorage.getItem("tipper_subscribed");
 
-    if (subscribed !== "true") {
-      setTimeout(() => setOpen(true), 3500);
-    }
+    if (subscribed === "true") return;
 
     errorSound.current = new Audio("/error.mp3");
+    errorSound.current.preload = "auto";
+
+    const handleScroll = () => {
+      if (triggered.current) return;
+
+      const scrollTop = window.scrollY;
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+
+      const scrollPercent = scrollTop / docHeight;
+
+      if (scrollPercent >= 0.4) {
+        triggered.current = true;
+        setOpen(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const triggerError = () => {
+    // SHAKE
     setShake(true);
 
+    // SOUND
     if (errorSound.current) {
       errorSound.current.currentTime = 0;
-      errorSound.current.play();
+      errorSound.current.play().catch(() => {});
+    }
+
+    // VIBRATION
+    if ("vibrate" in navigator) {
+      navigator.vibrate(200);
     }
 
     setTimeout(() => setShake(false), 400);
@@ -79,7 +105,8 @@ export default function TipperSubscribeModal() {
         </h2>
 
         <p className="text-gray-600 text-sm text-center mb-6">
-          Join thousands of premium tippers who constantly support Nigerian creators.
+          Join thousands of premium tippers who constantly support Nigerian
+          creators.
         </p>
 
         <div className="space-y-4">
