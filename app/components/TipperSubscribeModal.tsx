@@ -63,25 +63,49 @@ export default function TipperSubscribeModal() {
     setTimeout(() => setShake(false), 400);
   };
 
-  const handleJoin = () => {
-    const nameEmpty = !name.trim();
-    const emailEmpty = !email.trim();
+  const handleJoin = async () => {
+  const nameEmpty = !name.trim();
+  const emailEmpty = !email.trim();
 
-    if (nameEmpty || emailEmpty) {
-      setErrors({
-        name: nameEmpty,
-        email: emailEmpty,
-      });
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailInvalid = !emailRegex.test(email.trim());
 
-      triggerError();
-      return;
+  if (nameEmpty || emailEmpty || emailInvalid) {
+    setErrors({
+      name: nameEmpty,
+      email: emailEmpty || emailInvalid,
+    });
+
+    triggerError();
+    return;
+  }
+
+  try {
+    const res = await fetch("https://api.tippified.com/api/auth/tipper-subscribe/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: name.trim(),
+        email: email.trim(),
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Subscription failed");
     }
 
-    console.log("Tipper joined:", { name, email });
-
+    // mark subscribed
     localStorage.setItem("tipper_subscribed", "true");
+
     setOpen(false);
-  };
+
+  } catch (error) {
+    console.error("Subscription error:", error);
+    triggerError();
+  }
+};
 
   const handleClose = () => {
     localStorage.setItem("tipper_subscribed", "false");
