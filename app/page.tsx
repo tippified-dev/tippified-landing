@@ -12,6 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 import ActivityTeaserSection from "./components/ActivityTeaserSection";
 import NavBar from "./components/NavBar";
 import TrendingCreatorsBar from "./components/TrendingCreatorsBar";
@@ -425,12 +426,45 @@ export default function HomePage() {
 
         {/* FOOTER */}
         <footer className="py-8 bg-gray-900 text-gray-300 text-center text-sm">
-          &copy; {new Date().getFullYear()} Tippified. All rights reserved.
-          <p className="text-xs text-gray-500 mt-2">
-            Tippified is a product of Grundex Limited. Payments powered by Paystack
-            and OPay.
-          </p>
-        </footer>
+  <div className="flex justify-center gap-6 mb-3">
+    <a
+      href="https://instagram.com/your_instagram_handle"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-gray-300 hover:text-white transition"
+      aria-label="Instagram"
+    >
+      <FaInstagram className="w-5 h-5" />
+    </a>
+
+    <a
+      href="https://facebook.com/your_facebook_page"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-gray-300 hover:text-white transition"
+      aria-label="Facebook"
+    >
+      <FaFacebookF className="w-5 h-5" />
+    </a>
+
+    <a
+      href="https://x.com/your_x_handle"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-gray-300 hover:text-white transition"
+      aria-label="X / Twitter"
+    >
+      <FaTwitter className="w-5 h-5" />
+    </a>
+  </div>
+
+  <div>
+    &copy; {new Date().getFullYear()} Tippified. All rights reserved.
+    <p className="text-xs text-gray-500 mt-2">
+      Tippified is a product of Grundex Limited. Payments powered by Paystack and OPay.
+    </p>
+  </div>
+</footer>
 
         <a
   href="/about"
