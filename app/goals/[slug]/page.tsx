@@ -46,13 +46,16 @@ export default async function GoalPage({ params }: GoalPageProps) {
 }
 
 export async function generateStaticParams() {
-  const res = await fetch("https://api.tippified.com/api/auth/public/goals/", {
-    cache: "no-store",
-  })
+  const res = await fetch(
+    "https://api.tippified.com/api/auth/public/goals/",
+    { cache: "no-store" }
+  )
 
-  const goals: { slug: string }[] = await res.json()
+  const data = await res.json()
 
-  return goals.map(goal => ({
+  const goals = data.results || data
+
+  return goals.map((goal: { slug: string }) => ({
     slug: goal.slug,
   }))
 }
