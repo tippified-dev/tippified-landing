@@ -428,7 +428,7 @@ export default function HomePage() {
         <footer className="py-8 bg-gray-900 text-gray-300 text-center text-sm">
   <div className="flex justify-center gap-6 mb-3">
     <a
-      href="https://instagram.com/your_instagram_handle"
+      href="https://instagram.com/tippified_app"
       target="_blank"
       rel="noopener noreferrer"
       className="text-gray-300 hover:text-white transition"
@@ -438,7 +438,7 @@ export default function HomePage() {
     </a>
 
     <a
-      href="https://facebook.com/your_facebook_page"
+      href="https://facebook.com/tippified"
       target="_blank"
       rel="noopener noreferrer"
       className="text-gray-300 hover:text-white transition"
@@ -448,7 +448,7 @@ export default function HomePage() {
     </a>
 
     <a
-      href="https://x.com/your_x_handle"
+      href="https://x.com/tippified"
       target="_blank"
       rel="noopener noreferrer"
       className="text-gray-300 hover:text-white transition"
