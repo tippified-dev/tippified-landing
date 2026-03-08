@@ -1,3 +1,4 @@
+import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 interface Goal {
@@ -18,11 +19,49 @@ interface GoalPageProps {
   params: { slug: string }
 }
 
-// SSR for each goal page
+export  const revalidate = 3600
+
+export async function generateMetadata({
+  params,
+}: GoalPageProps): Promise<Metadata> {
+  const res = await fetch(
+    `https://api.tippified.com/api/auth/public/goals/${params.slug}/`
+  )
+
+  if (!res.ok) {
+    return {
+      title: "Goal not found | Tippified",
+    }
+  }
+
+  const goal: Goal = await res.json()
+
+  const title = `Support ${goal.creator_name}'s Goal – ${goal.title} | Tippified`
+
+  const description = `${goal.creator_name} created a goal on Tippified to raise ₦${goal.target_amount}. Support this creator and help them reach their goal.`
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://tippified.com/goals/${params.slug}`,
+      siteName: "Tippified",
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  }
+}
+
 export default async function GoalPage({ params }: GoalPageProps) {
   const res = await fetch(
     `https://api.tippified.com/api/auth/public/goals/${params.slug}/`,
-    { cache: "no-store" } 
+   
   )
 
   if (!res.ok) {
@@ -46,16 +85,23 @@ export default async function GoalPage({ params }: GoalPageProps) {
 }
 
 export async function generateStaticParams() {
-  const res = await fetch(
-    "https://api.tippified.com/api/auth/public/goals/",
-    { cache: "no-store" }
-  )
+  try {
+    const res = await fetch(
+      "https://api.tippified.com/api/auth/public/goals/"
+    )
 
-  const data = await res.json()
+    if (!res.ok) return []
 
-  const goals = data.results || data
+    const data = await res.json()
 
-  return goals.map((goal: { slug: string }) => ({
-    slug: goal.slug,
-  }))
+    const goals = data.results || data
+
+    if (!Array.isArray(goals)) return []
+
+    return goals.map((goal: { slug: string }) => ({
+      slug: goal.slug,
+    }))
+  } catch {
+    return []
+  }
 }
