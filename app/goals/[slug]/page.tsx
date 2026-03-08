@@ -46,7 +46,7 @@ export default async function GoalPage({ params }: GoalPageProps) {
 }
 
 export async function generateStaticParams() {
-  const res = await fetch("https://api.tippified.com/api/auth/public/seo/goals/", {
+  const res = await fetch("https://api.tippified.com/api/auth/public/goals/", {
     cache: "no-store",
   })
 
