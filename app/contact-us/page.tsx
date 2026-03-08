@@ -1,5 +1,8 @@
+"use client";
+
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { Metadata } from "next";
+import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 import NavBar from "../components/NavBar";
 import ContactForm from "./ContactForm";
 
@@ -14,6 +17,7 @@ export const metadata: Metadata = {
     "Paystack payments",
     "OPay wallet",
     "Grundex Limited",
+    "contact us tippified",
   ],
   alternates: { canonical: "https://tippified.com/contact-us" },
 };
@@ -38,6 +42,42 @@ export default function ContactUsPage() {
         </div>
 
         <ContactForm />
+
+        {/* Social Media Section for SEO and user access */}
+        <div className="mt-8 text-center">
+          <p className="text-gray-600 mb-2 font-medium">Connect with us on social media:</p>
+          <div className="flex justify-center gap-6">
+            <a
+              href="https://instagram.com/your_instagram_handle"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-purple-600 hover:text-purple-800 transition"
+              aria-label="Instagram"
+            >
+              <FaInstagram className="w-6 h-6" />
+            </a>
+
+            <a
+              href="https://facebook.com/your_facebook_page"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-purple-600 hover:text-purple-800 transition"
+              aria-label="Facebook"
+            >
+              <FaFacebookF className="w-6 h-6" />
+            </a>
+
+            <a
+              href="https://x.com/your_x_handle"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-purple-600 hover:text-purple-800 transition"
+              aria-label="X / Twitter"
+            >
+              <FaTwitter className="w-6 h-6" />
+            </a>
+          </div>
+        </div>
 
         <a
           href="/about"
