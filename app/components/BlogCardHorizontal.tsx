@@ -27,19 +27,19 @@ export default function BlogCardHorizontal({ blog }: Props) {
   return (
     <Link
       href={`/blog/${blog.slug}`}
-      className="flex items-center gap-4 p-3 bg-white shadow rounded hover:shadow-lg transition"
+      className="flex items-center gap-4 p-3 bg-white shadow  hover:shadow-lg transition"
     >
       {/* Rounded thumbnail */}
       {blog.cover_image ? (
         <Image
           src={blog.cover_image}
           alt={blog.title}
-          width={80}
-          height={80}
+          width={100}
+          height={60}
           className="rounded-full object-cover"
         />
       ) : (
-        <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center text-gray-400">
+        <div className="w-20 h-20 bg-gray-200  flex items-center justify-center text-gray-400">
           No Image
         </div>
       )}

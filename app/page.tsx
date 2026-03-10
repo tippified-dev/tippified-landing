@@ -239,7 +239,7 @@ useEffect(() => {
         <ActivityTeaserSection />
 
         {/* BLOGS */}
-<section className="py-16 px-6 bg-white">
+<section className="py-12 px-6 bg-white">
   <h2 className="text-3xl font-bold text-center mb-8">Latest Blog Posts</h2>
 
   {loadingBlogs && <p className="text-center text-gray-500">Loading blogs...</p>}
