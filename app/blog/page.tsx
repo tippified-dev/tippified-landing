@@ -30,7 +30,7 @@ export default function BlogList() {
       }
 
       const data = await res.json();
-      setBlogs(data);
+      setBlogs(data.results);
     } catch (err) {
       console.error("Failed to fetch blogs", err);
     } finally {
