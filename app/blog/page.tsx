@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import NavBar from "../components/NavBar";
 
 
 interface BlogPost {
@@ -12,6 +13,7 @@ interface BlogPost {
   excerpt: string;
   cover_image?: string;
   published_at: string;
+  author_name: string,
 }
 
 export default function BlogList() {
@@ -47,6 +49,8 @@ export default function BlogList() {
     return <p className="text-center mt-10">No blogs found yet.</p>;
 
   return (
+    <>
+    <NavBar/>
     <div className="max-w-6xl mx-auto p-6 grid md:grid-cols-2 gap-6">
       {blogs.map((blog) => (
         <Link
@@ -69,9 +73,14 @@ export default function BlogList() {
             <p className="text-sm text-gray-400 mt-2">
               Published {new Date(blog.published_at).toLocaleDateString()}
             </p>
+            <p className="text-xs text-gray-400">
+                post by: {blog.author_name}
+
+            </p>
           </div>
         </Link>
       ))}
     </div>
+    </>
   );
 }
