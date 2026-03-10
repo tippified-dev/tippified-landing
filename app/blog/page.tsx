@@ -41,7 +41,17 @@ export default function BlogList() {
   };
 
   fetchBlogs();
-}, []);
+ }, []);
+
+ 
+  const capitalizeWords = (text: string): string => {
+    if (!text) return "";
+    return text
+      .trim()
+      .split(/\s+/)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
 
   if (loading) return <p className="text-center mt-10">Loading blogs...</p>;
 
@@ -74,7 +84,7 @@ export default function BlogList() {
               Published {new Date(blog.published_at).toLocaleDateString()}
             </p>
             <p className="text-xs text-gray-400">
-                post by: {blog.author_name}
+                post by: {capitalizeWords(blog.author_name)}
 
             </p>
           </div>

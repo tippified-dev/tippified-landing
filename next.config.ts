@@ -1,8 +1,21 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  images:{
-    domains : ["api.tippified.com"],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "api.tippified.com",
+      },
+      {
+        protocol: "https",
+        hostname: "pixabay.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.pixabay.com",
+      },
+    ],
   },
 };
 
