@@ -70,7 +70,7 @@ export default function BlogList() {
         >
           {blog.cover_image && (
             <Image
-              src={blog.cover_image}
+              src="https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d"
               alt={blog.title}
               width={800}
               height={400}
