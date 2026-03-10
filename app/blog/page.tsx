@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import NavBar from "../components/NavBar";
 
 interface BlogPost {
   id: string;
@@ -34,6 +35,7 @@ export default async function BlogListPage() {
 
   return (
     <>
+     <NavBar/>
       <Head>
         <title>Tippified Blog</title>
         <meta
