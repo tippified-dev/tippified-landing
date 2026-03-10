@@ -6,8 +6,8 @@ interface BlogPost {
   id: string;
   title: string;
   slug: string;
-  content: string;
   excerpt: string;
+  content: string
   cover_image?: string;
   published_at: string;
   author_name: string;
@@ -15,11 +15,23 @@ interface BlogPost {
   meta_description?: string;
 }
 
-interface BlogListProps {
-  blogs: BlogPost[];
-}
+const API_BASE_URL = "https://api.tippified.com";
 
-export default function BlogListPage({ blogs }: BlogListProps) {
+export default async function BlogListPage() {
+  let blogs: BlogPost[] = [];
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/adminpanel/public/blogs/`, {
+      next: { revalidate: 60 }, // ISR caching
+    });
+    if (!res.ok) throw new Error("Failed to fetch blogs");
+    const data = await res.json();
+    blogs = data.results || [];
+  } catch (err) {
+    console.error("Error fetching blogs:", err);
+    blogs = [];
+  }
+
   return (
     <>
       <Head>
@@ -80,28 +92,4 @@ export default function BlogListPage({ blogs }: BlogListProps) {
       </div>
     </>
   );
-}
-
-// Server-side rendering
-export async function getServerSideProps() {
-  const API_BASE_URL = "https://api.tippified.com";
-
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/adminpanel/public/blogs/`);
-    if (!res.ok) throw new Error("Failed to fetch blogs");
-    const data = await res.json();
-
-    return {
-      props: {
-        blogs: data.results || [],
-      },
-    };
-  } catch (err) {
-    console.error("Error fetching blogs:", err);
-    return {
-      props: {
-        blogs: [],
-      },
-    };
-  }
 }
