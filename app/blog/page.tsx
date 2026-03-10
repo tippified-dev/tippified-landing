@@ -23,7 +23,7 @@ export default function BlogList() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/blog/`);
+        const res = await fetch(`${API_BASE_URL}/api/adminpanel/public/blogs/`);
         const data = await res.json();
         setBlogs(data);
       } catch (err) {
