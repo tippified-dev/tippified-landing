@@ -14,6 +14,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 import ActivityTeaserSection from "./components/ActivityTeaserSection";
+import BlogCardHorizontal from "./components/BlogCardHorizontal";
 import NavBar from "./components/NavBar";
 import TrendingCreatorsBar from "./components/TrendingCreatorsBar";
 import WhoUsesTippified from "./components/WhoUsesTippified";
@@ -33,6 +34,16 @@ interface PublicGoal {
   created_at: string;
 }
 
+interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  cover_image?: string;
+  published_at: string;
+  author_name: string;
+}
+
+
 
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
@@ -49,7 +60,8 @@ export default function HomePage() {
   const aboutRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
 
-
+   const [blogs, setBlogs] = useState<BlogPost[]>([]);
+   const [loadingBlogs, setLoadingBlogs] = useState(false);
   const [heroVisible, setHeroVisible] = useState(false);
   const [featuresVisible, setFeaturesVisible] = useState([false, false, false]);
   const [aboutVisible, setAboutVisible] = useState(false);
@@ -79,6 +91,24 @@ export default function HomePage() {
 
   fetchGoals();
 }, []);
+
+
+useEffect(() => {
+  const fetchBlogs = async () => {
+    try {
+      setLoadingBlogs(true);
+      const res = await fetch("https://api.tippified.com/api/adminpanel/public/blogs/");
+      const data = await res.json();
+      setBlogs(data.results.slice(0, 10)); 
+    } catch (err) {
+      console.error("Failed to load blogs", err);
+    } finally {
+      setLoadingBlogs(false);
+    }
+  };
+
+  fetchBlogs();
+ }, []);
 
   const capitalizeWords = (text: string): string =>
     text
@@ -207,6 +237,25 @@ export default function HomePage() {
             </div>
 
         <ActivityTeaserSection />
+
+        {/* BLOGS */}
+<section className="py-16 px-6 bg-white">
+  <h2 className="text-3xl font-bold text-center mb-8">Latest Blog Posts</h2>
+
+  {loadingBlogs && <p className="text-center text-gray-500">Loading blogs...</p>}
+
+  {!loadingBlogs && blogs.length > 0 && (
+    <div className="max-w-6xl mx-auto flex flex-col gap-4">
+      {blogs.map((blog) => (
+        <BlogCardHorizontal key={blog.id} blog={blog} />
+      ))}
+    </div>
+  )}
+
+  {!loadingBlogs && blogs.length === 0 && (
+    <p className="text-center text-gray-500">No blog posts found.</p>
+  )}
+ </section>
         <WhoUsesTippified/>
         <TrendingCreatorsBar/>
 

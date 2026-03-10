@@ -66,7 +66,7 @@ export default function BlogDetail() {
   <div className="max-w-4xl mx-auto p-6 bg-white shadow rounded mt-6">
 
     {/* Sticky Back Button */}
-    <div className="sticky top-4 z-20 bg-white pb-3">
+    <div className="sticky top-3 z-20 bg-white pb-3">
       <button
         onClick={() => router.push("/blog")}
         className="flex items-center gap-2 text-purple-600 hover:text-purple-800 font-medium"
