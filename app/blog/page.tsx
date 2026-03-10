@@ -18,22 +18,28 @@ export default function BlogList() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const API_BASE_URL = "https//api.tippified.com"
+  const API_BASE_URL = "https://api.tippified.com"
 
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/api/adminpanel/public/blogs/`);
-        const data = await res.json();
-        setBlogs(data);
-      } catch (err) {
-        console.error("Failed to fetch blogs", err);
-      } finally {
-        setLoading(false);
+ useEffect(() => {
+  const fetchBlogs = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/adminpanel/public/blogs/`);
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch blogs");
       }
-    };
-    fetchBlogs();
-  }, []);
+
+      const data = await res.json();
+      setBlogs(data);
+    } catch (err) {
+      console.error("Failed to fetch blogs", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchBlogs();
+}, []);
 
   if (loading) return <p className="text-center mt-10">Loading blogs...</p>;
 
@@ -52,6 +58,8 @@ export default function BlogList() {
             <Image
               src={blog.cover_image}
               alt={blog.title}
+              width={800}
+              height={400}
               className="w-full h-48 object-cover"
             />
           )}
