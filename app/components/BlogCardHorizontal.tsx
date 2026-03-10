@@ -36,7 +36,7 @@ export default function BlogCardHorizontal({ blog }: Props) {
           alt={blog.title}
           width={100}
           height={60}
-          className="rounded-full object-cover"
+          className=" object- rounded-md"
         />
       ) : (
         <div className="w-20 h-20 bg-gray-200  flex items-center justify-center text-gray-400">
