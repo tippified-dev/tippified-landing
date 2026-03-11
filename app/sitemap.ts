@@ -21,6 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/search-goals`, lastModified: new Date() },
     { url: `${baseUrl}/privacy-policy`, lastModified: new Date() },
     { url: `${baseUrl}/contact-us`, lastModified: new Date() },
+    { url: `${baseUrl}/blog`, lastModified: new Date() },
   ];
 
   // 2️⃣ Dynamic goal pages
