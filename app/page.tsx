@@ -15,6 +15,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 import ActivityTeaserSection from "./components/ActivityTeaserSection";
+import BannerSlider from "./components/BannerSlider";
 import BlogCardHorizontal from "./components/BlogCardHorizontal";
 import NavBar from "./components/NavBar";
 import TrendingCreatorsBar from "./components/TrendingCreatorsBar";
@@ -233,16 +234,9 @@ useEffect(() => {
           </div>
         </section>
 
-         <div className="block mt-2 px-3 md:hidden">
-              <Image
-                src="/banner-tippified.png"
-                alt="Tippified tipping platform"
-                width={450}
-                height={500}
-                className="rounded shadow-xl"
-                priority
-              />
-            </div>
+        <BannerSlider/>
+
+         
 
         <ActivityTeaserSection />
 
@@ -301,6 +295,17 @@ useEffect(() => {
             })}
           </div>
         </section>
+
+        <div className="block mt-2 px-3 md:hidden">
+              <Image
+                src="/banner-tippified.png"
+                alt="Tippified tipping platform"
+                width={450}
+                height={500}
+                className="rounded shadow-xl"
+                priority
+              />
+            </div>
 
         
         {/* Public Goals Section */}
