@@ -262,11 +262,11 @@ useEffect(() => {
         <TrendingCreatorsBar/>
 
         {/* FEATURES */}
-        <section className="py-1 px-6 bg-gray-50">
+        <section className="py-2 px-6 bg-gray-50">
           <h2 className="text-3xl font-bold text-purple-500 text-center mb-4">
             Why Use Tippified?
           </h2>
-          <p className="text-gray-600 text-center mb-12">
+          <p className="text-gray-600 text-center mb-2">
             Built for Nigerian creators. Trusted by fans worldwide.
           </p>
 
@@ -414,7 +414,7 @@ useEffect(() => {
         >
           <h2 className="text-3xl text-purple-500 font-bold mb-6">About Tippified</h2>
           <p className="text-gray-700 md:text-lg">
-            <span className="text-black font-bold underline"><a href="/about" className="text-black">Tippified</a></span> is a
+            <span className="text-black font-bold underline"><a href="/about" className="text-black font-bold">Tippified</a></span> is a
             Nigerian platform built to help creators receive tips directly from
             their fans. We provide creators with a unique tipping link that can
             be shared across social media and websites.
