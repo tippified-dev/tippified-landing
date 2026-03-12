@@ -69,7 +69,7 @@ export default function TrendingCreatorsBar() {
   };
 
   return (
-    <div className="py-6 bg-purple-50 relative">
+    <div className="py-2.5 bg-purple-50 relative">
       <h2 className="text-2xl font-bold text-center mb-4 text-purple-700">
         Trending Creators
       </h2>

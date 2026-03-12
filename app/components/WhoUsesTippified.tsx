@@ -26,7 +26,7 @@ export default function WhoUsesTippified() {
   }, []);
 
   return (
-    <section className="py-16 px-6 bg-white text-center">
+    <section className="py-2 px-6 bg-white text-center">
       <div className="max-w-3xl mx-auto">
         <div className="flex justify-center mb-3">
           <UserGroupIcon className="w-10 h-10 text-purple-600" />
