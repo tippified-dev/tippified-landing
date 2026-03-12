@@ -262,7 +262,7 @@ useEffect(() => {
         <TrendingCreatorsBar/>
 
         {/* FEATURES */}
-        <section className="py-20 px-6 bg-gray-50">
+        <section className="py-11 px-6 bg-gray-50">
           <h2 className="text-3xl font-bold text-purple-500 text-center mb-4">
             Why Use Tippified?
           </h2>
