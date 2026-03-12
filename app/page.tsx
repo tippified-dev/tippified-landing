@@ -242,7 +242,7 @@ useEffect(() => {
 
         {/* BLOGS */}
 <section className="py-12 px-6 bg-white">
-  <h2 className="text-3xl font-bold text-center mb-8">Latest Blog Posts</h2>
+  <h2 className="text-3xl font-bold text-center text-purple-500 mb-8">Latest Blog Posts</h2>
 
   {loadingBlogs && <p className="text-center text-gray-500">Loading blogs...</p>}
 
@@ -263,7 +263,7 @@ useEffect(() => {
 
         {/* FEATURES */}
         <section className="py-20 px-6 bg-gray-50">
-          <h2 className="text-3xl font-bold text-center mb-4">
+          <h2 className="text-3xl font-bold text-purple-500 text-center mb-4">
             Why Use Tippified?
           </h2>
           <p className="text-gray-600 text-center mb-12">
@@ -296,7 +296,7 @@ useEffect(() => {
           </div>
         </section>
 
-        <div className="block mt-2 px-3 md:hidden">
+        <div className="block mb-1.5 px-3 md:hidden">
               <Image
                 src="/banner-tippified.png"
                 alt="Tippified tipping platform"
@@ -310,7 +310,7 @@ useEffect(() => {
         
         {/* Public Goals Section */}
 <section className="py-2 px-6 bg-white">
-  <h2 className="text-3xl font-bold text-center mb-9">
+  <h2 className="text-3xl  text-purple-500 font-bold text-center mb-9">
     Support a Creator’s Goal
   </h2>
 
@@ -380,7 +380,7 @@ useEffect(() => {
 
  {/* PAYMENTS */}
 <section className="py-14 px-6 bg-gray-50 text-center">
-  <h2 className="text-2xl md:text-3xl font-bold mb-6">
+  <h2 className="text-2xl text-purple-500  md:text-3xl font-bold mb-6">
     Secure Payments Powered by Trusted Partners
   </h2>
 
@@ -412,9 +412,9 @@ useEffect(() => {
             aboutVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <h2 className="text-3xl font-bold mb-6">About Tippified</h2>
+          <h2 className="text-3xl text-purple-500 font-bold mb-6">About Tippified</h2>
           <p className="text-gray-700 md:text-lg">
-            <span className="text-purple-600 font-bold"><a href="/about" className="text-purple-600">Tippified</a></span> is a
+            <span className="text-black font-bold underline"><a href="/about" className="text-purple-600">Tippified</a></span> is a
             Nigerian platform built to help creators receive tips directly from
             their fans. We provide creators with a unique tipping link that can
             be shared across social media and websites.
