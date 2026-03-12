@@ -24,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/blog`, lastModified: new Date() },
   ];
 
-  // 2️⃣ Dynamic goal pages
+ 
   try {
     const res = await fetch(
       "https://api.tippified.com/api/auth/public/goals/",

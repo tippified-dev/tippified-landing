@@ -6,7 +6,6 @@ import {
   HomeIcon,
   MagnifyingGlassIcon,
   NewspaperIcon,
-  QuestionMarkCircleIcon,
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,7 +19,7 @@ export default function NavBar() {
     { label: "Blog", href: "/blog", icon: NewspaperIcon },
     { label: "Privacy", href: "/privacy-policy", icon: DocumentTextIcon },
     { label: "T&C", href: "/terms-conditions", icon: BriefcaseIcon },
-    { label: "FAQ", href: "/faq", icon: QuestionMarkCircleIcon },
+    
   ];
 
   const activeIndex = links.findIndex((link) => link.href === pathname);
