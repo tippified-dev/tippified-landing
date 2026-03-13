@@ -51,8 +51,13 @@ export default function TrendingCreatorsBar() {
     };
   }, [creators]);
 
-  const capitalize = (text: string) =>
-    text?.charAt(0).toUpperCase() + text?.slice(1);
+  
+  const capitalizeWords = (text: string): string =>
+    text
+      ?.trim()
+      .split(/\s+/)
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ") || "";
 
    const formatAmount = (amount: string) => {
   const num = Number(amount);
@@ -87,7 +92,7 @@ export default function TrendingCreatorsBar() {
                 {/* Creator info */}
                 <div className="flex flex-col">
                   <span className="font-semibold text-gray-900 text-sm">
-                    {capitalize(creator.username)}
+                    {capitalizeWords(creator.username)}
                   </span>
 
                   <span className="text-xs text-gray-500">
