@@ -119,6 +119,13 @@ useEffect(() => {
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(" ") || "";
 
+
+   const formatAmount = (amount: string) => {
+  const num = Number(amount);
+  if (isNaN(num)) return amount;
+  return num.toLocaleString("en-NG");
+ };
+
    
 
   const features = [
@@ -331,15 +338,15 @@ useEffect(() => {
         </p>
 
         <p className="text-sm mb-1 flex items-center gap-1">
-  <ArrowUpIcon className="w-4 h-4 text-purple-600" /> Target: ₦{goal.target_amount}
+  <ArrowUpIcon className="w-4 h-4 text-purple-600" /> Target: ₦{formatAmount(goal.target_amount)}
 </p>
 
 <p className="text-sm mb-1 flex items-center gap-1">
-  <BanknotesIcon className="w-4 h-4 text-purple-600" /> Local: ₦{goal.current_amount}
+  <BanknotesIcon className="w-4 h-4 text-purple-600" /> Local: ₦{formatAmount(goal.current_amount)}
 </p>
 
 <p className="text-sm mb-1 flex items-center gap-1">
-  <CurrencyDollarIcon className="w-4 h-4 text-purple-600" /> Foreign: ${goal.current_foreign_usd}
+  <CurrencyDollarIcon className="w-4 h-4 text-purple-600" /> Foreign: ${formatAmount(goal.current_foreign_usd)}
 </p>
         <p className="text-xs text-gray-400 mt-2">
           Created: {new Date(goal.created_at).toLocaleDateString()}
