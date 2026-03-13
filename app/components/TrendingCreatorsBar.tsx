@@ -54,6 +54,13 @@ export default function TrendingCreatorsBar() {
   const capitalize = (text: string) =>
     text?.charAt(0).toUpperCase() + text?.slice(1);
 
+   const formatAmount = (amount: string) => {
+  const num = Number(amount);
+  if (isNaN(num)) return amount;
+  return num.toLocaleString("en-NG");
+};
+
+
   return (
     <section className="py-4 bg-purple-50">
       <h2 className="text-2xl font-bold text-center mb-5 text-purple-700">
@@ -91,7 +98,7 @@ export default function TrendingCreatorsBar() {
 
               {/* amount */}
               <div className="mt-3 text-sm text-purple-700 font-semibold">
-                ₦{creator.current_amount} raised
+                ₦{formatAmount(creator.current_amount)} raised
               </div>
 
             </a>
