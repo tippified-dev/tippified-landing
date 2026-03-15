@@ -9,22 +9,22 @@ export async function GET() {
 
   <!-- Static marketing pages -->
   <sitemap>
-    <loc>${baseWWW}/sitemaps/static-sitemap.xml</loc>
+    <loc>${baseWWW}/sitemaps/static</loc>
   </sitemap>
 
   <!-- Goals -->
   <sitemap>
-    <loc>${baseAPP}/sitemaps/goals-sitemap.xml</loc>
+    <loc>${baseAPP}/sitemaps/goals</loc>
   </sitemap>
 
   <!-- Creator pages -->
   <sitemap>
-    <loc>${baseAPP}/sitemaps/creators-sitemap.xml</loc>
+    <loc>${baseAPP}/sitemaps/creators</loc>
   </sitemap>
 
   <!-- Auth pages -->
   <sitemap>
-    <loc>${baseAPP}/sitemaps/auth-sitemap.xml</loc>
+    <loc>${baseAPP}/sitemaps/auth</loc>
   </sitemap>
 
 </sitemapindex>`;
