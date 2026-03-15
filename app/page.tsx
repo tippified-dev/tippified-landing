@@ -249,7 +249,7 @@ useEffect(() => {
 
         {/* BLOGS */}
 <section className="py-12 px-6 bg-white">
-  <h2 className="text-3xl font-bold text-center text-purple-500 mb-8">Latest Blog Posts</h2>
+  <h2 className="text-3xl font-bold text-center text-purple-700 mb-8">Latest Blog Posts</h2>
 
   {loadingBlogs && <p className="text-center text-gray-500">Loading blogs...</p>}
 
@@ -317,7 +317,7 @@ useEffect(() => {
         
         {/* Public Goals Section */}
 <section className="py-2 px-6 bg-white">
-  <h2 className="text-3xl  text-purple-500 font-bold text-center mb-9">
+  <h2 className="text-3xl  text-purple-700 font-bold text-center mb-9">
     Support a Creator’s Goal
   </h2>
 
@@ -387,7 +387,7 @@ useEffect(() => {
 
  {/* PAYMENTS */}
 <section className="py-14 px-6 bg-gray-50 text-center">
-  <h2 className="text-2xl text-purple-500  md:text-3xl font-bold mb-6">
+  <h2 className="text-2xl text-purple-700  md:text-3xl font-bold mb-6">
     Secure Payments Powered by Trusted Partners
   </h2>
 
