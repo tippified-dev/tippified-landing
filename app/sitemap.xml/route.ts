@@ -22,11 +22,7 @@ export async function GET() {
     <loc>${baseAPP}/sitemaps/creators</loc>
   </sitemap>
 
-  <!-- Auth pages -->
-  <sitemap>
-    <loc>${baseAPP}/sitemaps/auth</loc>
-  </sitemap>
-
+ 
 </sitemapindex>`;
 
   return new NextResponse(xml, {
