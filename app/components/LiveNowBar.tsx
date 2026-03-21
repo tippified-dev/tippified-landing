@@ -67,12 +67,12 @@ export default function LiveNowBar() {
   if (liveCreators.length === 0) return null;
 
   return (
-    <div className="w-full bg-red-600 text-white py-3 px-4 shadow-md">
+    <div className="w-full bg-purple-600 text-white py-3 px-4 shadow-md">
       <div className="max-w-6xl mx-auto flex gap-4 overflow-x-auto">
         {liveCreators.map((creator) => (
           <a
             key={creator.referral_code}
-            href={`https://app.tippified.com/live/${creator.referral_code}`}
+            href={`https://app.tippified.com/tip/${creator.referral_code}`}
             className="bg-white text-red-600 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap"
           >
             {creator.username} is live
