@@ -11,30 +11,58 @@ export default function LiveNowBar() {
   const [liveCreators, setLiveCreators] = useState<LiveCreator[]>([]);
 
   useEffect(() => {
-    const ws = new WebSocket("wss://api.tippified.com/ws/live/");
+  // 1. FETCH CURRENTLY LIVE CREATORS
+  const fetchLive = async () => {
+    try {
+      const res = await fetch("https://api.tippified.com/api/auth/live-creators/");
+      const data = await res.json();
+      setLiveCreators(data); 
+    } catch (err) {
+      console.error("Failed to fetch live creators", err);
+    }
+  };
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+  fetchLive();
 
-      if (data.event === "live_started") {
-        setLiveCreators((prev) => {
-          // avoid duplicates
-          if (prev.find((c) => c.referral_code === data.data.referral_code)) {
-            return prev;
-          }
-          return [data.data, ...prev];
-        });
-      }
+  
+  const ws = new WebSocket("wss://api.tippified.com/ws/live/");
 
-      if (data.event === "live_ended") {
-        setLiveCreators((prev) =>
-          prev.filter((c) => c.referral_code !== data.data.referral_code)
-        );
-      }
-    };
+  ws.onopen = () => {
+    console.log("WS connected");
+  };
 
-    return () => ws.close();
-  }, []);
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    console.log("WS EVENT:", data); 
+
+    if (data.event === "live_started") {
+      setLiveCreators((prev) => {
+        if (prev.find((c) => c.referral_code === data.data.referral_code)) {
+          return prev;
+        }
+        return [data.data, ...prev];
+      });
+    }
+
+    if (data.event === "live_ended") {
+      setLiveCreators((prev) =>
+        prev.filter((c) => c.referral_code !== data.data.referral_code)
+      );
+    }
+  };
+
+  ws.onerror = (err) => {
+    console.error("WS error", err);
+  };
+
+  ws.onclose = () => {
+    console.log("WS closed");
+  };
+
+  return () => ws.close();
+}, []);
+
 
   if (liveCreators.length === 0) return null;
 
