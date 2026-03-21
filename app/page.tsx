@@ -22,6 +22,7 @@ import TrendingCreatorsBar from "./components/TrendingCreatorsBar";
 import WhoUsesTippified from "./components/WhoUsesTippified";
 import { pacifico } from "./font";
 
+import LiveNowBar from "./components/LiveNowBar";
 import TipperSubscribeModal from "./components/TipperSubscribeModal";
 
 interface PublicGoal {
@@ -246,6 +247,11 @@ useEffect(() => {
          
 
         <ActivityTeaserSection />
+
+        <div className="sticky top-0 z-40">
+          <LiveNowBar/>
+
+        </div>
 
         {/* BLOGS */}
 <section className="py-12 px-6 bg-white">
