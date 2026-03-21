@@ -71,12 +71,14 @@ export default function LiveNowBar() {
       <div className="max-w-6xl mx-auto flex gap-4 overflow-x-auto">
         {liveCreators.map((creator) => (
           <a
-            key={creator.referral_code}
-            href={`https://app.tippified.com/tip/${creator.referral_code}`}
-            className="bg-white text-red-600 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap"
-          >
-            {creator.username} is live
-          </a>
+  key={creator.referral_code}
+  href={`https://app.tippified.com/tip/${creator.referral_code}`}
+  className="flex items-center gap-2 bg-white text-purple-600 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transform transition hover:scale-105"
+>
+  <span className="w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
+  <span className="w-2 h-2 bg-red-500 rounded-full absolute"></span>
+  {creator.username} is live
+</a>
         ))}
       </div>
     </div>

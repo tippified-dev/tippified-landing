@@ -223,7 +223,7 @@ useEffect(() => {
 
   <a
     href="/faq"
-    className="flex items-center justify-center gap-2 px-8 py-4 bg-purple-800 text-white font-bold rounded-xl shadow hover:bg-purple-400 transition"
+    className="flex items-center justify-center gap-2 px-8 py-4 bg-purple-500 text-white font-bold rounded-xl shadow hover:bg-purple-400 transition"
   >
     <QuestionMarkCircleIcon className="w-5 h-5" />
     Frequently Asked
