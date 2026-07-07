@@ -30,7 +30,7 @@ export default function BannerSlider() {
           style={{ transform: `translateX(-${current * 100}%)` }}
         >
           {images.map((img, index) => (
-            <div key={img} className="min-w-full">
+            <div key={img} className="min-w-full ">
               <Image
                 src={img}
                 alt={`Tippified banner ${index + 1}`}
