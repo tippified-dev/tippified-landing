@@ -1,13 +1,13 @@
 "use client";
 
 import {
-    BanknotesIcon,
-    BuildingLibraryIcon,
-    CakeIcon,
-    ClipboardDocumentListIcon,
-    GiftIcon,
-    RocketLaunchIcon,
-    VideoCameraIcon,
+  BanknotesIcon,
+  BuildingLibraryIcon,
+  CakeIcon,
+  ClipboardDocumentListIcon,
+  GiftIcon,
+  RocketLaunchIcon,
+  VideoCameraIcon,
 } from "@heroicons/react/24/outline";
 
 const features = [
