@@ -1,16 +1,16 @@
 "use client";
 
-import { SparklesIcon } from "@heroicons/react/24/outline";
+
 
 export default function Hero() {
   return (
-    <section className="bg-purple-500 from-purple-700 to-purple-600 text-white">
+    <section className="bg-purple-800 from-purple-700 to-purple-600 text-white">
 
       <div className="max-w-6xl mx-auto px-6 py-24">
 
         <div className="flex justify-center mb-8">
           <div className="bg-white/10 rounded-full p-5">
-            <SparklesIcon className="w-14 h-14" />
+            
           </div>
         </div>
 
@@ -43,7 +43,7 @@ export default function Hero() {
           <div className="bg-white/10 backdrop-blur rounded-2xl p-6">
 
             <h3 className="text-2xl font-bold mb-3">
-              💜 Support Creators
+               Support Creators
             </h3>
 
             <p className="text-purple-100 leading-7">
@@ -56,7 +56,7 @@ export default function Hero() {
           <div className="bg-white/10 backdrop-blur rounded-2xl p-6">
 
             <h3 className="text-2xl font-bold mb-3">
-              🎁 Send Virtual Gifts
+               Send Virtual Gifts
             </h3>
 
             <p className="text-purple-100 leading-7">
@@ -69,7 +69,7 @@ export default function Hero() {
           <div className="bg-white/10 backdrop-blur rounded-2xl p-6">
 
             <h3 className="text-2xl font-bold mb-3">
-              🎥 Join Live Streams
+               Join Live Streams
             </h3>
 
             <p className="text-purple-100 leading-7">

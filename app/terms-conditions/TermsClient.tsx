@@ -25,7 +25,7 @@ export default function TermsClient() {
           <p className="leading-8 mb-4">
             These Terms and Conditions (&quot;Terms&quot;) govern your access to and use
             of Tippified, a creator monetization platform owned and operated by
-            Grundex Limited (&quot;Grundex&quot;, &quot;Tippified&quot;, &quot;we&quot;, &quot;our&quot;, or &quotus&quot;).
+            Grundex Limited (&quot;Grundex&quot;, &quot;Tippified&quot;, &quot;we&quot;, &quot;our&quot;).
           </p>
 
           <p className="leading-8 mb-4">
