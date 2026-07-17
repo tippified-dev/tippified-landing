@@ -136,8 +136,8 @@ useEffect(() => {
       icon: BoltIcon,
     },
     {
-      title: "Creator Wallets",
-      desc: "Creators receive their funds in wallets provided by OPay, giving them easy access and control of their money.",
+      title: "Secure Creator Wallets",
+      desc: "Creators can cashout anytime to your verified bank account.",
       icon: BanknotesIcon,
     },
     {
@@ -199,9 +199,11 @@ useEffect(() => {
               </h1>
 
               <p className="text-lg md:text-xl mb-8 max-w-xl">
-                Tippified is a Nigerian tipping platform that helps creators
-                receive financial support from fans worldwide. Share your
-                tipping link and receive funds securely into your OPay wallet.
+               Tippified is Nigeria&apos; all-in-one creator monetization platform.
+               Receive monetary tips, virtual gifts, goal contributions and
+               wishlist purchases from fans worldwide, with secure payments
+               powered by Paystack and settlements handled through our regulated
+               banking partner, Wema Bank.
               </p>
 
               <div className="flex flex-col md:flex-row gap-4">
@@ -398,14 +400,11 @@ useEffect(() => {
   </h2>
 
   <p className="text-gray-700 max-w-3xl mx-auto mb-10">
-    Payments on Tippified are processed using licensed payment providers such as{" "}
-    <b>Paystack</b> for card and bank payments, and creator wallets are provided
-    by <b>OPay</b>. Tippified does not operate as a bank or hold customer funds.
-    All funds are settled directly to creators through our payment partners.
+    Payments on Tippified are securely processed by Paystack using industry-standard security. Creator balances are maintained within Tippified&apos; secure internal ledger, while settlements are processed through our regulated banking partner, Wema Bank. Tippified does not operate as a bank and does not hold customer deposits.
   </p>
 
   <div className="flex justify-center items-center gap-6 flex-wrap">
-    {["visa", "mastercard", "verve", "paystack", "opay"].map((img) => (
+    {["visa", "mastercard", "verve", "paystack", "wema"].map((img) => (
       <Image
         key={img}
         src={`/${img}.png`}
@@ -428,14 +427,10 @@ useEffect(() => {
           <h2 className="text-3xl text-purple-500 font-bold mb-6">About Tippified</h2>
           <p className="text-gray-700 md:text-lg">
             <span className="text-black font-bold underline"><a href="/about" className="text-black font-bold">Tippified</a></span> is a
-            Nigerian platform built to help creators receive tips directly from
-            their fans. We provide creators with a unique tipping link that can
-            be shared across social media and websites.
+                Nigeria’s all-in-one creator monetization platform that enables creators to receive monetary tips, virtual gifts, birthday wishlist purchases, goal contributions and live stream support from fans worldwide.
             <br />
             <br />
-            Payments are processed securely via <b>Paystack</b>, while creator
-            wallets are provided by <b>OPay</b>, giving creators fast access to
-            their funds.
+              Payments are securely processed through Paystack. Creator balances are maintained securely within Tippified, while settlements are processed through our regulated banking partner, Wema Bank, directly into verified bank accounts.
             <br />
             <br />
             Our mission is to strengthen the Nigerian creator economy by
@@ -536,7 +531,7 @@ useEffect(() => {
   <div>
     &copy; {new Date().getFullYear()} Tippified. All rights reserved.
     <p className="text-xs text-gray-500 mt-2">
-      Tippified is a product of Grundex Limited. Payments powered by Paystack and OPay.
+        Tippified is a product of Grundex Limited. Payments securely powered by Paystack. Settlement services provided through our regulated banking partner, Wema Bank.
     </p>
   </div>
 </footer>
