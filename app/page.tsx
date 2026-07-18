@@ -23,7 +23,7 @@ import WhoUsesTippified from "./components/WhoUsesTippified";
 import { pacifico } from "./font";
 
 import LiveNowBar from "./components/LiveNowBar";
-import TipperSubscribeModal from "./components/TipperSubscribeModal";
+// import TipperSubscribeModal from "./components/TipperSubscribeModal";
 import { useScrollRestoration } from "./useScrollRestoration";
 
 interface PublicGoal {
@@ -125,6 +125,7 @@ useEffect(() => {
     "features",
     "pubic-goals",
     "payment",
+    "image",
     "about",
     "cta",
     "footer",
@@ -220,7 +221,7 @@ useEffect(() => {
       <NavBar 
       onNavigate={() => rememberElement(currentSection)}
       />
-      <TipperSubscribeModal/>
+      {/* <TipperSubscribeModal/> */}
 
       <main className="bg-white text-gray-900 pb-20 md:pb-0">
         {/* HERO */}
@@ -356,7 +357,7 @@ useEffect(() => {
           </div>
         </section>
 
-        <div className="block mb-1.5 px-3 md:hidden">
+        <div className="block mb-1.5 px-3 md:hidden" id="image">
               <Image
                 src="/banner-tippified.png"
                 alt="Tippified tipping platform"
