@@ -24,6 +24,7 @@ import { pacifico } from "./font";
 
 import LiveNowBar from "./components/LiveNowBar";
 import TipperSubscribeModal from "./components/TipperSubscribeModal";
+import { useScrollRestoration } from "./useScrollRestoration";
 
 interface PublicGoal {
   id: number;
@@ -62,7 +63,7 @@ export default function HomePage() {
   const featuresRef = useRef<(HTMLDivElement | null)[]>([]);
   const aboutRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-
+   const rememberElement = useScrollRestoration("home-scroll");
    const [blogs, setBlogs] = useState<BlogPost[]>([]);
    const [loadingBlogs, setLoadingBlogs] = useState(false);
   const [heroVisible, setHeroVisible] = useState(false);
@@ -199,7 +200,7 @@ useEffect(() => {
               </h1>
 
               <p className="text-lg md:text-xl mb-8 max-w-xl">
-               Tippified is Nigeria&apos; all-in-one creator monetization platform.
+               Tippified is Nigeria&apos;s all-in-one creator monetization platform.
                Receive monetary tips, virtual gifts, goal contributions and
                wishlist purchases from fans worldwide, with secure payments
                powered by Paystack and settlements handled through our regulated
@@ -336,6 +337,7 @@ useEffect(() => {
   <div className="flex gap-4">
     {goals.slice(0, 10).map((goal) => (
       <div
+        id={`goal-${goal.id}`}
         key={goal.id}
         className="min-w-62.5 bg-purple-50 border border-black rounded-lg p-6 shadow hover:shadow-lg transition shrink-0"
       >
@@ -363,6 +365,7 @@ useEffect(() => {
         <div className="flex gap-2 mt-4">
           <a
             href={`https://app.tippified.com/tip/${goal.referral_code}`}
+            onClick={() => rememberElement(`goal-${goal.id}`)}
             className="flex-1 text-center text-xs bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700 transition"
           >
             Support 
