@@ -13,8 +13,8 @@ export function useScrollRestoration(storageKey: string) {
 
       if (element) {
         element.scrollIntoView({
-          behavior: "instant",
-          block: "start",
+          behavior: "auto",
+          block: "center",
         });
 
         sessionStorage.removeItem(storageKey);
