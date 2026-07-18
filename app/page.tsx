@@ -64,6 +64,7 @@ export default function HomePage() {
   const aboutRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
    const rememberElement = useScrollRestoration("home-scroll");
+   const [currentSection, setCurrentSection] = useState("hero");
    const [blogs, setBlogs] = useState<BlogPost[]>([]);
    const [loadingBlogs, setLoadingBlogs] = useState(false);
   const [heroVisible, setHeroVisible] = useState(false);
@@ -112,6 +113,42 @@ useEffect(() => {
   };
 
   fetchBlogs();
+ }, []);
+
+
+   useEffect(() => {
+  const sectionIds = [
+    "hero",
+    "blog",
+    "users",
+    "trending",
+    "features",
+    "pubic-goals",
+    "payment",
+    "about",
+    "cta",
+    "footer",
+  ];
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setCurrentSection(entry.target.id);
+        }
+      });
+    },
+    {
+      threshold: 0.4,
+    }
+  );
+
+  sectionIds.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+
+  return () => observer.disconnect();
  }, []);
 
   const capitalizeWords = (text: string): string =>
@@ -180,12 +217,15 @@ useEffect(() => {
 
   return (
     <>
-      <NavBar />
+      <NavBar 
+      onNavigate={() => rememberElement(currentSection)}
+      />
       <TipperSubscribeModal/>
 
       <main className="bg-white text-gray-900 pb-20 md:pb-0">
         {/* HERO */}
         <section
+          id="hero"
           ref={heroRef}
           className={`bg-linear-to-br from-purple-600 to-purple-800 text-white py-8 px-6 transition-all duration-700 ${
             heroVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
@@ -257,7 +297,7 @@ useEffect(() => {
         </div>
 
         {/* BLOGS */}
-<section className="py-12 px-6 bg-white">
+<section className="py-12 px-6 bg-white" id="blog">
   <h2 className="text-3xl font-bold text-center text-purple-700 mb-8">Latest Blog Posts</h2>
 
   {loadingBlogs && <p className="text-center text-gray-500">Loading blogs...</p>}
@@ -274,11 +314,15 @@ useEffect(() => {
     <p className="text-center text-gray-500">No blog posts found.</p>
   )}
  </section>
-        <WhoUsesTippified/>
-        <TrendingCreatorsBar/>
+       <section id="users">
+         <WhoUsesTippified/>
+       </section>
+        <section id="trending">
+          <TrendingCreatorsBar/>
+        </section>
 
         {/* FEATURES */}
-        <section className="py-4 px-6 bg-gray-50">
+        <section className="py-4 px-6 bg-gray-50" id="features">
           <h2 className="text-3xl font-bold text-purple-500 text-center mb-4">
             Why Use Tippified?
           </h2>
@@ -325,7 +369,7 @@ useEffect(() => {
 
         
         {/* Public Goals Section */}
-<section className="py-2 px-6 bg-white">
+<section className="py-2 px-6 bg-white" id="pubic-goals">
   <h2 className="text-3xl  text-purple-700 font-bold text-center mb-9">
     Support a Creator’s Goal
   </h2>
@@ -397,7 +441,7 @@ useEffect(() => {
  
 
  {/* PAYMENTS */}
-<section className="py-14 px-6 bg-gray-50 text-center">
+<section className="py-14 px-6 bg-gray-50 text-center" id="payment">
   <h2 className="text-2xl text-purple-700  md:text-3xl font-bold mb-6">
     Secure Payments Powered by Trusted Partners
   </h2>
@@ -422,6 +466,7 @@ useEffect(() => {
 
         {/* ABOUT */}
         <section
+          id="about"
           ref={aboutRef}
           className={`py-16 px-6 max-w-4xl mx-auto text-center transition-all duration-700 ${
             aboutVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
@@ -443,6 +488,7 @@ useEffect(() => {
 
         {/* CTA */}
         <section
+          id="cta"
           ref={ctaRef}
           className={`py-20 px-6 bg-purple-700 text-white text-center transition-all duration-700 ${
             ctaVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
@@ -498,7 +544,7 @@ useEffect(() => {
         )}
 
         {/* FOOTER */}
-        <footer className="py-8 bg-gray-900 text-gray-300 text-center text-sm">
+        <footer className="py-8 bg-gray-900 text-gray-300 text-center text-sm" id="footer">
   <div className="flex justify-center gap-6 mb-3">
     <a
       href="https://instagram.com/tippified_app"
