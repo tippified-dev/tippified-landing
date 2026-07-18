@@ -4,29 +4,23 @@ import { useEffect } from "react";
 
 export function useScrollRestoration(storageKey: string) {
   useEffect(() => {
-    const elementId = sessionStorage.getItem(storageKey);
+    const saved = sessionStorage.getItem(storageKey);
 
-    if (!elementId) return;
+    if (!saved) return;
 
-    const timer = setTimeout(() => {
-      const element = document.getElementById(elementId);
+    requestAnimationFrame(() => {
+      window.scrollTo({
+        top: Number(saved),
+        behavior: "auto",
+      });
 
-      if (element) {
-        element.scrollIntoView({
-          behavior: "instant",
-          block: "start",
-        });
-
-        sessionStorage.removeItem(storageKey);
-      }
-    }, 100);
-
-    return () => clearTimeout(timer);
+      sessionStorage.removeItem(storageKey);
+    });
   }, [storageKey]);
 
-  const rememberElement = (elementId: string) => {
-    sessionStorage.setItem(storageKey, elementId);
+  const rememberScroll = () => {
+    sessionStorage.setItem(storageKey, String(window.scrollY));
   };
 
-  return rememberElement;
+  return rememberScroll;
 }

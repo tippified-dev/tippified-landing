@@ -63,8 +63,8 @@ export default function HomePage() {
   const featuresRef = useRef<(HTMLDivElement | null)[]>([]);
   const aboutRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-   const rememberElement = useScrollRestoration("home-scroll");
-   const [currentSection, setCurrentSection] = useState("hero");
+   const rememberScroll = useScrollRestoration("home-scroll");
+   
    const [blogs, setBlogs] = useState<BlogPost[]>([]);
    const [loadingBlogs, setLoadingBlogs] = useState(false);
   const [heroVisible, setHeroVisible] = useState(false);
@@ -116,45 +116,7 @@ useEffect(() => {
  }, []);
 
 
-   useEffect(() => {
-  const sectionIds = [
-    "hero",
-    "blog",
-    "users",
-    "trending",
-    "features",
-    "pubic-goals",
-    "payment",
-    "image",
-    "about",
-    "discover",
-    "banner",
-    "live",
-    "cta",
-    "footer",
-  ];
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setCurrentSection(entry.target.id);
-        }
-      });
-    },
-    {
-      threshold: 0.4,
-    }
-  );
-
-  sectionIds.forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) observer.observe(el);
-  });
-
-  return () => observer.disconnect();
- }, []);
-
+   
   const capitalizeWords = (text: string): string =>
     text
       ?.trim()
@@ -222,7 +184,7 @@ useEffect(() => {
   return (
     <>
       <NavBar 
-      onNavigate={() => rememberElement(currentSection)}
+      onNavigate={rememberScroll}
       />
       {/* <TipperSubscribeModal/> */}
 
@@ -417,7 +379,7 @@ useEffect(() => {
         <div className="flex gap-2 mt-4">
           <a
             href={`https://app.tippified.com/tip/${goal.referral_code}`}
-            onClick={() => rememberElement(`goal-${goal.id}`)}
+            onClick={rememberScroll}
             className="flex-1 text-center text-xs bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700 transition"
           >
             Support 
