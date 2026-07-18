@@ -127,6 +127,9 @@ useEffect(() => {
     "payment",
     "image",
     "about",
+    "discover",
+    "banner",
+    "live",
     "cta",
     "footer",
   ];
@@ -286,13 +289,17 @@ useEffect(() => {
           </div>
         </section>
 
-        <BannerSlider/>
+        <section id="banner">
+          <BannerSlider/>
+        </section>
 
          
 
-        <ActivityTeaserSection />
+        <section id="discover">
+          <ActivityTeaserSection />
+        </section>
 
-        <div className="sticky top-0 z-40">
+        <div className="sticky top-0 z-40" id="live">
           <LiveNowBar/>
 
         </div>
