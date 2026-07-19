@@ -18,11 +18,11 @@ import NavBar from "../components/NavBar";
 export const metadata: Metadata = {
   title: "Frequently Asked Questions (FAQ) | Tippified",
   description:
-    "Find answers to common questions about Tippified. Learn how tipping works, how creators get paid via OPay wallets, and how fans pay securely using Paystack.",
+    "Find answers to common questions about Tippified. Learn how tipping works, how creators receive settlements through our regulated banking partner, Wema Bank, and how fans pay securely using Paystack.",
   keywords: [
     "Tippified FAQ",
     "tipping platform Nigeria",
-    "OPay wallet",
+    "wema bank",
     "Paystack payments",
     "creator tipping",
     "support Nigerian creators",
@@ -43,12 +43,12 @@ const faqs = [
   {
     icon: UserGroupIcon,
     q: "What is Tippified?",
-    a: "Tippified is a Nigerian creator tipping platform that allows fans to support creators financially. Creators receive funds in their OPay wallets, while payments are processed securely through Paystack.",
+    a: "Tippified is Nigeria’s all-in-one creator monetization platform that allows fans to support creators through monetary tips, goal contributions, virtual gifts, and wishlist purchases. Payments are securely processed by Paystack, while settlements are handled through our regulated banking partner, Wema Bank.",
   },
   {
     icon: WalletIcon,
     q: "How do creators get paid?",
-    a: "Creators receive their tips directly into their OPay wallet. From there, they can withdraw to any Nigerian bank account or use their wallet balance for other supported services.",
+    a: "Creators have a secure Tippified wallet that tracks their available balance. When they request a withdrawal, settlements are processed through our regulated banking partner, Wema Bank, directly into their verified Nigerian bank account.",
   },
   {
     icon: CreditCardIcon,
@@ -58,7 +58,7 @@ const faqs = [
   {
     icon: ShieldCheckIcon,
     q: "Does Tippified hold user funds?",
-    a: "No. Tippified does not store or custody user funds. Payments are handled by Paystack, and creator balances are stored in OPay wallets. This ensures transparency and regulatory compliance.",
+    a: "No. Tippified does not operate as a bank or hold customer deposits. Payments are securely processed by Paystack, while settlement funds are managed through our regulated banking partner, Wema Bank. Tippified maintains an internal ledger that records each creator’s balance and transaction history."
   },
   {
     icon: GlobeAltIcon,
@@ -68,7 +68,7 @@ const faqs = [
   {
     icon: BanknotesIcon,
     q: "Is there a fee for withdrawals?",
-    a: "Yes. Tippified charges a small platform fee on withdrawals. Additional bank or wallet transfer fees may apply based on OPay’s and Paystack’s policies.",
+    a: "Tippified may charge a small platform fee where applicable. Standard banking or payment processing fees may also apply depending on your bank and our payment partners.",
   },
   {
     icon: ShieldCheckIcon,
@@ -105,8 +105,7 @@ export default function FAQPage() {
             Frequently Asked Questions
           </h1>
           <p className="text-gray-600 max-w-3xl mx-auto text-lg">
-            Here are answers to the most common questions about Tippified, how
-            payments work, and how creators receive their money.
+             Here are answers to the most common questions about Tippified, including how fans make payments, how creators receive settlements, and how we keep every transaction secure.
           </p>
         </header>
 
