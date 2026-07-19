@@ -85,37 +85,44 @@ export default function HomePage() {
     return data.results.slice(0, 10);
   },
  });
+
+
+   const {
+  data: goals = [],
+  isLoading: loadingGoals,
+} = useQuery<PublicGoal[]>({
+  queryKey: ["goals"],
+  queryFn: async () => {
+    const res = await fetch(
+      "https://api.tippified.com/api/auth/public-goals/"
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch goals");
+    }
+
+    const data: { results?: PublicGoal[] } | PublicGoal[] =
+      await res.json();
+
+    const results = Array.isArray(data)
+      ? data
+      : data.results ?? [];
+
+    return shuffleArray(results);
+  },
+
+  staleTime: 1000 * 60 * 5,      // 5 minutes
+  gcTime: 1000 * 60 * 30,        // keep cache for 30 minutes
+ });
    
   const [heroVisible, setHeroVisible] = useState(false);
   const [featuresVisible, setFeaturesVisible] = useState([false, false, false]);
   const [aboutVisible, setAboutVisible] = useState(false);
   const [ctaVisible, setCtaVisible] = useState(false);
-  const [goals, setGoals] = useState<PublicGoal[]>([]);
-  const [loadingGoals, setLoadingGoals] = useState(false);
+  
   const [modalGoal, setModalGoal] = useState<PublicGoal | null>(null);
 
-  useEffect(() => {
-  const fetchGoals = async () => {
-    try {
-      setLoadingGoals(true);
-      const res = await fetch("https://api.tippified.com/api/auth/public-goals/");
-
-      const data: { results?: PublicGoal[] } | PublicGoal[] = await res.json();
-
-      const results = Array.isArray(data) ? data : data.results ?? [];
-      const shuffled = shuffleArray(results);
-
-      setGoals(shuffled);
-    } catch (err) {
-      console.error("Failed to load goals", err);
-    } finally {
-      setLoadingGoals(false);
-    }
-  };
-
-  fetchGoals();
-}, []);
-
+  
 
 
 
