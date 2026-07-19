@@ -11,6 +11,7 @@ import {
   ShieldCheckIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/outline";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
@@ -64,9 +65,27 @@ export default function HomePage() {
   const aboutRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
    const rememberScroll = useScrollRestoration("home-scroll");
+
+     const {
+  data: blogs = [],
+  isLoading: loadingBlogs,
+} = useQuery<BlogPost[]>({
+  queryKey: ["blogs"],
+  queryFn: async () => {
+    const res = await fetch(
+      "https://api.tippified.com/api/adminpanel/public/blogs/"
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch blogs");
+    }
+
+    const data: { results: BlogPost[] } = await res.json();
+
+    return data.results.slice(0, 10);
+  },
+ });
    
-   const [blogs, setBlogs] = useState<BlogPost[]>([]);
-   const [loadingBlogs, setLoadingBlogs] = useState(false);
   const [heroVisible, setHeroVisible] = useState(false);
   const [featuresVisible, setFeaturesVisible] = useState([false, false, false]);
   const [aboutVisible, setAboutVisible] = useState(false);
@@ -98,22 +117,6 @@ export default function HomePage() {
 }, []);
 
 
-useEffect(() => {
-  const fetchBlogs = async () => {
-    try {
-      setLoadingBlogs(true);
-      const res = await fetch("https://api.tippified.com/api/adminpanel/public/blogs/");
-      const data = await res.json();
-      setBlogs(data.results.slice(0, 10)); 
-    } catch (err) {
-      console.error("Failed to load blogs", err);
-    } finally {
-      setLoadingBlogs(false);
-    }
-  };
-
-  fetchBlogs();
- }, []);
 
 
    
