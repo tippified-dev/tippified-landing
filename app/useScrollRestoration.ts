@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 
 export function useScrollRestoration(storageKey: string) {
-  useEffect(() => {
+  useLayoutEffect(() => {
     const saved = sessionStorage.getItem(storageKey);
 
     if (!saved) return;
