@@ -2,8 +2,10 @@
 
 import { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import NavBar from "../components/NavBar";
 import ReturnToCreatorButton from "../components/ReturnToCreatorButton";
+
 
 export const metadata: Metadata = {
   title: "About Tippified | Nigerian Creator Tipping Platform",
@@ -49,7 +51,9 @@ export default function AboutPage() {
 
     <main className="bg-white text-gray-800 px-6 py-16">
       <div className="max-w-4xl mx-auto">
-        <ReturnToCreatorButton/>
+        <Suspense fallback={null}>
+          <ReturnToCreatorButton/>
+        </Suspense>
         <h1 className="text-3xl md:text-4xl font-bold mb-6 text-purple-700">
           About Tippified
         </h1>
