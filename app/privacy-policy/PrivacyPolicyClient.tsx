@@ -11,7 +11,9 @@ import {
   UserIcon,
 } from "@heroicons/react/24/outline";
 
+import { Suspense } from "react";
 import NavBar from "../components/NavBar";
+import ReturnToCreatorButton from "../components/ReturnToCreatorButton";
 
 export default function PrivacyPolicyClient() {
   const sections = [
@@ -628,6 +630,10 @@ export default function PrivacyPolicyClient() {
       <NavBar />
 
       <main className="bg-white text-gray-900 min-h-screen px-6 py-20 max-w-5xl mx-auto">
+
+        <Suspense fallback={null}>
+          <ReturnToCreatorButton/>
+        </Suspense>
 
         <h1 className="text-4xl font-bold text-center text-purple-700 mb-3">
           Tippified Privacy Policy

@@ -1,6 +1,8 @@
 "use client";
 
+import { Suspense } from "react";
 import NavBar from "../components/NavBar";
+import ReturnToCreatorButton from "../components/ReturnToCreatorButton";
 
 export default function TermsClient() {
   return (
@@ -8,6 +10,10 @@ export default function TermsClient() {
       <NavBar />
 
       <main className="max-w-5xl mx-auto px-6 py-14 text-gray-800 bg-white">
+
+        <Suspense fallback={null}>
+          <ReturnToCreatorButton/>
+        </Suspense>
 
         <h1 className="text-4xl font-bold text-purple-700 mb-3">
           Tippified Terms and Conditions
