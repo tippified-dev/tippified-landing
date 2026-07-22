@@ -23,16 +23,16 @@ export default function ReturnToCreatorButton() {
   }
 
   return (
-    <div className="mb-8">
-      <a
-        href={`${data.url}${
-          data.url.includes("?") ? "&" : "?"
-        }restore=${encodeURIComponent(payload)}`}
-        className="inline-flex items-center gap-2 rounded-xl border border-purple-200 bg-purple-50 px-4 py-2 text-sm font-semibold text-purple-700 hover:bg-purple-100"
-      >
-        <FaArrowLeft />
-        Return to Creator
-      </a>
-    </div>
-  );
+  <div className="fixed top-24 left-4 z-50">
+    <a
+      href={`${data.url}${
+        data.url.includes("?") ? "&" : "?"
+      }restore=${encodeURIComponent(payload)}`}
+      className="inline-flex items-center gap-2 rounded-xl border border-purple-200 bg-white shadow-lg px-4 py-3 text-sm font-semibold text-purple-700 hover:bg-purple-50"
+    >
+      <FaArrowLeft />
+      Return to Creator
+    </a>
+  </div>
+);
 }
