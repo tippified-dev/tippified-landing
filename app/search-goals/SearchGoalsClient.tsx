@@ -1,10 +1,20 @@
 "use client";
 
-import { InformationCircleIcon } from "@heroicons/react/16/solid";
-import { ArrowUpIcon, BanknotesIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
-import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState, type ReactElement } from "react";
+import {
+  FiArrowUp,
+  FiClock,
+  FiDollarSign,
+  FiHeart,
+  FiInfo,
+  FiSearch,
+  FiTarget,
+  FiTrendingUp,
+  FiX,
+  FiZap,
+} from "react-icons/fi";
 import NavBar from "../components/NavBar";
-// import { Pacifico } from "next/font/google";
 
 interface PublicGoal {
   id: number;
@@ -18,210 +28,341 @@ interface PublicGoal {
   created_at: string;
 }
 
+interface AboutModalProps {
+  goal: PublicGoal | null;
+  onClose: () => void;
+}
 
 function shuffleArray<T>(array: T[]): T[] {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+  const shuffled: T[] = [...array];
+  for (let i: number = shuffled.length - 1; i > 0; i--) {
+    const j: number = Math.floor(Math.random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled;
- }
+}
 
-export default function SearchGoalsClient() {
+export default function SearchGoalsClient(): ReactElement {
   const [goals, setGoals] = useState<PublicGoal[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [hasMore, setHasMore] = useState<boolean>(true);
   const loaderRef = useRef<HTMLDivElement | null>(null);
- 
   const [modalGoal, setModalGoal] = useState<PublicGoal | null>(null);
 
-  
+  const fetchGoals = async (
+    pageNum: number = 1,
+    query: string = "",
+  ): Promise<void> => {
+    try {
+      setLoading(true);
+      const res: Response = await fetch(
+        `https://api.tippified.com/api/auth/public-goals/?page=${pageNum}&search=${query}`,
+      );
+      if (!res.ok) {
+        setHasMore(false);
+        return;
+      }
+      const data: { results: PublicGoal[] } = await res.json();
+      const results: PublicGoal[] = Array.isArray(data.results)
+        ? data.results
+        : [];
+      const finalResults: PublicGoal[] =
+        pageNum === 1 ? shuffleArray(results) : results;
 
- const fetchGoals = async (pageNum = 1, query = "") => {
-  try {
-    setLoading(true);
+      if (pageNum === 1) setGoals(finalResults);
+      else setGoals((prev: PublicGoal[]) => [...prev, ...finalResults]);
 
-    const res = await fetch(
-      `https://api.tippified.com/api/auth/public-goals/?page=${pageNum}&search=${query}`
-    );
-
-    if (!res.ok) {
-      console.warn("No more pages");
-      setHasMore(false);
-      return;
+      setHasMore(results.length === 10);
+    } catch (err: unknown) {
+      console.error("Failed to fetch goals", err);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const data = await res.json();
-
-    const results = Array.isArray(data.results) ? data.results : [];
-
-   
-    const finalResults =
-      pageNum === 1 ? shuffleArray(results) : results;
-
-    if (pageNum === 1) {
-      setGoals(finalResults);
-    } else {
-      setGoals((prev) => [...prev, ...finalResults]);
-    }
-
-    setHasMore(results.length === 10);
-  } catch (err) {
-    console.error("Failed to fetch goals", err);
-  } finally {
-    setLoading(false);
-  }
- };
-
-
-  // Initial fetch and fetch on search query change
   useEffect(() => {
     setPage(1);
     fetchGoals(1, searchQuery);
   }, [searchQuery]);
 
-  // Infinite scroll observer
   useEffect(() => {
     if (!loaderRef.current) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
+    const observer: IntersectionObserver = new IntersectionObserver(
+      (entries: IntersectionObserverEntry[]) => {
         if (entries[0].isIntersecting && !loading && hasMore) {
-          setPage((prev) => prev + 1);
+          setPage((prev: number) => prev + 1);
         }
       },
-      { threshold: 1 }
+      { threshold: 1 },
     );
     observer.observe(loaderRef.current);
     return () => observer.disconnect();
   }, [loading, hasMore]);
 
-  // Fetch next page when page changes
   useEffect(() => {
-    if (page === 1) return; 
+    if (page === 1) return;
     fetchGoals(page, searchQuery);
-  }, 
-   // eslint-disable-next-line react-hooks/exhaustive-deps
-  [page]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
-  const capitalizeWords = (text: string) => {
+  const capitalizeWords = (text: string): string => {
     if (!text) return "";
     return text
       .trim()
       .split(/\s+/)
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(" ");
+  };
+
+  const getProgress = (current: string, target: string): number => {
+    const c = Number(current || 0);
+    const t = Number(target || 1);
+    if (!t) return 0;
+    return Math.min((c / t) * 100, 100);
   };
 
   return (
     <>
       <NavBar />
-
-      <main className="bg-white text-gray-900 pt-16">
-        {/* Fixed search bar */}
-        <div className="fixed top-0 left-0 right-0 bg-white px-4 py-3 shadow z-50 flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Search goals..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-          <button className="bg-purple-600 text-white px-3 py-2 rounded-lg hover:bg-purple-700 transition">
-            Search
-          </button>
+      <main className="min-h-screen bg-[#fdfcff] pt-`8 pb-20">
+        {/* PREMIUM SEARCH BAR */}
+        <div className="fixed top-0 left-0 right-0 z-50 border-b border-purple-100/60 bg-white/80 backdrop-blur-xl">
+          <div className="absolute left-0 top-0 h-0.5 w-full bg-linear-to-r from-purple-600 via-violet-500 to-indigo-500" />
+          <div className="mx-auto max-w-5xl px-4 py-3 flex items-center gap-2">
+            <div className="flex flex-1 items-center gap-2.5 rounded-full bg-[#f8f5ff] px-4 py-2.5 ring-1 ring-purple-100">
+              <FiSearch className="text-purple-400 shrink-0" size={16} />
+              <input
+                type="text"
+                placeholder="Search goals, creators..."
+                value={searchQuery}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSearchQuery(e.target.value)
+                }
+                className="w-full bg-transparent text-[13px] font-medium text-purple-900 placeholder:text-purple-400 focus:outline-none"
+              />
+            </div>
+            <button className="h-10.5 w-10.5 grid place-items-center rounded-full bg-linear-to-br from-purple-600 to-indigo-600 text-white shadow-[0_8px_16px_-8px_rgba(124,58,237,0.6)] active:scale-95 transition">
+              <FiSearch size={16} />
+            </button>
+          </div>
         </div>
 
-        <section className="pt-7 px-4">
+        <section className="mx-auto max-w-5xl px-4 pt-4">
           {goals.length === 0 && !loading && (
-            <p className="text-center text-gray-500 mt-10">No goals found</p>
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-16 rounded-3xl border border-dashed border-purple-200 bg-[#f8f5ff] p-10 text-center"
+            >
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-white text-purple-600 ring-1 ring-purple-100">
+                <FiTarget size={20} />
+              </div>
+              <p className="mt-3 text-sm font-bold text-purple-900">
+                No goals found
+              </p>
+              <p className="text-xs text-purple-400">Try another keyword</p>
+            </motion.div>
           )}
 
           <div className="flex flex-col gap-4">
-            {goals.map((goal) => (
-              <div
-                key={goal.id}
-                className="group bg-white rounded-2xl p-5 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100"
-              >
-                <h3 className="font-bold text-lg mb-1">{capitalizeWords(goal.title)}</h3>
-                <p className="text-sm text-gray-500 mb-2">
-                  by <span className="font-semibold">{capitalizeWords(goal.username)}</span> - (
-                  <span className="font-semibold">{goal.referral_code}</span>)
-                </p>
+            {goals.map((goal: PublicGoal, idx: number) => {
+              const progress: number = getProgress(
+                goal.current_amount,
+                goal.target_amount,
+              );
+              return (
+                <motion.div
+                  key={goal.id}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.04 }}
+                  whileHover={{ y: -2 }}
+                  className="group relative overflow-hidden rounded-[1.6rem] border border-purple-100/70 bg-white p-px shadow-[0_12px_32px_-20px_rgba(124,58,237,0.25)]"
+                >
+                  <div className="rounded-[1.55rem] bg-linear-to-br from-white to-[#f8f5ff] p-5">
+                    <div className="absolute left-0 top-0 h-0.5 w-full bg-linear-to-r from-purple-600/0 via-purple-600/40 to-violet-500/0 opacity-0 group-hover:opacity-100 transition" />
 
-                <p className="text-sm mb-1 flex items-center gap-1">
-                  <ArrowUpIcon className="w-4 h-4 text-purple-600" /> Target: ₦{goal.target_amount}
-                </p>
-                <p className="text-sm mb-1 flex items-center gap-1">
-                  <BanknotesIcon className="w-4 h-4 text-purple-600" /> Local: ₦{goal.current_amount}
-                </p>
-                <p className="text-sm mb-1 flex items-center gap-1">
-                  <CurrencyDollarIcon className="w-4 h-4 text-purple-600" /> Foreign: ${goal.current_foreign_usd}
-                </p>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="h-10 w-10 shrink-0 grid place-items-center rounded-xl bg-linear-to-br from-purple-600 to-indigo-600 text-white shadow">
+                          <FiTarget size={16} />
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="font-extrabold text-[15px] leading-tight tracking-tight text-purple-900 truncate">
+                            {capitalizeWords(goal.title)}
+                          </h3>
+                          <p className="text-[11px] text-purple-500 mt-0.5">
+                            by{" "}
+                            <span className="font-bold text-purple-700">
+                              {capitalizeWords(goal.username)}
+                            </span>{" "}
+                            •{" "}
+                            <span className="font-mono text-[10px] bg-purple-50 px-1.5 py-0.5 rounded-full ring-1 ring-purple-100">
+                              {goal.referral_code}
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-linear-to-br from-purple-600 to-indigo-600 px-2.5 py-1 text-[10px] font-bold text-white shadow">
+                        <FiZap size={10} /> {progress.toFixed(0)}%
+                      </span>
+                    </div>
 
-                <p className="text-xs text-gray-400 mt-2">
-                  Created: {new Date(goal.created_at).toLocaleDateString()}
-                </p>
+                    <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-purple-50">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${progress}%` }}
+                        transition={{ duration: 0.8 }}
+                        className="h-full rounded-full bg-linear-to-r from-purple-600 to-violet-500"
+                      />
+                    </div>
 
-                <div className="flex gap-2 mt-3">
-                  <a
-            href={`https://app.tippified.com/tip/${goal.referral_code}`}
-            className="flex-1 text-center text-xs bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700 transition"
-          >
-            Support 
-          </a>
+                    <div className="mt-4 grid grid-cols-3 gap-2.5">
+                      <div className="rounded-2xl bg-[#f8f5ff] px-3 py-3 ring-1 ring-purple-50">
+                        <p className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest text-purple-400">
+                          <FiArrowUp size={10} /> Target
+                        </p>
+                        <p className="mt-1 text-[13px] font-extrabold text-purple-900">
+                          ₦{Number(goal.target_amount || 0).toLocaleString()}
+                        </p>
+                      </div>
+                      <div className="rounded-2xl bg-[#f8f5ff] px-3 py-3 ring-1 ring-purple-50">
+                        <p className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest text-purple-400">
+                          <FiTrendingUp size={10} /> Local
+                        </p>
+                        <p className="mt-1 text-[13px] font-extrabold text-purple-900">
+                          ₦{Number(goal.current_amount || 0).toLocaleString()}
+                        </p>
+                      </div>
+                      <div className="rounded-2xl bg-linear-to-br from-purple-600 to-indigo-600 px-3 py-3 text-white shadow-[0_8px_16px_-8px_rgba(124,58,237,0.5)]">
+                        <p className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest text-purple-100">
+                          <FiDollarSign size={10} /> USD
+                        </p>
+                        <p className="mt-1 text-[13px] font-extrabold">
+                          $
+                          {Number(
+                            goal.current_foreign_usd || 0,
+                          ).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
 
-          <button
-            className="flex-1 text-center text-xs bg-gray-100 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-200 transition"
-            onClick={() => setModalGoal(goal)}
-          >
-            About
-          </button>
-                </div>
-              </div>
-            ))}
+                    <div className="mt-3 flex items-center justify-between">
+                      <p className="flex items-center gap-1 text-[11px] text-purple-400">
+                        <FiClock size={11} />{" "}
+                        {new Date(goal.created_at).toLocaleDateString()}
+                      </p>
+                      <div className="flex gap-2">
+                        <a
+                          href={`https://app.tippified.com/tip/${goal.referral_code}`}
+                          className="inline-flex items-center gap-1 rounded-full bg-linear-to-br from-purple-600 to-indigo-600 px-4 py-2 text-[11px] font-bold text-white shadow hover:opacity-95 active:scale-[0.97] transition"
+                        >
+                          <FiHeart size={12} /> Support
+                        </a>
+                        <button
+                          onClick={() => setModalGoal(goal)}
+                          className="inline-flex items-center gap-1 rounded-full border border-purple-100 bg-white px-4 py-2 text-[11px] font-bold text-purple-700 hover:bg-purple-50 active:scale-[0.97] transition"
+                        >
+                          <FiInfo size={12} /> About
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
 
-          {modalGoal && (
-  <div
-    className="fixed inset-0 bg-purple-500 bg-opacity-50 flex items-center justify-center p-4 z-50"
-    onClick={() => setModalGoal(null)}
-  >
-    <div
-      className="bg-white rounded-lg max-w-md w-full p-6 relative"
-      onClick={(e) => e.stopPropagation()} // Prevent modal close when clicking inside
-    >
-      <button
-        className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
-        onClick={() => setModalGoal(null)}
-      >
-        ✖
-      </button>
-      <h3 className="text-xl font-bold mb-4">{capitalizeWords(modalGoal.title)}</h3>
-      <p className="text-gray-700 mb-2">
-        By: <span className="font-semibold">{capitalizeWords(modalGoal.username)}</span>
-      </p>
-      <p className="text-gray-700">{modalGoal.about}</p>
-    </div>
-  </div>
- )}
-
-          {/* Loader div for infinite scroll */}
-          <div ref={loaderRef} className="h-10 mt-4 flex justify-center items-center">
-            {loading && <p className="text-gray-500 text-sm">Loading more goals...</p>}
+          {/* Loader */}
+          <div
+            ref={loaderRef}
+            className="h-16 mt-6 flex justify-center items-center"
+          >
+            {loading && (
+              <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 ring-1 ring-purple-100 shadow-sm">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-purple-100 border-t-purple-600" />
+                <p className="text-[12px] font-bold text-purple-600">
+                  Loading more goals...
+                </p>
+              </div>
+            )}
           </div>
         </section>
 
-         <a
+        {/* ABOUT MODAL */}
+        <AboutModal goal={modalGoal} onClose={() => setModalGoal(null)} />
+
+        <a
           href="/about"
-          className="fixed right-4 bottom-20 md:bottom-10 z-50 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-purple-600 text-white shadow-lg hover:bg-purple-700 transition transform hover:scale-105"
-          aria-label="About Tippified"
+          className="fixed right-4 bottom-20 md:bottom-10 z-50 grid place-items-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-linear-to-br from-purple-600 to-indigo-600 text-white shadow-[0_12px_24px_-8px_rgba(124,58,237,0.7)] hover:scale-105 active:scale-95 transition"
         >
-          <InformationCircleIcon className="w-7 h-7 md:w-8 md:h-8" />
+          <FiInfo className="w-5 h-5" />
         </a>
       </main>
     </>
   );
 }
+
+const AboutModal: React.FC<AboutModalProps> = ({ goal, onClose }) => {
+  if (!goal) return null;
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-120flex items-center justify-center bg-[#2d0b6e]/35 backdrop-blur-md p-4"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ y: 24, scale: 0.94, opacity: 0 }}
+          animate={{ y: 0, scale: 1, opacity: 1 }}
+          exit={{ y: 24, scale: 0.94, opacity: 0 }}
+          transition={{ type: "spring", damping: 26, stiffness: 320 }}
+          onClick={(e: React.MouseEvent) => e.stopPropagation()}
+          className="w-full max-w-md overflow-hidden rounded-[1.8rem] border border-purple-100 bg-white shadow-[0_24px_64px_-20px_rgba(88,28,174,0.5)]"
+        >
+          <div className="h-1.5 w-full bg-linear-to-r from-purple-600 to-indigo-500" />
+          <div className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-purple-600 to-indigo-600 text-white">
+                  <FiTarget size={16} />
+                </div>
+                <h2 className="text-[16px] font-extrabold text-purple-900 leading-tight">
+                  {goal.title}
+                </h2>
+              </div>
+              <button
+                onClick={onClose}
+                className="h-8 w-8 grid place-items-center rounded-full bg-purple-50 text-purple-400 hover:bg-purple-100"
+              >
+                <FiX size={14} />
+              </button>
+            </div>
+            <p className="mt-2 text-[11px] text-purple-500">
+              By{" "}
+              <span className="font-bold text-purple-700">{goal.username}</span>{" "}
+              • {goal.referral_code}
+            </p>
+            <div className="mt-5 max-h-[60vh] overflow-y-auto rounded-2xl bg-[#f8f5ff] p-4 ring-1 ring-purple-50">
+              <p className="whitespace-pre-wrap wrap-break-word text-[13.5px] leading-6 text-purple-800/80">
+                {goal.about || "No description provided."}
+              </p>
+            </div>
+            <div className="mt-5 flex justify-end">
+              <button
+                onClick={onClose}
+                className="rounded-full bg-linear-to-br from-purple-600 to-indigo-600 px-6 py-2.5 text-sm font-bold text-white shadow hover:opacity-95"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
