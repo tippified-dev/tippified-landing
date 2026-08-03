@@ -184,10 +184,12 @@ export default function HomePage(): ReactElement {
         <section
           id="hero"
           ref={heroRef}
-          className="relative overflow-hidden bglinear-to-br from-purple-600 via-violet-600 to-indigo-600 text-white py-14 px-6"
+          className="relative overflow-hidden bg-linear-to-br from-[#15052E] via-[#4C1D95] to-[#6D28D9] text-white py-16 px-6 isolate"
         >
-          <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
-          <div className="absolute -left-24 -bottom-24 h-80 w-80 rounded-full bg-purple-300/20 blur-3xl" />
+          {/* dashboard gradient orbs - darker so text stays readable */}
+          <div className="absolute -right-24 -top-24 h-105 w-105 rounded-full bg-[#7C3AED]/30 blur-[80px] pointer-events-none" />
+          <div className="absolute -left-24 -bottom-24 h-105 w-105 rounded-full bg-[#2E1065]/80 blur-[90px] pointer-events-none" />
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={heroVisible ? { opacity: 1, y: 0 } : {}}
@@ -195,40 +197,44 @@ export default function HomePage(): ReactElement {
             className="relative max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center"
           >
             <div>
-              <p className={`text-xl mb-4 opacity-90 ${pacifico.className}`}>
+              <p className={`text-xl mb-4 text-white ${pacifico.className}`}>
                 tippified.
               </p>
-              <h1 className="text-4xl md:text-6xl font-extrabold leading-[0.95] tracking-tight mb-6">
+              <h1 className="text-4xl md:text-6xl font-extrabold leading-[0.95] tracking-tight mb-6 text-white">
                 Get Tipped for What You Create
               </h1>
-              <p className="text-[15px] md:text-[17px] leading-7 text-purple-100 mb-8 max-w-xl">
+              {/* Don't use text-purple-100 on purple - fails contrast. Use white 85% */}
+              <p className="text-[15px] md:text-[17px] leading-7 text-white/85 mb-8 max-w-xl font-medium">
                 Nigeria&apos;s all-in-one creator monetization platform. Receive
                 tips, gifts, goal contributions and wishlist purchases with
                 secure payments powered by Paystack and settlements via Wema
                 Bank.
               </p>
               <div className="flex flex-wrap gap-3">
+                {/* Primary: stays white bg, but text is now #4C1D95 not 700 */}
                 <a
                   href="https://app.tippified.com/creator/signup"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-purple-700 font-bold shadow-[0_10px_20px_-10px_rgba(0,0,0,0.3)] hover:bg-purple-50 transition"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#4C1D95] font-bold shadow-[0_10px_25px_-10px_rgba(0,0,0,0.5)] hover:bg-zinc-100 transition"
                 >
                   <FiUserPlus /> Become a Creator
                 </a>
+
+                {/* Secondary: all same dark solid for contrast, not translucent white */}
                 <a
                   href="/how-it-works"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/15 backdrop-blur border border-white/20 text-white font-bold hover:bg-white/20 transition"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#2E1065]/80 backdrop-blur-md border border-white/20 text-white font-semibold hover:bg-[#3B1F8A] hover:border-white/30 transition"
                 >
                   <FiInfo /> How it works
                 </a>
                 <a
                   href="/faq"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 border border-white/15 text-white font-bold hover:bg-white/15 transition"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#2E1065]/80 backdrop-blur-md border border-white/20 text-white font-semibold hover:bg-[#3B1F8A] hover:border-white/30 transition"
                 >
                   <FiHelpCircle /> FAQ
                 </a>
                 <a
                   href="/contact-us"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-purple-900/20 border border-white/10 text-white font-bold hover:bg-purple-900/30 transition"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#1E1040]/80 backdrop-blur-md border border-white/15 text-white font-semibold hover:bg-[#2A1760] transition"
                 >
                   <FiPhone /> Contact
                 </a>
