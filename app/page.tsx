@@ -297,7 +297,7 @@ export default function HomePage(): ReactElement {
 
         {/* FEATURES */}
         <section
-          className="py-14 px-6 bg-linear-to-b from-purple-50/70 to-white"
+          className="py-7 px-6 bg-linear-to-b from-purple-50/70 to-white"
           id="features"
         >
           <div className="max-w-6xl mx-auto">
@@ -348,7 +348,7 @@ export default function HomePage(): ReactElement {
 
         {/* GOALS - PREMIUM */}
         <section
-          className="relative overflow-hidden bg-[#FCFAFF] border-y border-[#F3E8FF] py-20 px-6"
+          className="relative overflow-hidden bg-[#FCFAFF] border-y border-[#F3E8FF] py-10 px-6"
           id="pubic-goals"
         >
           <div className="absolute inset-0 pointer-events-none">
@@ -426,7 +426,7 @@ export default function HomePage(): ReactElement {
                           {/* top */}
                           <div className="relative flex items-start justify-between mb-4">
                             <div className="flex items-center gap-3">
-                              <div className="h-10 w-10 rounded-full bg-[#15052E] text-white grid place-items-center font-bold text-sm">
+                              <div className="h-10 w-10 rounded-full bg-purple-600 text-white grid place-items-center font-bold text-sm">
                                 {goal.username?.charAt(0).toUpperCase()}
                               </div>
                               <div>
@@ -445,7 +445,7 @@ export default function HomePage(): ReactElement {
                           </div>
 
                           {/* title */}
-                          <h3 className="relative text-[18px] font-extrabold tracking-tight text-[#15052E] leading-[1.15] line-clamp-2 min-h-11">
+                          <h3 className="relative text-[18px] font-extrabold tracking-tight text-purple-700 leading-[1.15] line-clamp-2 min-h-11">
                             {capitalizeWords(goal.title)}
                           </h3>
 
@@ -495,8 +495,8 @@ export default function HomePage(): ReactElement {
                                 ₦{formatAmount(goal.target_amount)}
                               </p>
                             </div>
-                            <div className="rounded-2xl bg-[#15052E] p-3">
-                              <p className="text-[10px] font-bold tracking-widest uppercase text-[#C4B5FD] flex items-center gap-1 mb-1">
+                            <div className="rounded-2xl bg-linear-to-r from-purple-600 via-violet-500 to-indigo-500 p-3">
+                              <p className="text-[10px] font-bold tracking-widest uppercase text-[#0c0c0c] flex items-center gap-1 mb-1">
                                 <FiGift size={10} /> Raised
                               </p>
                               <p className="text-[14px] font-extrabold text-white">
@@ -521,13 +521,13 @@ export default function HomePage(): ReactElement {
                             <a
                               href={`https://app.tippified.com/tip/${goal.referral_code}`}
                               onClick={rememberScroll}
-                              className="flex-1 inline-flex items-center justify-center gap-1.5 text-[13px] bg-[#4C1D95] text-white py-3 rounded-full font-bold hover:bg-[#3B1F8A] transition shadow-[0_8px_20px_-10px_rgba(76,29,149,0.6)]"
+                              className="flex-1 inline-flex items-center justify-center gap-1.5 text-[13px] bg-purple-400 text-white py-3 rounded-full font-bold hover:bg-[#3B1F8A] transition shadow-[0_8px_20px_-10px_rgba(76,29,149,0.6)]"
                             >
                               <FiHeart size={14} /> Support
                             </a>
                             <button
                               onClick={() => setModalGoal(goal)}
-                              className="flex-1 inline-flex items-center justify-center gap-1.5 text-[13px] bg-white border border-[#E9D5FF] text-[#4C1D95] py-3 rounded-full font-bold hover:bg-[#F5F0FF] transition"
+                              className="flex-1 inline-flex items-center justify-center gap-1.5 text-[13px] bg-purple-300 border border-[#E9D5FF] text-[#4C1D95] py-3 rounded-full font-bold hover:bg-[#F5F0FF] transition"
                             >
                               <FiInfo size={14} /> About
                             </button>
