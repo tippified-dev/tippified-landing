@@ -496,7 +496,7 @@ export default function HomePage(): ReactElement {
                               </p>
                             </div>
                             <div className="rounded-2xl bg-linear-to-r from-purple-600 via-violet-500 to-indigo-500 p-3">
-                              <p className="text-[10px] font-bold tracking-widest uppercase text-[#0c0c0c] flex items-center gap-1 mb-1">
+                              <p className="text-[10px] font-bold tracking-widest uppercase text-black flex items-center gap-1 mb-1">
                                 <FiGift size={10} /> Raised
                               </p>
                               <p className="text-[14px] font-extrabold text-white">
@@ -548,7 +548,7 @@ export default function HomePage(): ReactElement {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-12 flex flex-col items-center"
+            className="mt-6 flex flex-col items-center"
           >
             {/* divider */}
             <div className="w-full max-w-6xl h-px bg-linear-to-r from-transparent via-[#E9D5FF] to-transparent mb-10" />
@@ -557,7 +557,7 @@ export default function HomePage(): ReactElement {
               href="/search-goals"
               whileHover={{ y: -2 }}
               whileTap={{ y: 0, scale: 0.98 }}
-              className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#15052E] border border-[#2A1A4A] text-white font-bold text-[14px] tracking-wide shadow-[0_12px_30px_-12px_rgba(21,5,46,0.6),0_0_0_1px_rgba(255,255,255,0.08)_inset] overflow-hidden"
+              className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full bg-purple-700 border border-[#2A1A4A] text-white font-bold text-[14px] tracking-wide shadow-[0_12px_30px_-12px_rgba(21,5,46,0.6),0_0_0_1px_rgba(255,255,255,0.08)_inset] overflow-hidden"
             >
               {/* hover glow */}
               <div className="absolute inset-0 bg-linear-to-r from-[#4C1D95] via-[#6D28D9] to-[#7C3AED] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -694,7 +694,7 @@ export default function HomePage(): ReactElement {
         <section
           id="about"
           ref={aboutRef}
-          className="py-16 px-6 max-w-4xl mx-auto text-center"
+          className="py-8 px-6 max-w-4xl mx-auto text-center"
         >
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -728,7 +728,7 @@ export default function HomePage(): ReactElement {
           ref={ctaRef}
           className="py-20 px-6 bg-linear-to-br from-purple-600 via-violet-600 to-indigo-600 text-white text-center relative overflow-hidden"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.15),transparent_50%)]" />
+          <div className="absolute inset-0 bg-purple-600,transparent_50%)]" />
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={ctaVisible ? { opacity: 1, y: 0 } : {}}
@@ -761,7 +761,7 @@ export default function HomePage(): ReactElement {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-purple-900/40 backdrop-blur-xl flex items-center justify-center p-4 z-50"
+              className="fixed inset-0 bg-purple-600 backdrop-blur-xl flex items-center justify-center p-4 z-50"
               onClick={() => setModalGoal(null)}
             >
               <motion.div
