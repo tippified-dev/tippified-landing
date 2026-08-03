@@ -8,17 +8,23 @@ import { useEffect, useRef, useState } from "react";
 import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 import {
   FiArrowRight,
-  FiArrowUp,
+  FiAtSign,
+  FiCheckCircle,
   FiClock,
   FiCreditCard,
   FiDollarSign,
   FiGift,
+  FiGrid,
   FiHeart,
   FiHelpCircle,
   FiInfo,
+  FiLock,
   FiPhone,
+  FiSearch,
   FiShield,
+  FiShieldOff,
   FiTarget,
+  FiTrendingUp,
   FiUserPlus,
   FiX,
   FiZap,
@@ -340,124 +346,350 @@ export default function HomePage(): ReactElement {
           />
         </div>
 
-        {/* GOALS */}
-        <section className="py-6 px-6 bg-white" id="pubic-goals">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl font-extrabold tracking-tight text-center mb-7">
-              Support a Creator&apos;s Goal
-            </h2>
-            {loadingGoals && (
-              <p className="text-center text-purple-400">Loading goals...</p>
-            )}
-            <div className="overflow-x-auto scrollbar-hide -mx-6 px-6">
-              <div className="flex gap-4">
-                {goals.slice(0, 10).map((goal: PublicGoal) => (
-                  <motion.div
-                    key={goal.id}
-                    whileHover={{ y: -3 }}
-                    className="min-w-65px shrink-0 rounded-[1.4rem] border border-purple-100 bg-linear-to-br from-white to-purple-50/60 p-px shadow-sm"
-                  >
-                    <div className="rounded-[1.35rem] bg-white p-5 h-full flex flex-col">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="h-7 w-7 grid place-items-center rounded-full bg-purple-600 text-white">
-                          <FiTarget size={12} />
-                        </span>
-                        <h3 className="font-bold text-[14px] leading-tight truncate">
-                          {capitalizeWords(goal.title)}
-                        </h3>
-                      </div>
-                      <p className="text-[11px] text-purple-500 mb-3">
-                        by{" "}
-                        <span className="font-bold text-purple-700">
-                          {capitalizeWords(goal.username)}
-                        </span>{" "}
-                        • {goal.referral_code}
-                      </p>
-                      <div className="space-y-1.5 text-[12px]">
-                        <p className="flex items-center gap-1.5 text-purple-700/80">
-                          <FiArrowUp className="text-purple-600" /> Target: ₦
-                          {formatAmount(goal.target_amount)}
-                        </p>
-                        <p className="flex items-center gap-1.5 text-purple-700/80">
-                          <FiGift className="text-purple-600" /> Local: ₦
-                          {formatAmount(goal.current_amount)}
-                        </p>
-                        <p className="flex items-center gap-1.5 text-purple-700/80">
-                          <FiDollarSign className="text-purple-600" /> Foreign:
-                          ${formatAmount(goal.current_foreign_usd)}
-                        </p>
-                      </div>
-                      <p className="text-[10px] text-purple-400 mt-3 flex items-center gap-1">
-                        <FiClock size={10} />{" "}
-                        {new Date(goal.created_at).toLocaleDateString()}
-                      </p>
-                      <div className="mt-4 flex gap-2">
-                        <a
-                          href={`https://app.tippified.com/tip/${goal.referral_code}`}
-                          onClick={rememberScroll}
-                          className="flex-1 text-center text-[12px] bg-linear-to-r from-purple-600 to-violet-600 text-white py-2.5 rounded-full font-bold shadow-[0_8px_16px_-8px_rgba(124,58,237,0.6)] hover:opacity-95 transition"
-                        >
-                          Support
-                        </a>
-                        <button
-                          onClick={() => setModalGoal(goal)}
-                          className="flex-1 text-[12px] bg-purple-50 border border-purple-100 text-purple-700 py-2.5 rounded-full font-bold hover:bg-purple-100 transition"
-                        >
-                          About
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
+        {/* GOALS - PREMIUM */}
+        <section
+          className="relative overflow-hidden bg-[#FCFAFF] border-y border-[#F3E8FF] py-20 px-6"
+          id="pubic-goals"
+        >
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute -top-32 left-1/2 -translate-x-1/2 h-150 w-225 rounded-full bg-linear-to-b from-[#E9D5FF]/40 to-transparent blur-[80px]" />
+          </div>
+
+          <div className="relative max-w-6xl mx-auto">
+            {/* header */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10"
+            >
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#E9D5FF] shadow-sm mb-3">
+                  <span className="h-7 w-7 rounded-full bg-linear-to-br from-[#4C1D95] to-[#6D28D9] grid place-items-center">
+                    <FiTarget className="w-3.5 h-3.5 text-white" />
+                  </span>
+                  <span className="text-[11px] font-bold tracking-widest uppercase text-[#4C1D95]">
+                    Active Goals
+                  </span>
+                </div>
+                <h2 className="text-3xl md:text-[38px] font-extrabold tracking-tight text-[#15052E]">
+                  Support a Creator&apos;s{" "}
+                  <span className="bg-linear-to-r from-[#4C1D95] to-[#7C3AED] bg-clip-text text-transparent">
+                    Goal
+                  </span>
+                </h2>
+                <p className="text-[14px] text-[#52525B] font-medium mt-2 max-w-xl">
+                  Real people, real dreams. Tip directly and watch their
+                  progress grow.
+                </p>
+              </div>
+            </motion.div>
+
+            {loadingGoals ? (
+              <div className="flex gap-5 overflow-hidden">
+                {[...Array(3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="min-w-85 h-70 rounded-[28px] bg-white border border-[#F3E8FF] animate-pulse"
+                  />
                 ))}
               </div>
-            </div>
+            ) : (
+              <div className="overflow-x-auto scrollbar-hide -mx-6 px-6 pb-6">
+                <div className="flex gap-5">
+                  {goals.slice(0, 10).map((goal: PublicGoal, idx: number) => {
+                    const target = Number(goal.target_amount) || 1;
+                    const current = Number(goal.current_amount) || 0;
+                    const progress = Math.min(
+                      100,
+                      Math.max(8, (current / target) * 100),
+                    );
+
+                    return (
+                      <motion.div
+                        key={goal.id}
+                        initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+                        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                        viewport={{ once: true }}
+                        transition={{
+                          duration: 0.5,
+                          delay: idx * 0.07,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
+                        whileHover={{ y: -6 }}
+                        className="group min-w-85 max-w-90 shrink-0 rounded-[28px] bg-white border border-[#E9D5FF] p-px shadow-[0_12px_40px_-20px_rgba(76,29,149,0.25)] hover:shadow-[0_20px_50px_-18px_rgba(76,29,149,0.35)] transition-shadow"
+                      >
+                        <div className="rounded-[27px] bg-linear-to-b from-white to-[#FDFAFF] p-6 h-full flex flex-col relative overflow-hidden">
+                          {/* soft glow */}
+                          <div className="absolute -right-16 -top-16 h-32 w-32 rounded-full bg-[#F5F0FF] group-hover:bg-[#EDE9FE] transition-colors pointer-events-none" />
+
+                          {/* top */}
+                          <div className="relative flex items-start justify-between mb-4">
+                            <div className="flex items-center gap-3">
+                              <div className="h-10 w-10 rounded-full bg-[#15052E] text-white grid place-items-center font-bold text-sm">
+                                {goal.username?.charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                <p className="text-[13px] font-bold text-[#18181B] leading-tight flex items-center gap-1">
+                                  {capitalizeWords(goal.username)}
+                                </p>
+                                <p className="text-[11px] font-medium text-[#71717A] flex items-center gap-1">
+                                  <FiAtSign size={10} /> {goal.referral_code}
+                                </p>
+                              </div>
+                            </div>
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F5F0FF] border border-[#E9D5FF] text-[10px] font-bold tracking-wide uppercase text-[#4C1D95]">
+                              <FiClock size={10} />{" "}
+                              {new Date(goal.created_at).toLocaleDateString()}
+                            </span>
+                          </div>
+
+                          {/* title */}
+                          <h3 className="relative text-[18px] font-extrabold tracking-tight text-[#15052E] leading-[1.15] line-clamp-2 min-h-11">
+                            {capitalizeWords(goal.title)}
+                          </h3>
+
+                          {/* progress */}
+                          <div className="mt-5">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-[12px] font-semibold text-[#52525B] flex items-center gap-1">
+                                <FiTrendingUp className="text-[#4C1D95]" />{" "}
+                                Progress
+                              </span>
+                              <span className="text-[12px] font-bold text-[#4C1D95]">
+                                {Math.round(progress)}%
+                              </span>
+                            </div>
+                            <div className="h-2.5 w-full rounded-full bg-[#F3E8FF] overflow-hidden p-1">
+                              <motion.div
+                                initial={{ width: 0 }}
+                                whileInView={{ width: `${progress}%` }}
+                                viewport={{ once: true }}
+                                transition={{
+                                  duration: 1.1,
+                                  delay: 0.2 + idx * 0.05,
+                                  ease: [0.22, 1, 0.36, 1],
+                                }}
+                                className="h-full rounded-full bg-linear-to-r from-[#4C1D95] to-[#7C3AED] relative"
+                              >
+                                <motion.div
+                                  animate={{ x: ["-100%", "200%"] }}
+                                  transition={{
+                                    duration: 1.6,
+                                    repeat: Infinity,
+                                    repeatDelay: 1.2,
+                                  }}
+                                  className="absolute inset-y-0 w-1/2 bg-linear-to-r from-transparent via-white/30 to-transparent"
+                                />
+                              </motion.div>
+                            </div>
+                          </div>
+
+                          {/* stats - not packed */}
+                          <div className="mt-5 grid grid-cols-2 gap-3">
+                            <div className="rounded-2xl bg-[#F9F5FF] border border-[#F3E8FF] p-3">
+                              <p className="text-[10px] font-bold tracking-widest uppercase text-[#7C3AED] flex items-center gap-1 mb-1">
+                                <FiTarget size={10} /> Target
+                              </p>
+                              <p className="text-[14px] font-extrabold text-[#15052E]">
+                                ₦{formatAmount(goal.target_amount)}
+                              </p>
+                            </div>
+                            <div className="rounded-2xl bg-[#15052E] p-3">
+                              <p className="text-[10px] font-bold tracking-widest uppercase text-[#C4B5FD] flex items-center gap-1 mb-1">
+                                <FiGift size={10} /> Raised
+                              </p>
+                              <p className="text-[14px] font-extrabold text-white">
+                                ₦{formatAmount(goal.current_amount)}
+                              </p>
+                            </div>
+                            {goal.current_foreign_usd && (
+                              <div className="col-span-2 rounded-2xl bg-white border border-[#E9D5FF] p-3 flex items-center justify-between">
+                                <span className="text-[11px] font-semibold text-[#52525B] flex items-center gap-1">
+                                  <FiDollarSign className="text-[#4C1D95]" />{" "}
+                                  Foreign support
+                                </span>
+                                <span className="text-[13px] font-bold text-[#15052E]">
+                                  ${formatAmount(goal.current_foreign_usd)}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* actions */}
+                          <div className="mt-auto pt-5 flex gap-2.5">
+                            <a
+                              href={`https://app.tippified.com/tip/${goal.referral_code}`}
+                              onClick={rememberScroll}
+                              className="flex-1 inline-flex items-center justify-center gap-1.5 text-[13px] bg-[#4C1D95] text-white py-3 rounded-full font-bold hover:bg-[#3B1F8A] transition shadow-[0_8px_20px_-10px_rgba(76,29,149,0.6)]"
+                            >
+                              <FiHeart size={14} /> Support
+                            </a>
+                            <button
+                              onClick={() => setModalGoal(goal)}
+                              className="flex-1 inline-flex items-center justify-center gap-1.5 text-[13px] bg-white border border-[#E9D5FF] text-[#4C1D95] py-3 rounded-full font-bold hover:bg-[#F5F0FF] transition"
+                            >
+                              <FiInfo size={14} /> About
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
         {!loadingGoals && goals.length > 0 && (
-          <div className="mt-2 flex justify-center mb-6">
-            <a
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-12 flex flex-col items-center"
+          >
+            {/* divider */}
+            <div className="w-full max-w-6xl h-px bg-linear-to-r from-transparent via-[#E9D5FF] to-transparent mb-10" />
+
+            <motion.a
               href="/search-goals"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-purple-600 to-violet-600 text-white font-bold rounded-full shadow-[0_10px_20px_-10px_rgba(124,58,237,0.6)] hover:opacity-95 transition"
+              whileHover={{ y: -2 }}
+              whileTap={{ y: 0, scale: 0.98 }}
+              className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#15052E] border border-[#2A1A4A] text-white font-bold text-[14px] tracking-wide shadow-[0_12px_30px_-12px_rgba(21,5,46,0.6),0_0_0_1px_rgba(255,255,255,0.08)_inset] overflow-hidden"
             >
-              See more goals <FiArrowRight />
-            </a>
-          </div>
+              {/* hover glow */}
+              <div className="absolute inset-0 bg-linear-to-r from-[#4C1D95] via-[#6D28D9] to-[#7C3AED] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              {/* shimmer */}
+              <motion.div
+                animate={{ x: ["-100%", "200%"] }}
+                transition={{
+                  duration: 2.2,
+                  repeat: Infinity,
+                  repeatDelay: 2.5,
+                  ease: "easeInOut",
+                }}
+                className="absolute inset-y-0 w-1/3 bg-linear-to-r from-transparent via-white/15 to-transparent pointer-events-none"
+              />
+
+              <span className="relative flex items-center gap-2">
+                <FiGrid className="w-4 h-4 text-[#C4B5FD]" />
+                Explore all goals
+              </span>
+
+              <span className="relative h-7 w-7 rounded-full bg-white text-[#15052E] grid place-items-center group-hover:bg-[#15052E] group-hover:text-white border border-white/10 transition-colors">
+                <motion.span
+                  initial={{ x: 0 }}
+                  whileHover={{ x: 3 }}
+                  className="group-hover:translate-x-0.5 transition-transform duration-300"
+                >
+                  <FiArrowRight size={14} />
+                </motion.span>
+              </span>
+
+              <span className="relative ml-1 pl-4 border-l border-white/15 text-[12px] font-medium text-white/70">
+                {goals.length}+ live
+              </span>
+            </motion.a>
+
+            <p className="mt-3 text-[12px] font-medium text-[#71717A] flex items-center gap-1.5">
+              <FiSearch size={12} className="text-[#7C3AED]" /> Find goals by
+              creator, category or amount
+            </p>
+          </motion.div>
         )}
 
-        {/* PAYMENTS */}
+        {/* PAYMENTS - PREMIUM */}
         <section
-          className="py-14 px-6 bg-linear-to-br from-purple-50 to-white text-center"
+          className="relative overflow-hidden bg-white border-t border-[#F3E8FF] py-20 px-6"
           id="payment"
         >
-          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-4">
-            Secure Payments Powered by Trusted Partners
-          </h2>
-          <p className="text-purple-700/60 max-w-3xl mx-auto mb-10 text-[14px] leading-6">
-            Payments securely processed by Paystack. Creator balances maintained
-            within Tippified secure ledger, settlements via Wema Bank. Tippified
-            does not operate as a bank.
-          </p>
-          <div className="flex justify-center items-center gap-4 flex-wrap">
-            {["visa", "mastercard", "verve", "paystack", "wema"].map(
-              (img: string) => (
-                <div
-                  key={img}
-                  className="h-12 px-4 grid place-items-center rounded-2xl bg-white border border-purple-100 shadow-sm"
-                >
-                  <Image
-                    src={`/${img}.png`}
-                    alt={img}
-                    width={90}
-                    height={40}
-                    className="object-contain"
-                  />
-                </div>
-              ),
-            )}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute left-1/2 top-0 -translate-x-1/2 h-100 w-200 rounded-full bg-linear-to-b from-[#F5F0FF] to-transparent blur-3xl" />
           </div>
-        </section>
 
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="relative max-w-6xl mx-auto text-center"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F5F0FF] border border-[#E9D5FF] mb-5">
+              <FiShieldOff className="w-4 h-4 text-[#4C1D95]" />
+              <span className="text-[11px] font-bold tracking-widest uppercase text-[#4C1D95]">
+                Bank-grade security
+              </span>
+            </div>
+
+            <h2 className="text-2xl md:text-[32px] font-extrabold tracking-tight text-[#15052E] max-w-2xl mx-auto leading-[1.1]">
+              Secure Payments Powered by{" "}
+              <span className="bg-linear-to-r from-[#4C1D95] to-[#7C3AED] bg-clip-text text-transparent">
+                Trusted Partners
+              </span>
+            </h2>
+
+            <p className="text-[14px] leading-6 text-[#52525B] font-medium max-w-2xl mx-auto mt-4">
+              Payments securely processed by Paystack. Creator balances
+              maintained within Tippified secure ledger, settlements via Wema
+              Bank.
+              <span className="text-[#71717A]">
+                {" "}
+                Tippified does not operate as a bank.
+              </span>
+            </p>
+
+            {/* Logos - no background box, premium grayscale to color */}
+            <div className="mt-12 flex justify-center items-center gap-8 md:gap-14 flex-wrap">
+              {["visa", "mastercard", "verve", "paystack", "wema"].map(
+                (img, idx) => (
+                  <motion.div
+                    key={img}
+                    initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
+                    whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: idx * 0.08 }}
+                    whileHover={{ y: -2, scale: 1.05 }}
+                    className="group relative"
+                  >
+                    <Image
+                      src={`/${img}.png`}
+                      alt={img}
+                      width={110}
+                      height={42}
+                      className="object-contain h-8 md:h-9 w-auto grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                    />
+                  </motion.div>
+                ),
+              )}
+            </div>
+
+            {/* trust row */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4 }}
+              className="mt-12 flex flex-wrap justify-center gap-3"
+            >
+              {[
+                { icon: FiLock, text: "256-bit SSL Encrypted" },
+                { icon: FiCheckCircle, text: "PCI DSS Compliant" },
+                { icon: FiShieldOff, text: "Paystack Secured" },
+              ].map((item) => (
+                <div
+                  key={item.text}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FCFAFF] border border-[#F3E8FF] text-[12px] font-semibold text-[#3F3F46]"
+                >
+                  <item.icon className="w-3.5 h-3.5 text-[#4C1D95]" />
+                  {item.text}
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </section>
         {/* ABOUT */}
         <section
           id="about"
