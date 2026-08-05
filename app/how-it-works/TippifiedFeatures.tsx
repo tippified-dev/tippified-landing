@@ -1,14 +1,14 @@
 "use client";
 
 import {
-    ArrowTrendingUpIcon,
-    BanknotesIcon,
-    CalendarDaysIcon,
-    ChartBarIcon,
-    GiftIcon,
-    SignalIcon,
-    StarIcon,
-    TrophyIcon,
+  ArrowTrendingUpIcon,
+  BanknotesIcon,
+  CalendarDaysIcon,
+  ChartBarIcon,
+  GiftIcon,
+  SignalIcon,
+  StarIcon,
+  TrophyIcon,
 } from "@heroicons/react/24/outline";
 
 const features = [
@@ -72,11 +72,8 @@ const features = [
 export default function CreatorFeatures() {
   return (
     <section className="py-24 bg-gray-50">
-
       <div className="max-w-7xl mx-auto px-6">
-
         <div className="text-center mb-16">
-
           <h2 className="text-4xl font-bold text-purple-700">
             Everything Creators Can Do
           </h2>
@@ -85,11 +82,9 @@ export default function CreatorFeatures() {
             Tippified gives creators multiple ways to monetize their audience
             while building stronger relationships with their supporters.
           </p>
-
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-
           {features.map((feature, index) => {
             const Icon = feature.icon;
 
@@ -102,38 +97,26 @@ export default function CreatorFeatures() {
                   <Icon className="w-9 h-9 text-purple-700" />
                 </div>
 
-                <h3 className="text-xl font-bold mb-4">
-                  {feature.title}
-                </h3>
+                <h3 className="text-xl font-bold mb-4">{feature.title}</h3>
 
-                <p className="text-gray-600 leading-8">
-                  {feature.description}
-                </p>
-
+                <p className="text-gray-600 leading-8">{feature.description}</p>
               </div>
             );
           })}
-
         </div>
 
         <div className="mt-20 bg-purple-700 rounded-3xl text-white p-10">
-
-          <h3 className="text-3xl font-bold mb-6">
-            Built for Every Creator
-          </h3>
+          <h3 className="text-3xl font-bold mb-6">Built for Every Creator</h3>
 
           <p className="leading-8 text-lg">
-            Whether you are  a musician, content creator, streamer, comedian,
+            Whether you are a musician, content creator, streamer, comedian,
             gamer, artist, influencer, podcaster, educator, public speaker,
             religious leader, nonprofit organisation or celebrity, Tippified
             provides simple tools that enable your community to support your
             journey financially in meaningful ways.
           </p>
-
         </div>
-
       </div>
-
     </section>
   );
 }

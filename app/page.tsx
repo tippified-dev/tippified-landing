@@ -142,8 +142,8 @@ export default function HomePage(): ReactElement {
       icon: FiZap,
     },
     {
-      title: "Secure Creator Wallets",
-      desc: "Creators can cashout anytime to your verified bank account.",
+      title: "Creator Tracked Tips",
+      desc: "Creators can track their tips on their dashboard.",
       icon: FiCreditCard,
     },
     {
@@ -207,14 +207,13 @@ export default function HomePage(): ReactElement {
                 tippified.
               </p>
               <h1 className="text-4xl md:text-6xl font-extrabold leading-[0.95] tracking-tight mb-6 text-white">
-                Get Tipped for What You Create
+                Get Tippified for What You Create
               </h1>
-              {/* Don't use text-purple-100 on purple - fails contrast. Use white 85% */}
+
               <p className="text-[15px] md:text-[17px] leading-7 text-white/85 mb-8 max-w-xl font-medium">
                 Nigeria&apos;s all-in-one creator monetization platform. Receive
-                tips, gifts, goal contributions and wishlist purchases with
-                secure payments powered by Paystack and settlements via Wema
-                Bank.
+                tips, gifts, goal contributions, crowd funding and wishlist
+                purchases with secure payments powered by Paystack.
               </p>
               <div className="flex flex-wrap gap-3">
                 {/* Primary: stays white bg, but text is now #4C1D95 not 700 */}
@@ -632,9 +631,8 @@ export default function HomePage(): ReactElement {
             </h2>
 
             <p className="text-[14px] leading-6 text-[#52525B] font-medium max-w-2xl mx-auto mt-4">
-              Payments securely processed by Paystack. Creator balances
-              maintained within Tippified secure ledger, settlements via Wema
-              Bank.
+              Payments securely processed by Paystack. Creator tracked tips
+              maintained within Tippified dashboard.
               <span className="text-[#71717A]">
                 {" "}
                 Tippified does not operate as a bank.
@@ -714,10 +712,8 @@ export default function HomePage(): ReactElement {
               from fans worldwide.
               <br />
               <br />
-              Payments securely processed through Paystack. Creator balances
-              maintained securely within Tippified, while settlements processed
-              through our regulated banking partner, Wema Bank, into verified
-              bank accounts.
+              Payments securely processed through Paystack. Creator tracked tips
+              maintained within dashboard.
             </p>
           </motion.div>
         </section>
@@ -829,7 +825,7 @@ export default function HomePage(): ReactElement {
             &copy; {new Date().getFullYear()} Tippified. All rights reserved.
             <p className="text-[11px] text-purple-200/60 mt-2 max-w-2xl mx-auto">
               Tippified is a product of Grundex Limited. Payments securely
-              powered by Paystack. Settlement via Wema Bank.
+              powered by Paystack.
             </p>
           </div>
         </footer>

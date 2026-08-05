@@ -42,8 +42,8 @@ export default function PrivacyPolicyClient() {
           <p className="mb-4">
             This Privacy Policy explains how we collect, use, disclose, protect,
             retain and process your personal information whenever you use
-            Tippifieds website, creator dashboard, fan tipping services,
-            wallets and other related products.
+            Tippifieds website, creator dashboard, fan tipping services, wallets
+            and other related products.
           </p>
 
           <p>
@@ -59,9 +59,7 @@ export default function PrivacyPolicyClient() {
       icon: GlobeAltIcon,
       content: (
         <>
-          <p className="mb-3">
-            Tippified is owned by:
-          </p>
+          <p className="mb-3">Tippified is owned by:</p>
 
           <p>
             <strong>Grundex Limited</strong>
@@ -80,8 +78,8 @@ export default function PrivacyPolicyClient() {
           </p>
 
           <p className="mt-4">
-            Throughout this Privacy Policy, Tippified, we, our or us
-            refers to Grundex Limited.
+            Throughout this Privacy Policy, Tippified, we, our or us refers to
+            Grundex Limited.
           </p>
         </>
       ),
@@ -133,7 +131,7 @@ export default function PrivacyPolicyClient() {
           <ul className="list-disc ml-6 space-y-2">
             <li>Name</li>
             <li>Email address</li>
-            <li>Wallet information (where applicable)</li>
+
             <li>Gift purchases</li>
             <li>Tipping history</li>
           </ul>
@@ -165,9 +163,8 @@ export default function PrivacyPolicyClient() {
       content: (
         <>
           <p className="mb-4">
-            To protect creators against identity fraud, Tippified performs
-            Bank Verification Number (BVN) verification during creator
-            onboarding.
+            To protect creators against identity fraud, Tippified performs Bank
+            Verification Number (BVN) verification during creator onboarding.
           </p>
 
           <p className="mb-4">
@@ -237,392 +234,386 @@ export default function PrivacyPolicyClient() {
       ),
     },
 
-      {
-  title: "7. Payment Processing",
-  icon: CreditCardIcon,
-  content: (
-    <>
-      <p className="mb-4">
-        Tippified is a creator tipping platform. We are <strong>not</strong> a
-        payment processor, payment gateway or licensed financial institution.
-      </p>
+    {
+      title: "7. Payment Processing",
+      icon: CreditCardIcon,
+      content: (
+        <>
+          <p className="mb-4">
+            Tippified is a creator tipping platform. We are <strong>not</strong>{" "}
+            a payment processor, payment gateway or licensed financial
+            institution.
+          </p>
 
-      <p className="mb-4">
-        All payments made by fans are securely processed through
-        <strong> Paystack</strong>, our licensed payment processing partner.
-      </p>
+          <p className="mb-4">
+            All payments made by fans are securely processed through
+            <strong> Paystack</strong>, our licensed payment processing partner.
+          </p>
 
-      <p className="mb-4">
-        When a fan submits a payment, payment card details and banking
-        information are transmitted directly to Paystack through secure,
-        encrypted channels.
-      </p>
+          <p className="mb-4">
+            When a fan submits a payment, payment card details and banking
+            information are transmitted directly to Paystack through secure,
+            encrypted channels.
+          </p>
 
-      <p>
-        Tippified never stores debit card numbers, CVV numbers or complete
-        payment credentials.
-      </p>
-    </>
-  ),
-},
+          <p>
+            Tippified never stores debit card numbers, CVV numbers or complete
+            payment credentials.
+          </p>
+        </>
+      ),
+    },
 
-{
-  title: "8. Creator Settlement Accounts",
-  icon: CreditCardIcon,
-  content: (
-    <>
-      <p className="mb-4">
-        Creator payouts are settled into a dedicated creator settlement account
-        maintained with our settlement banking partner.
-      </p>
+    {
+      title: "8. Creator Settlement Accounts",
+      icon: CreditCardIcon,
+      content: (
+        <>
+          <p className="mb-4">
+            Creator payouts are settled into a dedicated creator settlement
+            account maintained with our settlement partner.
+          </p>
 
-      <p className="mb-4">
-        Funds belonging to creators are segregated from Grundex Limiteds
-        operational funds.
-      </p>
+          <p className="mb-4">
+            Funds belonging to creators are segregated from Grundex Limiteds
+            operational funds.
+          </p>
 
-      <p className="mb-4">
-        Grundex Limited cannot arbitrarily withdraw creators funds from the
-        settlement account.
-      </p>
+          <p>
+            Platform revenue (our service fee) is automatically separated during
+            settlement by our payment processor before settlement occurs.
+          </p>
+        </>
+      ),
+    },
 
-      <p>
-        Platform revenue (our service fee) is automatically separated during
-        settlement by our payment processor before settlement occurs.
-      </p>
-    </>
-  ),
-},
+    {
+      title: "9. When We Share Information",
+      icon: GlobeAltIcon,
+      content: (
+        <>
+          <p className="mb-4">We never sell personal information.</p>
 
-{
-  title: "9. When We Share Information",
-  icon: GlobeAltIcon,
-  content: (
-    <>
-      <p className="mb-4">
-        We never sell personal information.
-      </p>
+          <p className="mb-4">
+            We only disclose information where necessary to operate Tippified or
+            where required by law.
+          </p>
 
-      <p className="mb-4">
-        We only disclose information where necessary to operate Tippified or
-        where required by law.
-      </p>
+          <p className="font-semibold mb-2">We may share information with:</p>
 
-      <p className="font-semibold mb-2">
-        We may share information with:
-      </p>
+          <ul className="list-disc ml-6 space-y-2">
+            <li>Paystack (payment processing)</li>
 
-      <ul className="list-disc ml-6 space-y-2">
-        <li>Paystack (payment processing)</li>
-        <li>FCMB (creator settlement services)</li>
-        <li>Provn (CloudEye) for BVN verification</li>
-        <li>Resend for transactional email delivery</li>
-        <li>Nigerian regulators where legally required</li>
-        <li>Law enforcement agencies where required by law</li>
-      </ul>
-    </>
-  ),
-},
+            <li>Provn (CloudEye) for BVN verification</li>
+            <li>Resend for transactional email delivery</li>
+            <li>Nigerian regulators where legally required</li>
+            <li>Law enforcement agencies where required by law</li>
+          </ul>
+        </>
+      ),
+    },
 
-{
-  title: "10. Fraud Prevention and Financial Crime Monitoring",
-  icon: ShieldCheckIcon,
-  content: (
-    <>
-      <p className="mb-4">
-        Tippified maintains internal fraud detection procedures designed to
-        protect creators, fans and the financial ecosystem.
-      </p>
+    {
+      title: "10. Fraud Prevention and Financial Crime Monitoring",
+      icon: ShieldCheckIcon,
+      content: (
+        <>
+          <p className="mb-4">
+            Tippified maintains internal fraud detection procedures designed to
+            protect creators, fans and the financial ecosystem.
+          </p>
 
-      <p className="mb-4">
-        We continuously monitor platform activity for unusual behaviour,
-        including but not limited to:
-      </p>
+          <p className="mb-4">
+            We continuously monitor platform activity for unusual behaviour,
+            including but not limited to:
+          </p>
 
-      <ul className="list-disc ml-6 space-y-2">
-        <li>Rapid repeated tipping activity.</li>
-        <li>Abnormal wallet behaviour.</li>
-        <li>Suspicious payment patterns.</li>
-        <li>Potential identity fraud.</li>
-        <li>Money laundering indicators.</li>
-      </ul>
+          <ul className="list-disc ml-6 space-y-2">
+            <li>Rapid repeated tipping activity.</li>
+            <li>Abnormal wallet behaviour.</li>
+            <li>Suspicious payment patterns.</li>
+            <li>Potential identity fraud.</li>
+            <li>Money laundering indicators.</li>
+          </ul>
 
-      <p className="mt-4">
-        Where suspicious activity is detected, Tippified reserves the right to:
-      </p>
+          <p className="mt-4">
+            Where suspicious activity is detected, Tippified reserves the right
+            to:
+          </p>
 
-      <ul className="list-disc ml-6 mt-3 space-y-2">
-        <li>Suspend creator or fan accounts.</li>
-        <li>Delay payouts.</li>
-        <li>Request additional verification.</li>
-        <li>Report suspicious transactions to the appropriate authorities.</li>
-      </ul>
+          <ul className="list-disc ml-6 mt-3 space-y-2">
+            <li>Suspend creator or fan accounts.</li>
 
-      <p className="mt-4">
-        Our payment processor, Paystack, also performs its own independent risk
-        assessment and regulatory monitoring of payment transactions.
-      </p>
-    </>
-  ),
-},
+            <li>
+              Report suspicious transactions to the appropriate authorities.
+            </li>
+          </ul>
 
-{
-  title: "11. Data Security",
-  icon: LockClosedIcon,
-  content: (
-    <>
-      <p className="mb-4">
-        We implement administrative, technical and organisational safeguards to
-        protect personal information against unauthorised access, disclosure,
-        alteration or destruction.
-      </p>
+          <p className="mt-4">
+            Our payment processor, Paystack, also performs its own independent
+            risk assessment and regulatory monitoring of payment transactions.
+          </p>
+        </>
+      ),
+    },
 
-      <p className="font-semibold mb-2">
-        Security measures include:
-      </p>
+    {
+      title: "11. Data Security",
+      icon: LockClosedIcon,
+      content: (
+        <>
+          <p className="mb-4">
+            We implement administrative, technical and organisational safeguards
+            to protect personal information against unauthorised access,
+            disclosure, alteration or destruction.
+          </p>
 
-      <ul className="list-disc ml-6 space-y-2">
-        <li>Encrypted HTTPS connections.</li>
-        <li>Django Authentication.</li>
-        <li>Password hashing.</li>
-        <li>Secure database authentication.</li>
-        <li>Role-based access control.</li>
-        <li>Audit logging.</li>
-        <li>Continuous server monitoring.</li>
-      </ul>
+          <p className="font-semibold mb-2">Security measures include:</p>
 
-      <p className="mt-4">
-        Although we employ commercially reasonable safeguards, no online system
-        can be guaranteed to be completely secure.
-      </p>
-    </>
-  ),
-},
+          <ul className="list-disc ml-6 space-y-2">
+            <li>Encrypted HTTPS connections.</li>
+            <li>Django Authentication.</li>
+            <li>Password hashing.</li>
+            <li>Secure database authentication.</li>
+            <li>Role-based access control.</li>
+            <li>Audit logging.</li>
+            <li>Continuous server monitoring.</li>
+          </ul>
 
-{
-  title: "12. Hosting Infrastructure",
-  icon: LockClosedIcon,
-  content: (
-    <>
-      <p className="mb-4">
-        Tippified is hosted using <strong>Render</strong>.
-      </p>
+          <p className="mt-4">
+            Although we employ commercially reasonable safeguards, no online
+            system can be guaranteed to be completely secure.
+          </p>
+        </>
+      ),
+    },
 
-      <p className="mb-4">
-        Our application infrastructure includes:
-      </p>
+    {
+      title: "12. Hosting Infrastructure",
+      icon: LockClosedIcon,
+      content: (
+        <>
+          <p className="mb-4">
+            Tippified is hosted using <strong>Render</strong>.
+          </p>
 
-      <ul className="list-disc ml-6 space-y-2">
-        <li>Render cloud hosting.</li>
-        <li>Managed PostgreSQL database.</li>
-        <li>Encrypted HTTPS communication.</li>
-      </ul>
+          <p className="mb-4">Our application infrastructure includes:</p>
 
-      <p>
-        Access to production infrastructure is restricted to authorised
-        personnel only.
-      </p>
-    </>
-  ),
-},
+          <ul className="list-disc ml-6 space-y-2">
+            <li>Render cloud hosting.</li>
 
-{
-  title: "13. Email Communications",
-  icon: EnvelopeIcon,
-  content: (
-    <>
-      <p className="mb-4">
-        Tippified uses <strong>Resend</strong> to deliver transactional emails.
-      </p>
+            <li>Managed PostgreSQL database.</li>
+            <li>Vercel.</li>
+            <li>Encrypted HTTPS communication.</li>
+          </ul>
 
-      <p className="mb-4">
-        Examples include:
-      </p>
+          <p>
+            Access to production infrastructure is restricted to authorised
+            personnel only.
+          </p>
+        </>
+      ),
+    },
 
-      <ul className="list-disc ml-6 space-y-2">
-        <li>Account verification emails.</li>
-        <li>Withdrawal verification codes.</li>
-        <li>Password reset emails.</li>
-        <li>Security notifications.</li>
-      </ul>
+    {
+      title: "13. Email Communications",
+      icon: EnvelopeIcon,
+      content: (
+        <>
+          <p className="mb-4">
+            Tippified uses <strong>Resend</strong> to deliver transactional
+            emails.
+          </p>
 
-      <p>
-        We do not currently send marketing newsletters.
-      </p>
-    </>
-  ),
- },
+          <p className="mb-4">Examples include:</p>
 
-   {
-  title: "14. Data Retention",
-  icon: LockClosedIcon,
-  content: (
-    <>
-      <p className="mb-4">
-        We retain personal information only for as long as it is necessary to
-        fulfil the purposes described in this Privacy Policy or to comply with
-        applicable laws and regulations.
-      </p>
+          <ul className="list-disc ml-6 space-y-2">
+            <li>Account verification emails.</li>
+            <li>Tip announcement.</li>
+            <li>Password reset emails.</li>
+            <li>Security notifications.</li>
+          </ul>
 
-      <p className="mb-4">
-        Creator financial records, payout records, transaction history and
-        related accounting information may be retained for up to
-        <strong> seven (7) years</strong> after a creator closes or disables
-        their account, in accordance with applicable financial and tax
-        obligations.
-      </p>
+          <p>We do not currently send marketing newsletters.</p>
+        </>
+      ),
+    },
 
-      <p>
-        Where retention is no longer necessary, personal information will be
-        securely deleted, anonymised or otherwise disposed of in accordance
-        with our internal data retention procedures.
-      </p>
-    </>
-  ),
-},
+    {
+      title: "14. Data Retention",
+      icon: LockClosedIcon,
+      content: (
+        <>
+          <p className="mb-4">
+            We retain personal information only for as long as it is necessary
+            to fulfil the purposes described in this Privacy Policy or to comply
+            with applicable laws and regulations.
+          </p>
 
-{
-  title: "15. Your Privacy Rights",
-  icon: ShieldCheckIcon,
-  content: (
-    <>
-      <p className="mb-4">
-        Subject to the Nigeria Data Protection Act (NDPA), you may have the
-        right to:
-      </p>
+          <p className="mb-4">
+            Creator financial records, payout records, transaction history and
+            related accounting information may be retained for up to
+            <strong> seven (7) years</strong> after a creator closes or disables
+            their account, in accordance with applicable financial and tax
+            obligations.
+          </p>
 
-      <ul className="list-disc ml-6 space-y-2">
-        <li>Access the personal information we hold about you.</li>
-        <li>Correct inaccurate or incomplete information.</li>
-        <li>Request deletion of your personal information where legally permitted.</li>
-        <li>Object to certain processing activities.</li>
-        <li>Request restriction of processing.</li>
-        <li>Withdraw consent where processing is based on consent.</li>
-        <li>Request information regarding how your data is processed.</li>
-      </ul>
+          <p>
+            Where retention is no longer necessary, personal information will be
+            securely deleted, anonymised or otherwise disposed of in accordance
+            with our internal data retention procedures.
+          </p>
+        </>
+      ),
+    },
 
-      <p className="mt-4">
-        Some requests may be declined where we are legally required to retain
-        certain records, particularly financial records.
-      </p>
-    </>
-  ),
-},
+    {
+      title: "15. Your Privacy Rights",
+      icon: ShieldCheckIcon,
+      content: (
+        <>
+          <p className="mb-4">
+            Subject to the Nigeria Data Protection Act (NDPA), you may have the
+            right to:
+          </p>
 
-{
-  title: "16. Cookies",
-  icon: GlobeAltIcon,
-  content: (
-    <>
-      <p className="mb-4">
-        Tippified may use essential cookies and similar technologies required
-        for authentication, session management and platform security.
-      </p>
+          <ul className="list-disc ml-6 space-y-2">
+            <li>Access the personal information we hold about you.</li>
+            <li>Correct inaccurate or incomplete information.</li>
+            <li>
+              Request deletion of your personal information where legally
+              permitted.
+            </li>
+            <li>Object to certain processing activities.</li>
+            <li>Request restriction of processing.</li>
+            <li>Withdraw consent where processing is based on consent.</li>
+            <li>Request information regarding how your data is processed.</li>
+          </ul>
 
-      <p>
-        We do not currently use advertising cookies or behavioural tracking
-        technologies.
-      </p>
-    </>
-  ),
-},
+          <p className="mt-4">
+            Some requests may be declined where we are legally required to
+            retain certain records, particularly financial records.
+          </p>
+        </>
+      ),
+    },
 
-{
-  title: "17. International Data Transfers",
-  icon: GlobeAltIcon,
-  content: (
-    <>
-      <p className="mb-4">
-        Some of our service providers may process information outside Nigeria.
-      </p>
+    {
+      title: "16. Cookies",
+      icon: GlobeAltIcon,
+      content: (
+        <>
+          <p className="mb-4">
+            Tippified may use essential cookies and similar technologies
+            required for authentication, session management and platform
+            security.
+          </p>
 
-      <p className="mb-4">
-        Where international transfers occur, we take reasonable steps to ensure
-        that appropriate contractual, organisational and technical safeguards
-        are implemented to protect personal information.
-      </p>
+          <p>
+            We do not currently use advertising cookies or behavioural tracking
+            technologies.
+          </p>
+        </>
+      ),
+    },
 
-      <p>
-        Such transfers are carried out only where necessary for the operation
-        of the platform.
-      </p>
-    </>
-  ),
-},
+    {
+      title: "17. International Data Transfers",
+      icon: GlobeAltIcon,
+      content: (
+        <>
+          <p className="mb-4">
+            Some of our service providers may process information outside
+            Nigeria.
+          </p>
 
-{
-  title: "18. Account Closure",
-  icon: UserIcon,
-  content: (
-    <>
-      <p className="mb-4">
-        Creators may request closure of their accounts at any time.
-      </p>
+          <p className="mb-4">
+            Where international transfers occur, we take reasonable steps to
+            ensure that appropriate contractual, organisational and technical
+            safeguards are implemented to protect personal information.
+          </p>
 
-      <p className="mb-4">
-        Closing an account does not automatically require immediate deletion of
-        financial records, transaction history or information we are legally
-        required to retain.
-      </p>
+          <p>
+            Such transfers are carried out only where necessary for the
+            operation of the platform.
+          </p>
+        </>
+      ),
+    },
 
-      <p>
-        Following expiry of applicable legal retention periods, eligible
-        personal information will be securely deleted or anonymised.
-      </p>
-    </>
-  ),
-},
+    {
+      title: "18. Account Closure",
+      icon: UserIcon,
+      content: (
+        <>
+          <p className="mb-4">
+            Creators may request closure of their accounts at any time.
+          </p>
 
-{
-  title: "19. Changes to this Privacy Policy",
-  icon: PencilSquareIcon,
-  content: (
-    <>
-      <p className="mb-4">
-        We may revise this Privacy Policy from time to time to reflect changes
-        in our services, legal obligations or security practices.
-      </p>
+          <p className="mb-4">
+            Closing an account does not automatically require immediate deletion
+            of financial records, transaction history or information we are
+            legally required to retain.
+          </p>
 
-      <p>
-        Where significant changes are made, we will update the last updated
-        date shown at the top of this page.
-      </p>
-    </>
-  ),
-},
+          <p>
+            Following expiry of applicable legal retention periods, eligible
+            personal information will be securely deleted or anonymised.
+          </p>
+        </>
+      ),
+    },
 
-{
-  title: "20. Contact Us",
-  icon: EnvelopeIcon,
-  content: (
-    <>
-      <p className="mb-4">
-        Questions, requests or complaints relating to this Privacy Policy may
-        be directed to:
-      </p>
+    {
+      title: "19. Changes to this Privacy Policy",
+      icon: PencilSquareIcon,
+      content: (
+        <>
+          <p className="mb-4">
+            We may revise this Privacy Policy from time to time to reflect
+            changes in our services, legal obligations or security practices.
+          </p>
 
-      <p className="mb-2">
-        <strong>Grundex Limited</strong>
-      </p>
+          <p>
+            Where significant changes are made, we will update the last updated
+            date shown at the top of this page.
+          </p>
+        </>
+      ),
+    },
 
-      <p>No. 15 Lawrence Egbor Close</p>
-      <p>Iyana Isashi</p>
-      <p>Ojo</p>
-      <p>Lagos State</p>
-      <p>Nigeria</p>
+    {
+      title: "20. Contact Us",
+      icon: EnvelopeIcon,
+      content: (
+        <>
+          <p className="mb-4">
+            Questions, requests or complaints relating to this Privacy Policy
+            may be directed to:
+          </p>
 
-      <p className="mt-4">
-        Email:
-        <a
-          href="mailto:support@tippified.com"
-          className="text-purple-700 underline ml-1"
-        >
-          support@tippified.com
-        </a>
-      </p>
-    </>
-  ),
- },
+          <p className="mb-2">
+            <strong>Grundex Limited</strong>
+          </p>
+
+          <p>No. 15 Lawrence Egbor Close</p>
+          <p>Iyana Isashi</p>
+          <p>Ojo</p>
+          <p>Lagos State</p>
+          <p>Nigeria</p>
+
+          <p className="mt-4">
+            Email:
+            <a
+              href="mailto:support@tippified.com"
+              className="text-purple-700 underline ml-1"
+            >
+              support@tippified.com
+            </a>
+          </p>
+        </>
+      ),
+    },
   ];
 
   return (
@@ -630,9 +621,8 @@ export default function PrivacyPolicyClient() {
       <NavBar />
 
       <main className="bg-white text-gray-900 min-h-screen px-6 py-20 max-w-5xl mx-auto">
-
         <Suspense fallback={null}>
-          <ReturnToCreatorButton/>
+          <ReturnToCreatorButton />
         </Suspense>
 
         <h1 className="text-4xl font-bold text-center text-purple-700 mb-3">
@@ -648,22 +638,16 @@ export default function PrivacyPolicyClient() {
 
           return (
             <section key={index} className="mb-10">
-
               <h2 className="flex items-center gap-3 text-2xl font-bold text-purple-800 mb-4">
                 <Icon className="w-6 h-6 text-purple-600" />
                 {section.title}
               </h2>
 
-              <div className="leading-8 text-gray-700">
-                {section.content}
-              </div>
-
+              <div className="leading-8 text-gray-700">{section.content}</div>
             </section>
-            
           );
         })}
-
-        </main>
+      </main>
 
       <footer className="bg-gray-900 text-gray-300 py-10 mt-16">
         <div className="max-w-5xl mx-auto px-6 text-center">
@@ -672,8 +656,7 @@ export default function PrivacyPolicyClient() {
           </p>
 
           <p className="text-sm mt-2">
-            Tippified is a product of <strong>Grundex Limited</strong>,
-            Nigeria.
+            Tippified is a product of <strong>Grundex Limited</strong>, Nigeria.
           </p>
 
           <p className="text-xs text-gray-500 mt-4">
@@ -683,11 +666,12 @@ export default function PrivacyPolicyClient() {
         </div>
       </footer>
       <a
-  href="/about"
-  className="fixed right-4 bottom-20 md:bottom-10 z-50 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-purple-600 text-white shadow-lg hover:bg-purple-700 transition"
-  aria-label="About Tippified"
->
-  <InformationCircleIcon className="w-7 h-7 md:w-8 md:h-8" />
-</a>
+        href="/about"
+        className="fixed right-4 bottom-20 md:bottom-10 z-50 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-purple-600 text-white shadow-lg hover:bg-purple-700 transition"
+        aria-label="About Tippified"
+      >
+        <InformationCircleIcon className="w-7 h-7 md:w-8 md:h-8" />
+      </a>
     </>
-  )};
+  );
+}
