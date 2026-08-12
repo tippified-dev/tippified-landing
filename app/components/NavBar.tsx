@@ -83,8 +83,8 @@ export default function NavBar({ onNavigate }: NavBarProps): ReactElement {
 
       {/* Mobile - no active bg pill, only icon flips to black */}
       <nav className="fixed bottom-0 left-0 right-0 md:hidden z-50">
-        <div className="mx-auto mb-4 max-w-90 px-3">
-          <div className="rounded-4xl border border-black/8 bg-white/90 p-1.5 backdrop-blur-2xl shadow-[0_24px_48px_-12px_rgba(0,0,0,0.25)]">
+        <div className="mx-auto mb-4 w-full px-3">
+          <div className="rounded-4xlborder border-black/8 bg-white/90 p-1.5 backdrop-blur-2xl shadow-[0_24px_48px_-12px_rgba(0,0,0,0.25)]">
             <div className="flex justify-between gap-1">
               {links.map((link: NavLink) => {
                 const Icon = link.icon;
@@ -103,7 +103,7 @@ export default function NavBar({ onNavigate }: NavBarProps): ReactElement {
                       <div
                         className={`grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${
                           isActive
-                            ? "bg-[#0a0a0a] text-white shadow-[0_8px_16px_-8px_rgba(0,0,0,0.6)]"
+                            ? "bg-purple-600 text-white shadow-[0_8px_16px_-8px_rgba(0,0,0,0.6)]"
                             : "bg-zinc-100 text-zinc-400"
                         }`}
                       >
