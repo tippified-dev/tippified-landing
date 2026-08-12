@@ -722,7 +722,7 @@ export default function HomePage(): ReactElement {
         <section
           id="cta"
           ref={ctaRef}
-          className="py-20 px-6 bg-linear-to-br from-purple-600 via-violet-600 to-indigo-600 text-white text-center relative overflow-hidden"
+          className="py-20 px-6 bg-linear-to-br from-purple-900 via-violet-900 to-indigo-900 text-white text-center relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-purple-600,transparent_50%)]" />
           <motion.div
