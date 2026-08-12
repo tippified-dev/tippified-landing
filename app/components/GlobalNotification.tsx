@@ -62,31 +62,31 @@ export default function GlobalNotification() {
               initial={{ width: "100%" }}
               animate={{ width: "0%" }}
               transition={{ duration: 6, ease: "linear" }}
-              className="absolute left-0 top-0 h-0.75 bg-[#0a0a0a]"
+              className="absolute left-0 top-0 h-0.75 bg-purple-500"
             />
 
             <div className="flex items-center gap-3 rounded-[1.2rem] bg-white px-4 py-3">
-              <div className="grid h-10 w-10 place-items-center rounded-full bg-[#0a0a0a] text-white shadow-[0_8px_16px_-8px_rgba(0,0,0,0.6)]">
+              <div className="grid h-10 w-10 place-items-center rounded-full bg-purple-800 text-white shadow-[0_8px_16px_-8px_rgba(0,0,0,0.6)]">
                 <FiZap size={16} />
               </div>
 
               <div className="flex-1 min-w-0">
                 <div className={`flex items-center gap-1.5 ${baloo.className}`}>
                   <FiTarget size={12} className="text-zinc-400" />
-                  <span className="text-[12px] font-extrabold tracking-tight text-zinc-900 leading-none">
+                  <span className="text-[12px] font-extrabold tracking-tight text-purple-800 leading-none">
                     New Goal Live
                   </span>
                   <span className="h-1 w-1 rounded-full bg-green-500 animate-pulse" />
                 </div>
                 <p
-                  className={`${baloo.className} mt-1 text-[13px] font-bold leading-4 tracking-tight text-zinc-900`}
+                  className={`${baloo.className} mt-1 text-[13px] font-bold leading-4 tracking-tight text-purple-600`}
                 >
                   A creator just dropped a new goal, tap to view.
                 </p>
               </div>
 
               <div className="flex items-center gap-1.5">
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-zinc-900 text-white group-hover:bg-black transition">
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-purple-900 text-white group-hover:bg-purple-800 transition">
                   <FiArrowUpRight size={14} />
                 </span>
                 <button
@@ -94,7 +94,7 @@ export default function GlobalNotification() {
                     e.stopPropagation();
                     setShow(false);
                   }}
-                  className="grid h-8 w-8 place-items-center rounded-full bg-zinc-100 text-zinc-400 hover:text-zinc-900 transition"
+                  className="grid h-8 w-8 place-items-center rounded-full bg-zinc-100 text-zinc-400 hover:text-purple-900 transition"
                 >
                   <FiX size={14} />
                 </button>
