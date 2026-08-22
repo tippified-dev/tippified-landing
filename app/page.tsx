@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
+import { Bricolage_Grotesque, Fredoka } from "next/font/google";
 import Image from "next/image";
 import type { ReactElement } from "react";
 import { useEffect, useRef, useState } from "react";
@@ -83,7 +84,11 @@ export default function HomePage(): ReactElement {
   const featuresRef = useRef<(HTMLDivElement | null)[]>([]);
   const rememberScroll = useScrollRestoration("home-scroll");
   const [showAllBlogs, setShowAllBlogs] = useState<boolean>(false);
-
+  const fredoka = Fredoka({ subsets: ["latin"], weight: ["600", "700"] });
+  const bricolage = Bricolage_Grotesque({
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
+  });
   const { data: blogs = [], isLoading: loadingBlogs } = useQuery<BlogPost[]>({
     queryKey: ["blogs"],
     queryFn: async (): Promise<BlogPost[]> => {
@@ -360,19 +365,40 @@ export default function HomePage(): ReactElement {
           <TrendingCreatorsBar />
         </section>
 
-        {/* FEATURES */}
+        {/* FEATURES - PREMIUM */}
         <section
-          className="py-7 px-6 bg-linear-to-b from-purple-50/70 to-white"
+          className="relative overflow-hidden bg-[#FCFAFF] py-16 sm:py-20 px-6"
           id="features"
         >
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-extrabold text-center tracking-tight">
-              Why Use Tippified?
-            </h2>
-            <p className="text-purple-600/70 text-center mt-2 mb-8 text-[14px]">
-              Built for Nigerian creators. Trusted by fans worldwide.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {/* soft glow */}
+          <div className="pointer-events-none absolute left-1/2 top-0 h-125 w-200 -translate-x-1/2 rounded-full bg-linear-to-b from-[#E9D5FF]/50 to-transparent blur-[80px]" />
+
+          <div className="relative max-w-6xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto">
+              <div
+                className={`mb-4 inline-flex items-center rounded-full bg-white px-3 py-1 ring-1 ring-[#E9D5FF] shadow-sm ${bricolage.className}`}
+              >
+                <span className="text-[11px] font-bold uppercase tracking-widest text-[#6D28D9]">
+                  Why Tippified?
+                </span>
+              </div>
+              <h2
+                className={`${fredoka.className} text-[32px] sm:text-[42px] leading-[0.95] tracking-tight text-[#15052E]`}
+              >
+                Built for creators who{" "}
+                <span className="bg-linear-to-r from-[#4C1D95] to-[#7C3AED] bg-clip-text text-transparent">
+                  deserve more
+                </span>
+              </h2>
+              <p
+                className={`${bricolage.className} mt-3 text-[14px] sm:text-[15px] leading-6 font-medium text-[#71717A]`}
+              >
+                Built for Nigerian creators. Trusted by fans worldwide. Secure,
+                fast, and made to help you earn.
+              </p>
+            </div>
+
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-5">
               {features.map((feature: FeatureItem, i: number) => {
                 const Icon = feature.icon;
                 return (
@@ -381,25 +407,55 @@ export default function HomePage(): ReactElement {
                     ref={(el: HTMLDivElement | null) => {
                       featuresRef.current[i] = el;
                     }}
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={featuresVisible[i] ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: i * 0.1 }}
-                    className="group rounded-[1.6rem] border border-purple-100 bg-white p-6 shadow-[0_12px_30px_-18px_rgba(124,58,237,0.25)] hover:shadow-[0_20px_40px_-16px_rgba(124,58,237,0.3)] transition-all"
+                    initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
+                    animate={
+                      featuresVisible[i]
+                        ? { opacity: 1, y: 0, filter: "blur(0px)" }
+                        : {}
+                    }
+                    transition={{
+                      duration: 0.6,
+                      delay: i * 0.1,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    whileHover={{ y: -6 }}
+                    className="group relative rounded-4xl bg-white p-px shadow-[0_16px_40px_-20px_rgba(76,29,149,0.2)] hover:shadow-[0_24px_50px_-18px_rgba(76,29,149,0.35)] transition-all duration-300"
                   >
-                    <div className="h-11 w-11 grid place-items-center rounded-2xl bg-linear-to-br from-purple-600 to-violet-600 text-white shadow-[0_8px_16px_-8px_rgba(124,58,237,0.6)] mb-4">
-                      <Icon size={20} />
+                    <div className="relative rounded-[1.95rem] bg-linear-to-b from-white to-[#FDFAFF] p-7 h-full overflow-hidden">
+                      {/* hover glow */}
+                      <div className="absolute -right-10 -top-10 h-24 w-24 rounded-full bg-[#F5F0FF] group-hover:bg-[#EDE9FE] transition-colors" />
+
+                      <div className="relative h-12 w-12 grid place-items-center rounded-2xl bg-linear-to-br from-[#15052E] to-[#4C1D95] text-white shadow-[0_10px_20px_-10px_rgba(21,5,46,0.7)] mb-5">
+                        <Icon size={20} />
+                      </div>
+
+                      <h3
+                        className={`${fredoka.className} text-[18px] leading-tight tracking-tight text-[#15052E]`}
+                      >
+                        {feature.title}
+                      </h3>
+
+                      <p
+                        className={`${bricolage.className} mt-2.5 text-[13.5px] leading-6 font-medium text-[#52525B]`}
+                      >
+                        {feature.desc}
+                      </p>
+
+                      <div
+                        className={`${bricolage.className} mt-5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-[#7C3AED] opacity-0 group-hover:opacity-100 transition`}
+                      >
+                        Learn more{" "}
+                        <span className="translate-x-0 group-hover:translate-x-1 transition">
+                          →
+                        </span>
+                      </div>
                     </div>
-                    <h3 className="text-[15px] font-bold">{feature.title}</h3>
-                    <p className="mt-2 text-[13px] leading-6 text-purple-700/60">
-                      {feature.desc}
-                    </p>
                   </motion.div>
                 );
               })}
             </div>
           </div>
         </section>
-
         <div className="block mb-1.5 px-3 md:hidden" id="image">
           <Image
             src="/banner-tippified.png"
@@ -604,67 +660,67 @@ export default function HomePage(): ReactElement {
                 </div>
               </div>
             )}
+
+            {!loadingGoals && goals.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-6 flex flex-col items-center"
+              >
+                {/* divider */}
+                <div className="w-full max-w-6xl h-px bg-linear-to-r from-transparent via-[#E9D5FF] to-transparent mb-10" />
+
+                <motion.a
+                  href="/search-goals"
+                  whileHover={{ y: -2 }}
+                  whileTap={{ y: 0, scale: 0.98 }}
+                  className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full bg-purple-700 border border-[#2A1A4A] text-white font-bold text-[14px] tracking-wide shadow-[0_12px_30px_-12px_rgba(21,5,46,0.6),0_0_0_1px_rgba(255,255,255,0.08)_inset] overflow-hidden"
+                >
+                  {/* hover glow */}
+                  <div className="absolute inset-0 bg-linear-to-r from-[#4C1D95] via-[#6D28D9] to-[#7C3AED] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  {/* shimmer */}
+                  <motion.div
+                    animate={{ x: ["-100%", "200%"] }}
+                    transition={{
+                      duration: 2.2,
+                      repeat: Infinity,
+                      repeatDelay: 2.5,
+                      ease: "easeInOut",
+                    }}
+                    className="absolute inset-y-0 w-1/3 bg-linear-to-r from-transparent via-white/15 to-transparent pointer-events-none"
+                  />
+
+                  <span className="relative flex items-center gap-2">
+                    <FiGrid className="w-4 h-4 text-[#C4B5FD]" />
+                    Explore all goals
+                  </span>
+
+                  <span className="relative h-7 w-7 rounded-full bg-white text-[#15052E] grid place-items-center group-hover:bg-[#15052E] group-hover:text-white border border-white/10 transition-colors">
+                    <motion.span
+                      initial={{ x: 0 }}
+                      whileHover={{ x: 3 }}
+                      className="group-hover:translate-x-0.5 transition-transform duration-300"
+                    >
+                      <FiArrowRight size={14} />
+                    </motion.span>
+                  </span>
+
+                  <span className="relative ml-1 pl-4 border-l border-white/15 text-[12px] font-medium text-white/70">
+                    {goals.length}+ live
+                  </span>
+                </motion.a>
+
+                <p className="mt-3 text-[12px] font-medium text-[#71717A] flex items-center gap-1.5">
+                  <FiSearch size={12} className="text-[#7C3AED]" /> Find goals
+                  by creator, category or amount
+                </p>
+              </motion.div>
+            )}
           </div>
         </section>
-
-        {!loadingGoals && goals.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-6 flex flex-col items-center"
-          >
-            {/* divider */}
-            <div className="w-full max-w-6xl h-px bg-linear-to-r from-transparent via-[#E9D5FF] to-transparent mb-10" />
-
-            <motion.a
-              href="/search-goals"
-              whileHover={{ y: -2 }}
-              whileTap={{ y: 0, scale: 0.98 }}
-              className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full bg-purple-700 border border-[#2A1A4A] text-white font-bold text-[14px] tracking-wide shadow-[0_12px_30px_-12px_rgba(21,5,46,0.6),0_0_0_1px_rgba(255,255,255,0.08)_inset] overflow-hidden"
-            >
-              {/* hover glow */}
-              <div className="absolute inset-0 bg-linear-to-r from-[#4C1D95] via-[#6D28D9] to-[#7C3AED] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-              {/* shimmer */}
-              <motion.div
-                animate={{ x: ["-100%", "200%"] }}
-                transition={{
-                  duration: 2.2,
-                  repeat: Infinity,
-                  repeatDelay: 2.5,
-                  ease: "easeInOut",
-                }}
-                className="absolute inset-y-0 w-1/3 bg-linear-to-r from-transparent via-white/15 to-transparent pointer-events-none"
-              />
-
-              <span className="relative flex items-center gap-2">
-                <FiGrid className="w-4 h-4 text-[#C4B5FD]" />
-                Explore all goals
-              </span>
-
-              <span className="relative h-7 w-7 rounded-full bg-white text-[#15052E] grid place-items-center group-hover:bg-[#15052E] group-hover:text-white border border-white/10 transition-colors">
-                <motion.span
-                  initial={{ x: 0 }}
-                  whileHover={{ x: 3 }}
-                  className="group-hover:translate-x-0.5 transition-transform duration-300"
-                >
-                  <FiArrowRight size={14} />
-                </motion.span>
-              </span>
-
-              <span className="relative ml-1 pl-4 border-l border-white/15 text-[12px] font-medium text-white/70">
-                {goals.length}+ live
-              </span>
-            </motion.a>
-
-            <p className="mt-3 text-[12px] font-medium text-[#71717A] flex items-center gap-1.5">
-              <FiSearch size={12} className="text-[#7C3AED]" /> Find goals by
-              creator, category or amount
-            </p>
-          </motion.div>
-        )}
 
         {/* PAYMENTS - PREMIUM */}
         <section
@@ -754,33 +810,71 @@ export default function HomePage(): ReactElement {
             </motion.div>
           </motion.div>
         </section>
-        {/* ABOUT */}
+
+        {/* ABOUT - PREMIUM */}
         <section
           id="about"
           ref={aboutRef}
-          className="py-8 px-6 max-w-4xl mx-auto text-center"
+          className="relative overflow-hidden bg-[#FCFAFF] py-16 px-6"
         >
+          <div className="pointer-events-none absolute left-1/2 top-0 h-100 w-175 -translate-x-1/2 rounded-full bg-[#E9D5FF]/40 blur-[80px]" />
+
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={aboutVisible ? { opacity: 1, y: 0 } : {}}
-            className="rounded-[1.8rem] border border-purple-100 bg-white p-8 shadow-[0_20px_50px_-20px_rgba(124,58,237,0.25)]"
+            initial={{ opacity: 0, y: 18, filter: "blur(8px)" }}
+            animate={
+              aboutVisible ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+            }
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="relative mx-auto max-w-3xl"
           >
-            <h2 className="text-3xl font-extrabold tracking-tight mb-6">
-              About Tippified
-            </h2>
-            <p className="text-purple-700/70 md:text-[15px] leading-7">
-              <a href="/about" className="font-bold text-purple-700 underline">
-                Tippified
-              </a>{" "}
-              is Nigeria&apos;s all-in-one creator monetization platform that
-              enables creators to receive monetary tips, virtual gifts, birthday
-              wishlist purchases, goal contributions and live stream support
-              from fans worldwide.
-              <br />
-              <br />
-              Payments securely processed through Paystack. Creator tracked tips
-              maintained within dashboard.
-            </p>
+            <div className="rounded-[2.5rem] bg-white p-px shadow-[0_20px_60px_-24px_rgba(76,29,149,0.3)]">
+              <div className="rounded-[2.45rem] bg-linear-to-b from-white to-[#FDFAFF] px-7 py-10 sm:px-10 sm:py-12 text-center">
+                <div
+                  className={`mb-4 inline-flex items-center rounded-full bg-[#F5F0FF] px-3 py-1 ring-1 ring-[#E9D5FF] ${bricolage.className}`}
+                >
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-[#6D28D9]">
+                    About us
+                  </span>
+                </div>
+
+                <h2
+                  className={`${fredoka.className} text-[30px] sm:text-[40px] leading-[0.9] tracking-tight text-[#15052E]`}
+                >
+                  About{" "}
+                  <span className="bg-linear-to-r from-[#4C1D95] to-[#7C3AED] bg-clip-text text-transparent">
+                    Tippified
+                  </span>
+                </h2>
+
+                <p
+                  className={`${bricolage.className} mx-auto mt-5 max-w-2xl text-[15px] sm:text-[16px] leading-8 font-medium text-[#3F3F46]`}
+                >
+                  <a
+                    href="/about"
+                    className={`${fredoka.className} font-bold text-[#4C1D95] underline decoration-[#E9D5FF] decoration-2 underline-offset-4 hover:decoration-[#7C3AED] transition`}
+                  >
+                    Tippified
+                  </a>{" "}
+                  is Nigeria&apos;s all-in-one creator monetization platform
+                  that enables creators to receive monetary tips, virtual gifts,
+                  birthday wishlist purchases, goal contributions and live
+                  stream support from fans worldwide.
+                </p>
+
+                <div
+                  className={`${bricolage.className} mt-6 inline-flex items-center gap-2 rounded-full bg-[#15052E] px-4 py-2 text-[11px] font-bold text-white`}
+                >
+                  <span className="h-2 w-2 animate-pulse rounded-full bg-[#A78BFA]" />
+                  Payments securely processed through Paystack
+                </div>
+
+                <p
+                  className={`${bricolage.className} mt-4 text-[12px] font-semibold text-[#A1A1AA]`}
+                >
+                  Creator tracked tips maintained within dashboard • Not a bank
+                </p>
+              </div>
+            </div>
           </motion.div>
         </section>
 
