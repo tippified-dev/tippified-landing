@@ -2,7 +2,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
-import { Bricolage_Grotesque, Fredoka } from "next/font/google";
 import Image from "next/image";
 import type { ReactElement } from "react";
 import { useEffect, useRef, useState } from "react";
@@ -30,6 +29,7 @@ import {
   FiX,
   FiZap,
 } from "react-icons/fi";
+import { bricolage, fredoka } from "./font";
 
 import ActivityTeaserSection from "./components/ActivityTeaserSection";
 import BannerSlider from "./components/BannerSlider";
@@ -85,15 +85,6 @@ export default function HomePage(): ReactElement {
   const rememberScroll = useScrollRestoration("home-scroll");
   const [showAllBlogs, setShowAllBlogs] = useState<boolean>(false);
 
-  const fredoka = Fredoka({
-    subsets: ["latin"],
-    weight: ["600", "700"],
-  });
-
-  const bricolage = Bricolage_Grotesque({
-    subsets: ["latin"],
-    weight: ["400", "500", "600", "700"],
-  });
   const { data: blogs = [], isLoading: loadingBlogs } = useQuery<BlogPost[]>({
     queryKey: ["blogs"],
     queryFn: async (): Promise<BlogPost[]> => {

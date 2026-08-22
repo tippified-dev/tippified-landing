@@ -2,18 +2,8 @@
 
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
-import { Bricolage_Grotesque, Fredoka } from "next/font/google";
 import Link from "next/link";
-
-const fredoka = Fredoka({
-  subsets: ["latin"],
-  weight: ["600", "700"],
-});
-
-const bricolage = Bricolage_Grotesque({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
+import { bricolage, fredoka } from "../font";
 
 export default function ActivityTeaserSection() {
   return (
