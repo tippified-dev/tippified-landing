@@ -84,7 +84,12 @@ export default function HomePage(): ReactElement {
   const featuresRef = useRef<(HTMLDivElement | null)[]>([]);
   const rememberScroll = useScrollRestoration("home-scroll");
   const [showAllBlogs, setShowAllBlogs] = useState<boolean>(false);
-  const fredoka = Fredoka({ subsets: ["latin"], weight: ["600", "700"] });
+
+  const fredoka = Fredoka({
+    subsets: ["latin"],
+    weight: ["600", "700"],
+  });
+
   const bricolage = Bricolage_Grotesque({
     subsets: ["latin"],
     weight: ["400", "500", "600", "700"],
