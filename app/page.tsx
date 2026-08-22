@@ -82,6 +82,7 @@ export default function HomePage(): ReactElement {
   const ctaRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<(HTMLDivElement | null)[]>([]);
   const rememberScroll = useScrollRestoration("home-scroll");
+  const [showAllBlogs, setShowAllBlogs] = useState<boolean>(false);
 
   const { data: blogs = [], isLoading: loadingBlogs } = useQuery<BlogPost[]>({
     queryKey: ["blogs"],
@@ -258,7 +259,7 @@ export default function HomePage(): ReactElement {
           <LiveNowBar />
         </div>
 
-        {/* BLOGS */}
+        {/* BLOGS - PREMIUM WITH MORE */}
         <section className="py-12 px-6" id="blog">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-center justify-between mb-6">
@@ -266,19 +267,37 @@ export default function HomePage(): ReactElement {
                 Latest Blog Posts
               </h2>
               <span className="rounded-full bg-purple-50 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-purple-600 ring-1 ring-purple-100">
-                Fresh
+                {blogs.length} posts
               </span>
             </div>
+
             {loadingBlogs && (
               <p className="text-center text-purple-400">Loading blogs...</p>
             )}
+
             {!loadingBlogs && blogs.length > 0 && (
-              <div className="flex flex-col gap-4">
-                {blogs.map((blog: BlogPost) => (
-                  <BlogCardHorizontal key={blog.id} blog={blog} />
-                ))}
-              </div>
+              <>
+                <div className="flex flex-col gap-4">
+                  {blogs.slice(0, 4).map((blog: BlogPost) => (
+                    <BlogCardHorizontal key={blog.id} blog={blog} />
+                  ))}
+                </div>
+
+                {blogs.length > 4 && (
+                  <motion.button
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setShowAllBlogs(true)}
+                    className="mt-6 flex w-full items-center justify-center gap-2 rounded-full border border-purple-100 bg-white py-3.5 text-base font-bold text-purple-700 shadow-sm hover:bg-purple-50"
+                  >
+                    <FiGrid size={16} /> More blog posts
+                    <span className="ml-1 rounded-full bg-purple-50 px-2.5 py-0.5 text-[11px]">
+                      +{blogs.length - 4} more
+                    </span>
+                  </motion.button>
+                )}
+              </>
             )}
+
             {!loadingBlogs && blogs.length === 0 && (
               <p className="text-center text-purple-400">
                 No blog posts found.
@@ -286,6 +305,53 @@ export default function HomePage(): ReactElement {
             )}
           </div>
         </section>
+
+        {/* ALL BLOGS MODAL */}
+        <AnimatePresence>
+          {showAllBlogs && (
+            <motion.div
+              className="fixed inset-0 z-200 flex items-end justify-center sm:items-center sm:p-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <div
+                className="absolute inset-0 bg-[#0a0a0a]/40 backdrop-blur-sm"
+                onClick={() => setShowAllBlogs(false)}
+              />
+              <motion.div
+                initial={{ y: 80, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 80, opacity: 0 }}
+                className="relative flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-4xl bg-white shadow-2xl sm:rounded-4xl"
+              >
+                <div className="flex items-center justify-between border-b border-purple-50 px-5 py-4">
+                  <div>
+                    <p className="text-[14px] font-extrabold text-purple-900">
+                      All Blog Posts
+                    </p>
+                    <p className="text-[11px] text-purple-400">
+                      {blogs.length} articles
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShowAllBlogs(false)}
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-purple-50 text-purple-600"
+                  >
+                    <FiX size={18} />
+                  </button>
+                </div>
+                <div className="overflow-y-auto p-4">
+                  <div className="flex flex-col gap-4">
+                    {blogs.map((blog) => (
+                      <BlogCardHorizontal key={blog.id} blog={blog} />
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <section id="users">
           <WhoUsesTippified />
