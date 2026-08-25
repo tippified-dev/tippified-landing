@@ -11,14 +11,12 @@ import {
   FiZap,
 } from "react-icons/fi";
 import { bricolage, fredoka } from "../font";
-import VerifiedBadge from "./VerifiedBadge";
 
 interface Creator {
   username: string;
   referral_code: string;
   current_amount: string;
   target_amount?: string;
-  bvn_verified: boolean;
 }
 
 export default function TrendingCreatorsBar() {
@@ -195,14 +193,11 @@ export default function TrendingCreatorsBar() {
                                 className={`${fredoka.className} flex items-center gap-1 font-bold text-[#15052E] text-[15px] truncate`}
                               >
                                 {capitalizeWords(creator.username)}
-                                {creator.bvn_verified && (
-                                  <VerifiedBadge size={16} />
-                                )}
                               </span>
                               <span
                                 className={`${bricolage.className} text-[11px] font-medium text-[#A1A1AA] truncate block`}
                               >
-                                @{creator.referral_code}
+                                {creator.referral_code}
                               </span>
                             </div>
                           </div>

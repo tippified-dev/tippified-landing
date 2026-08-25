@@ -9,8 +9,8 @@ import {
   FiBookOpen,
   FiFileText,
   FiHome,
-  FiSearch,
   FiShield,
+  FiTarget,
 } from "react-icons/fi";
 
 const baloo = Baloo_2({ subsets: ["latin"], weight: ["700", "800"] });
@@ -30,7 +30,7 @@ export default function NavBar({ onNavigate }: NavBarProps): ReactElement {
 
   const links: NavLink[] = [
     { label: "Home", href: "/", icon: FiHome },
-    { label: "Search", href: "/search-goals", icon: FiSearch },
+    { label: "Goals", href: "/search-goals", icon: FiTarget },
     { label: "Blog", href: "/blog", icon: FiBookOpen },
     { label: "Privacy", href: "/privacy-policy", icon: FiShield },
     { label: "T&C", href: "/terms-conditions", icon: FiFileText },
