@@ -3,7 +3,9 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FiCheckCircle, FiGift, FiMapPin, FiStar, FiZap } from "react-icons/fi";
+import { FiArrowRight, FiGift, FiMapPin, FiStar, FiZap } from "react-icons/fi";
+import NavBar from "../components/NavBar";
+import VerifiedBadge from "../components/VerifiedBadge";
 
 interface Creator {
   username: string;
@@ -58,6 +60,7 @@ export default function ExploreClient({
 
   return (
     <>
+      <NavBar />
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {creators.map((creator, i) => (
           <motion.div
@@ -68,7 +71,7 @@ export default function ExploreClient({
             whileHover={{ y: -6 }}
           >
             <Link
-              href={`/tip/${creator.referral_code}`}
+              href={`https://app.tippified.com/tip/${creator.referral_code}`}
               className="group relative block bg-white rounded-[1.9rem] border border-purple-100/70 p-px shadow-[0_12px_40px_-18px_rgba(124,58,237,0.15)] hover:shadow-[0_24px_60px_-18px_rgba(124,58,237,0.28)] transition-all"
             >
               <div className="rounded-[1.9rem] bg-white p-6 h-full relative overflow-hidden">
@@ -83,11 +86,9 @@ export default function ExploreClient({
                     <div>
                       <div className="flex items-center gap-1.5">
                         <p className="text-[14px] font-extrabold text-purple-900 tracking-tight">
-                          @{creator.username}
+                          {creator.username}
                         </p>
-                        {creator.bvn_verified && (
-                          <FiCheckCircle size={14} className="text-green-500" />
-                        )}
+                        {creator.bvn_verified && <VerifiedBadge size={16} />}
                       </div>
                       <p className="text-[11px] font-bold text-purple-400 mt-0.5 tracking-wide">
                         {creator.referral_code}
@@ -125,8 +126,8 @@ export default function ExploreClient({
                   <span className="text-[11px] font-bold tracking-widest uppercase text-purple-400 flex items-center gap-1">
                     <FiZap size={12} /> Tip Creator
                   </span>
-                  <div className="h-8 w-8 rounded-full bg-purple-900 text-white flex items-center justify-center group-hover:bg-purple-600 transition-colors">
-                    →
+                  <div className="h-8 w-8 rounded-full bg-purple-700 text-white flex items-center justify-center group-hover:bg-purple-600 transition-colors">
+                    <FiArrowRight />
                   </div>
                 </div>
               </div>
