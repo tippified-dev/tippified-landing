@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type ReactElement } from "react";
 import {
-  FiBookOpen,
+  FiCompass,
   FiFileText,
   FiHome,
   FiShield,
@@ -31,7 +31,7 @@ export default function NavBar({ onNavigate }: NavBarProps): ReactElement {
   const links: NavLink[] = [
     { label: "Home", href: "/", icon: FiHome },
     { label: "Goals", href: "/search-goals", icon: FiTarget },
-    { label: "Blog", href: "/blog", icon: FiBookOpen },
+    { label: "Explore", href: "/explore", icon: FiCompass },
     { label: "Privacy", href: "/privacy-policy", icon: FiShield },
     { label: "T&C", href: "/terms-conditions", icon: FiFileText },
   ];
