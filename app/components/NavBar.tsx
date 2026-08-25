@@ -82,46 +82,40 @@ export default function NavBar({ onNavigate }: NavBarProps): ReactElement {
       </nav>
 
       {/* Mobile - no active bg pill, only icon flips to black */}
-      <nav className="fixed bottom-0 left-0 right-0 md:hidden z-50">
-        <div className="mx-auto mb-4 w-full px-3">
-          <div className="rounded-4xlborder border-black/8 bg-white/90 p-1.5 backdrop-blur-2xl shadow-[0_24px_48px_-12px_rgba(0,0,0,0.25)]">
-            <div className="flex justify-between gap-1">
-              {links.map((link: NavLink) => {
-                const Icon = link.icon;
-                const isActive: boolean = pathname === link.href;
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={onNavigate}
-                    className="flex-1"
+      <nav className="fixed bottom-0 left-0 right-0 md:hidden z-50 w-full border-t border-black/10 bg-white/95 backdrop-blur-2xl">
+        <div className="flex justify-between gap-1 px-2 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
+          {links.map((link: NavLink) => {
+            const Icon = link.icon;
+            const isActive: boolean = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={onNavigate}
+                className="flex-1"
+              >
+                <motion.div
+                  whileTap={{ scale: 0.88 }}
+                  className="flex flex-col items-center gap-1.5 py-1"
+                >
+                  <div
+                    className={`grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${
+                      isActive
+                        ? "bg-purple-600 text-white shadow-[0_8px_16px_-8px_rgba(0,0,0,0.6)]"
+                        : "bg-zinc-100 text-zinc-400"
+                    }`}
                   >
-                    <motion.div
-                      whileTap={{ scale: 0.88 }}
-                      className="flex flex-col items-center gap-1.5 py-1"
-                    >
-                      <div
-                        className={`grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${
-                          isActive
-                            ? "bg-purple-600 text-white shadow-[0_8px_16px_-8px_rgba(0,0,0,0.6)]"
-                            : "bg-zinc-100 text-zinc-400"
-                        }`}
-                      >
-                        <Icon size={16} />
-                      </div>
-                      <span
-                        className={`${baloo.className} text-[11px] font-bold leading-none tracking-tight ${
-                          isActive ? "text-[#0a0a0a]" : "text-zinc-400"
-                        }`}
-                      >
-                        {link.label}
-                      </span>
-                    </motion.div>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
+                    <Icon size={16} />
+                  </div>
+                  <span
+                    className={`${baloo.className} text-[11px] font-bold leading-none tracking-tight ${isActive ? "text-[#0a0a0a]" : "text-zinc-400"}`}
+                  >
+                    {link.label}
+                  </span>
+                </motion.div>
+              </Link>
+            );
+          })}
         </div>
       </nav>
     </>
