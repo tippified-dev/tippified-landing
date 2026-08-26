@@ -1,3 +1,4 @@
+import VerifiedBadge from "@/app/components/VerifiedBadge";
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -154,14 +155,7 @@ export default async function CreatorPage({ params }: Props) {
                 {creator.username}
               </h1>
 
-              {creator.bvn_verified && (
-                <span
-                  className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold"
-                  title="Verified creator"
-                >
-                  ✓
-                </span>
-              )}
+              {creator.bvn_verified && <VerifiedBadge />}
             </div>
 
             {/* Creator description */}
@@ -185,10 +179,15 @@ export default async function CreatorPage({ params }: Props) {
                 </span>
               )}
 
-              {creator.is_online && (
+              {creator.is_online ? (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-50 border border-green-100 text-green-700 text-[11px] font-bold">
                   <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
                   Online
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 border border-gray-100 text-gray-700 text-[11px] font-bold">
+                  <span className="h-1.5 w-1.5 rounded-full bg-gray-500" />
+                  Offline
                 </span>
               )}
 
