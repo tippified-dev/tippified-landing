@@ -2,53 +2,62 @@ import { Metadata } from "next";
 import ExploreClient from "./ExploreClient";
 
 export const metadata: Metadata = {
-  title:
-    "Explore Nigerian Creators on Tippified | Support Top Creators | Social Media Creators In Nigeria | Send Real Gifts To Your Favourite Creators | Send Tips To Creators | ",
+  title: "Discover Nigerian Creators | Tippified",
   description:
-    "Discover Nigeria’s most exciting creators on Tippified. Explore exclusive content, tip your favourites, send gifts, and connect with the creators you love.",
+    "Discover talented Nigerian creators on Tippified. Explore creators across entertainment, comedy, music, fashion, lifestyle and more. Send tips, gifts and support the creators you love.",
   keywords: [
-    "tippified explore",
-    "tippified creators",
-    "nigeria creators",
-    "support creators",
-    "tippified",
-    "creator monetization",
-    "content creators in nigeria",
-    "facebook creators in nigeria",
-    "instagram creators in nigeria",
-    "social media creators in migeria",
-    "explore tippified",
-
     "Tippified",
-    "creators supports",
-    "fans support",
-    "tip creators on tippified",
-    "search tippified",
-    "search creators",
-    "search on tippified",
+    "Tippified Explore",
+    "Tippified creators",
+    "Nigerian creators",
+    "Nigerian content creators",
+    "discover Nigerian creators",
+    "support Nigerian creators",
+    "creator platform Nigeria",
   ],
-  openGraph: {
-    title: "Explore Creators - Tippified",
-    description: "Discover and support verified creators on Tippified",
-    url: "https://tippified.com/explore",
-    type: "website",
-  },
   alternates: {
     canonical: "https://tippified.com/explore",
+  },
+  openGraph: {
+    title: "Discover Nigerian Creators | Tippified",
+    description:
+      "Discover talented Nigerian creators on Tippified. Explore creators, send tips and gifts, and support the creators you love.",
+    url: "https://tippified.com/explore",
+    siteName: "Tippified",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Discover Nigerian Creators | Tippified",
+    description:
+      "Discover talented Nigerian creators on Tippified. Explore creators, send tips and gifts, and support the creators you love.",
   },
 };
 
 async function getInitialCreators() {
   try {
     const res = await fetch(
-      `https://api.tippified.com/api/auth/creators/explore/?page=1`,
+      "https://api.tippified.com/api/auth/creators/explore/?page=1",
       {
-        next: { revalidate: 60 },
+        next: {
+          revalidate: 60,
+        },
       },
     );
+
+    if (!res.ok) {
+      return {
+        results: [],
+        next: null,
+      };
+    }
+
     return await res.json();
   } catch {
-    return { results: [], next: null };
+    return {
+      results: [],
+      next: null,
+    };
   }
 }
 
@@ -58,22 +67,48 @@ export default async function ExplorePage() {
   return (
     <main className="min-h-screen bg-[#fcfbff]">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-purple-100 shadow-sm mb-4">
-            <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+        {/* SEO / Page Introduction */}
+        <header className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-purple-100 shadow-sm mb-5">
+            <span
+              className="h-2 w-2 rounded-full bg-green-500 animate-pulse"
+              aria-hidden="true"
+            />
+
             <span className="text-[11px] font-bold tracking-widest uppercase text-purple-600">
               Live on Tippified
             </span>
           </div>
+
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-purple-900">
-            Explore Creators
+            Discover Nigerian Creators on Tippified
           </h1>
-          <p className="text-[15px] text-gray-600 mt-4 max-w-2xl mx-auto">
-            Discover verified creators, support them and watch exclusive
-            content.
+
+          <p className="text-[15px] leading-7 text-gray-600 mt-5 max-w-3xl mx-auto">
+            Discover talented Nigerian creators across entertainment, comedy,
+            music, fashion, lifestyle, education and more. Explore creators you
+            love, send tips and gifts, and support the people whose content you
+            enjoy.
           </p>
-        </div>
-        <ExploreClient initialData={initialData} />
+        </header>
+
+        {/* Creator discovery section */}
+        <section aria-labelledby="explore-creators-heading">
+          <div className="mb-6">
+            <h2
+              id="explore-creators-heading"
+              className="text-xl sm:text-2xl font-extrabold text-purple-900"
+            >
+              Explore Creators
+            </h2>
+
+            <p className="text-sm text-gray-500 mt-1">
+              Find creators to discover, follow and support on Tippified.
+            </p>
+          </div>
+
+          <ExploreClient initialData={initialData} />
+        </section>
       </div>
     </main>
   );
