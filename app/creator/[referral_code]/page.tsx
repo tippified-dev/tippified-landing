@@ -2,7 +2,15 @@ import VerifiedBadge from "@/app/components/VerifiedBadge";
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { FiArrowLeft, FiGift, FiMapPin, FiStar, FiZap } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiGift,
+  FiMapPin,
+  FiStar,
+  FiTag,
+  FiUser,
+  FiZap,
+} from "react-icons/fi";
 
 interface Creator {
   username: string;
@@ -12,7 +20,11 @@ interface Creator {
   hero_badge: boolean;
   is_online: boolean;
   is_birthday_today: boolean;
-  profile_image_key: string | null;
+
+  bio: string | null;
+  niche: string | null;
+  niche_display: string | null;
+  date_joined: string | null;
 }
 
 interface Props {
@@ -60,17 +72,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const title = `${creator.username} | Nigerian Creator | Tippified`;
+  const niche = creator.niche_display || "Content Creator";
+
+  const title = `${creator.username} | ${niche} | Tippified`;
 
   const description =
-    `Discover ${creator.username} on Tippified. ` +
-    `Support this creator with tips and gifts and connect with their community.`;
+    creator.bio?.trim() ||
+    `Discover ${creator.username}, a ${niche.toLowerCase()} on Tippified. ` +
+      `Support their work with tips, gifts and exclusive creator content.`;
 
   const canonicalUrl = `https://tippified.com/creator/${creator.referral_code}`;
 
   return {
     title,
-    description,
+    description: description.slice(0, 160),
 
     alternates: {
       canonical: canonicalUrl,
@@ -78,7 +93,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     openGraph: {
       title,
-      description,
+      description: description.slice(0, 200),
       url: canonicalUrl,
       siteName: "Tippified",
       type: "profile",
@@ -87,7 +102,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     twitter: {
       card: "summary",
       title,
-      description,
+      description: description.slice(0, 200),
     },
 
     robots: {
@@ -110,12 +125,19 @@ export default async function CreatorPage({ params }: Props) {
 
   const canonicalUrl = `https://tippified.com/creator/${creator.referral_code}`;
 
+  const niche = creator.niche_display || "Content Creator";
+
+  const bio =
+    creator.bio?.trim() ||
+    `I am a creator on Tippified, I create quality content and available for tips and support. You can watch my paid content if available as this will encourage me to keep creating.`;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
     name: creator.username,
     url: canonicalUrl,
-    jobTitle: "Content Creator",
+    description: bio,
+    jobTitle: niche,
     homeLocation: {
       "@type": "Place",
       name: creator.location,
@@ -145,8 +167,8 @@ export default async function CreatorPage({ params }: Props) {
         <section className="bg-white rounded-4xl border border-purple-100 shadow-[0_20px_60px_-25px_rgba(124,58,237,0.2)] p-8 sm:p-10">
           <div className="flex flex-col items-center text-center">
             {/* Avatar */}
-            <div className="h-24 w-24 rounded-4xl bg-linear-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white text-3xl font-extrabold shadow-lg">
-              {creator.username.charAt(0).toUpperCase()}
+            <div className="h-24 w-24 rounded-4xl bg-linear-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-lg">
+              <FiUser size={42} strokeWidth={1.7} />
             </div>
 
             {/* Name */}
@@ -158,20 +180,28 @@ export default async function CreatorPage({ params }: Props) {
               {creator.bvn_verified && <VerifiedBadge />}
             </div>
 
-            {/* Creator description */}
-            <p className="mt-4 max-w-2xl text-[15px] leading-7 text-gray-600">
-              Discover {creator.username} on Tippified, a platform where fans
-              can discover and support creators through tips, gifts and
-              exclusive creator experiences.
-            </p>
+            {/* Niche */}
+            <div className="mt-3">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-50 border border-purple-100 px-3.5 py-1.5 text-[12px] font-bold text-purple-700">
+                <FiTag size={12} />
+                {niche}
+              </span>
+            </div>
+
+            {/* Bio */}
+            <div className="mt-6 max-w-2xl">
+              <p className="text-[15px] leading-7 text-gray-600">{bio}</p>
+            </div>
 
             {/* Information */}
             <div className="mt-6 flex flex-wrap justify-center gap-2">
+              {/* Location */}
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f8f5ff] border border-purple-100 text-[11px] font-semibold text-purple-700">
                 <FiMapPin size={12} />
                 {creator.location}
               </span>
 
+              {/* Hero */}
               {creator.hero_badge && (
                 <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-linear-to-r from-amber-400 to-orange-400 text-white text-[11px] font-bold">
                   <FiStar size={12} />
@@ -179,6 +209,7 @@ export default async function CreatorPage({ params }: Props) {
                 </span>
               )}
 
+              {/* Online */}
               {creator.is_online ? (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-50 border border-green-100 text-green-700 text-[11px] font-bold">
                   <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
@@ -191,6 +222,7 @@ export default async function CreatorPage({ params }: Props) {
                 </span>
               )}
 
+              {/* Birthday */}
               {creator.is_birthday_today && (
                 <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-pink-50 border border-pink-100 text-pink-700 text-[11px] font-bold">
                   <FiGift size={12} />
@@ -210,22 +242,53 @@ export default async function CreatorPage({ params }: Props) {
           </div>
         </section>
 
-        {/* SEO content */}
+        {/* Creator-specific SEO content */}
         <section className="mt-12">
           <h2 className="text-2xl font-extrabold text-purple-950">
-            Support {creator.username} on Tippified
+            {creator.username} — {niche}
           </h2>
 
           <p className="mt-4 text-[15px] leading-8 text-gray-600">
-            Tippified gives fans a simple way to support creators they enjoy.
-            Visit {creator.username}&apos;s Tippified page to send a tip, send a
-            gift and show your support directly.
+            {creator.username} is a {niche.toLowerCase()} based in{" "}
+            {creator.location}. {creator.username} uses Tippified to connect
+            with fans and receive direct support for their creative work.
           </p>
 
           <p className="mt-4 text-[15px] leading-8 text-gray-600">
-            Discover more Nigerian creators on Tippified and find new creators
-            whose work you enjoy and want to support.
+            Fans can support {creator.username} by sending a tip or gift
+            directly through Tippified. Where available, fans can also access
+            exclusive paid content created by {creator.username}.
           </p>
+
+          {/* Creator Bio */}
+          <div className="mt-8 rounded-3xl border border-purple-100 bg-white p-6 sm:p-7">
+            <h3 className="text-lg font-extrabold text-purple-950">
+              About {creator.username}
+            </h3>
+
+            <p className="mt-3 text-[14px] leading-7 text-gray-600">{bio}</p>
+          </div>
+
+          {/* Explore more */}
+          <div className="mt-8 rounded-3xl bg-[#f8f5ff] border border-purple-100 p-6">
+            <h3 className="text-lg font-extrabold text-purple-950">
+              Discover more Nigerian creators
+            </h3>
+
+            <p className="mt-2 text-[14px] leading-7 text-gray-600">
+              Explore creators on Tippified across different niches including{" "}
+              music, comedy, fashion, beauty, lifestyle, sports, technology,
+              business and more.
+            </p>
+
+            <Link
+              href="/explore"
+              className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-purple-600 hover:text-purple-800"
+            >
+              Explore creators
+              <FiArrowLeft className="rotate-180" size={15} />
+            </Link>
+          </div>
         </section>
       </div>
     </main>
