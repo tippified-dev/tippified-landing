@@ -49,6 +49,41 @@ interface Props {
   }>;
 }
 
+const NICHE_LABELS: Record<string, string> = {
+  content_creator: "Content Creator",
+  music: "Music",
+  comedy: "Comedy",
+  fashion: "Fashion",
+  beauty_style: "Beauty & Style",
+  memes: "Memes",
+  film_tv: "Film & TV",
+  lifestyle: "Lifestyle",
+  food_cooking: "Food & Cooking",
+  fitness_wellness: "Fitness & Wellness",
+  sports: "Sports",
+  gaming: "Gaming",
+  technology: "Technology",
+  education: "Education",
+  business_finance: "Business & Finance",
+  real_estate: "Real Estate",
+  dance: "Dance",
+  hot_topics: "Hot Topics",
+  artificial_intelligence: "Artificial Intelligence",
+  news_gossips: "News & Gossips",
+  cars: "Cars",
+  forex: "Forex",
+  events: "Events",
+  social_media: "Social Media",
+  art_design: "Art & Design",
+  photography: "Photography",
+  writing_literature: "Writing & Literature",
+  podcasting: "Podcasting",
+  travel: "Travel",
+  faith_inspiration: "Faith & Inspiration",
+  Adult_content: "Adult Content",
+  other: "Other",
+};
+
 async function getCreator(referralCode: string): Promise<Creator | null> {
   try {
     const res = await fetch(
@@ -113,7 +148,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const title = `${creator.username} | ${creator.niche} | Tippified`;
+  const nicheLabel = NICHE_LABELS[creator.niche] || creator.niche;
+  const title = `${creator.username} | ${nicheLabel} | Tippified`;
 
   const description =
     creator.bio ||
@@ -159,6 +195,8 @@ export default async function CreatorPage({ params }: Props) {
     notFound();
   }
 
+  const nicheLabel = NICHE_LABELS[creator.niche] || creator.niche;
+
   const paidContents = await getCreatorContent(referral_code);
   console.log("PAID CONTENT:", paidContents);
 
@@ -174,7 +212,7 @@ export default async function CreatorPage({ params }: Props) {
     name: creator.username,
     description: creator.bio,
     url: canonicalUrl,
-    jobTitle: creator.niche,
+    jobTitle: nicheLabel,
     homeLocation: {
       "@type": "Place",
       name: creator.location,
@@ -220,7 +258,7 @@ export default async function CreatorPage({ params }: Props) {
             {/* Niche */}
             {creator.niche && (
               <div className="mt-3 inline-flex items-center rounded-full bg-purple-50 px-3.5 py-1.5 text-xs font-bold text-purple-700 ring-1 ring-purple-100">
-                {creator.niche}
+                {nicheLabel}
               </div>
             )}
 
@@ -398,8 +436,8 @@ export default async function CreatorPage({ params }: Props) {
           </h2>
 
           <p className="mt-4 text-[15px] leading-8 text-gray-600">
-            {creator.username} is a {creator.niche.toLowerCase()} creator based
-            in {creator.location}. {creator.bio}
+            {creator.username} is a {nicheLabel.toLowerCase()} creator based in{" "}
+            {creator.location}. {creator.bio}
           </p>
 
           <p className="mt-4 text-[15px] leading-8 text-gray-600">
