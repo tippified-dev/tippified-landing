@@ -1,14 +1,17 @@
 import VerifiedBadge from "@/app/components/VerifiedBadge";
 import { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   FiArrowLeft,
   FiGift,
+  FiLock,
   FiMapPin,
+  FiPlay,
   FiStar,
-  FiTag,
   FiUser,
+  FiVideo,
   FiZap,
 } from "react-icons/fi";
 
@@ -16,15 +19,28 @@ interface Creator {
   username: string;
   referral_code: string;
   location: string;
+  bio: string;
+  niche: string;
   bvn_verified: boolean;
   hero_badge: boolean;
   is_online: boolean;
   is_birthday_today: boolean;
+}
 
-  bio: string | null;
-  niche: string | null;
-  niche_display: string | null;
-  date_joined: string | null;
+interface PaidContent {
+  id: number;
+  title: string;
+  content_type: "image" | "video";
+  file_size: number | null;
+  price: string;
+  currency: string;
+  expires_at: string;
+  uploaded_at: string;
+  duration_seconds: number | null;
+  purchase_count: number;
+  is_active: boolean;
+  is_expired: boolean;
+  thumbnail_url: string | null;
 }
 
 interface Props {
@@ -60,6 +76,31 @@ async function getCreator(referralCode: string): Promise<Creator | null> {
   }
 }
 
+async function getCreatorContent(referralCode: string): Promise<PaidContent[]> {
+  try {
+    const res = await fetch(
+      `https://api.tippified.com/api/auth/creator_fan/${encodeURIComponent(
+        referralCode,
+      )}/paid-content/`,
+      {
+        next: {
+          revalidate: 60,
+        },
+      },
+    );
+
+    if (!res.ok) {
+      return [];
+    }
+
+    const data: PaidContent[] = await res.json();
+
+    return data ?? [];
+  } catch {
+    return [];
+  }
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { referral_code } = await params;
 
@@ -72,20 +113,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const niche = creator.niche_display || "Content Creator";
-
-  const title = `${creator.username} | ${niche} | Tippified`;
+  const title = `${creator.username} | ${creator.niche} | Tippified`;
 
   const description =
-    creator.bio?.trim() ||
-    `Discover ${creator.username}, a ${niche.toLowerCase()} on Tippified. ` +
-      `Support their work with tips, gifts and exclusive creator content.`;
+    creator.bio ||
+    `Discover ${creator.username} on Tippified. Support this creator with tips, gifts and exclusive content.`;
 
   const canonicalUrl = `https://tippified.com/creator/${creator.referral_code}`;
 
   return {
     title,
-    description: description.slice(0, 160),
+    description,
 
     alternates: {
       canonical: canonicalUrl,
@@ -93,7 +131,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     openGraph: {
       title,
-      description: description.slice(0, 200),
+      description,
       url: canonicalUrl,
       siteName: "Tippified",
       type: "profile",
@@ -102,7 +140,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     twitter: {
       card: "summary",
       title,
-      description: description.slice(0, 200),
+      description,
     },
 
     robots: {
@@ -121,23 +159,21 @@ export default async function CreatorPage({ params }: Props) {
     notFound();
   }
 
+  const paidContents = await getCreatorContent(referral_code);
+
+  const availableContent = paidContents.slice(0, 4);
+
   const tippingUrl = `https://app.tippified.com/tip/${creator.referral_code}`;
 
   const canonicalUrl = `https://tippified.com/creator/${creator.referral_code}`;
-
-  const niche = creator.niche_display || "Content Creator";
-
-  const bio =
-    creator.bio?.trim() ||
-    `I am a creator on Tippified, I create quality content and available for tips and support. You can watch my paid content if available as this will encourage me to keep creating.`;
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
     name: creator.username,
+    description: creator.bio,
     url: canonicalUrl,
-    description: bio,
-    jobTitle: niche,
+    jobTitle: creator.niche,
     homeLocation: {
       "@type": "Place",
       name: creator.location,
@@ -153,27 +189,27 @@ export default async function CreatorPage({ params }: Props) {
         }}
       />
 
-      <div className="max-w-4xl mx-auto px-6 py-12">
+      <div className="mx-auto max-w-4xl px-6 py-12">
         {/* Back */}
         <Link
           href="/explore"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors mb-10"
+          className="mb-10 inline-flex items-center gap-2 text-sm font-semibold text-purple-600 transition-colors hover:text-purple-800"
         >
           <FiArrowLeft size={16} />
           Back to Explore
         </Link>
 
         {/* Profile */}
-        <section className="bg-white rounded-4xl border border-purple-100 shadow-[0_20px_60px_-25px_rgba(124,58,237,0.2)] p-8 sm:p-10">
+        <section className="rounded-4xl border border-purple-100 bg-white p-8 shadow-[0_20px_60px_-25px_rgba(124,58,237,0.2)] sm:p-10">
           <div className="flex flex-col items-center text-center">
-            {/* Avatar */}
-            <div className="h-24 w-24 rounded-4xl bg-linear-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-lg">
-              <FiUser size={42} strokeWidth={1.7} />
+            {/* Default Person Avatar */}
+            <div className="flex h-24 w-24 items-center justify-center rounded-4xl bg-linear-to-br from-purple-600 to-indigo-600 text-white shadow-lg">
+              <FiUser size={42} strokeWidth={1.8} />
             </div>
 
             {/* Name */}
             <div className="mt-6 flex items-center gap-2">
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-purple-950">
+              <h1 className="text-3xl font-extrabold tracking-tight text-purple-950 sm:text-4xl">
                 {creator.username}
               </h1>
 
@@ -181,50 +217,45 @@ export default async function CreatorPage({ params }: Props) {
             </div>
 
             {/* Niche */}
-            <div className="mt-3">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-50 border border-purple-100 px-3.5 py-1.5 text-[12px] font-bold text-purple-700">
-                <FiTag size={12} />
-                {niche}
-              </span>
-            </div>
+            {creator.niche && (
+              <div className="mt-3 inline-flex items-center rounded-full bg-purple-50 px-3.5 py-1.5 text-xs font-bold text-purple-700 ring-1 ring-purple-100">
+                {creator.niche}
+              </div>
+            )}
 
-            {/* Bio */}
-            <div className="mt-6 max-w-2xl">
-              <p className="text-[15px] leading-7 text-gray-600">{bio}</p>
-            </div>
+            {/* Creator Bio */}
+            <p className="mt-5 max-w-2xl text-[15px] leading-7 text-gray-600">
+              {creator.bio}
+            </p>
 
             {/* Information */}
             <div className="mt-6 flex flex-wrap justify-center gap-2">
-              {/* Location */}
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f8f5ff] border border-purple-100 text-[11px] font-semibold text-purple-700">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-100 bg-[#f8f5ff] px-3 py-1.5 text-[11px] font-semibold text-purple-700">
                 <FiMapPin size={12} />
                 {creator.location}
               </span>
 
-              {/* Hero */}
               {creator.hero_badge && (
-                <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-linear-to-r from-amber-400 to-orange-400 text-white text-[11px] font-bold">
+                <span className="inline-flex items-center gap-1 rounded-full bg-linear-to-r from-amber-400 to-orange-400 px-3 py-1.5 text-[11px] font-bold text-white">
                   <FiStar size={12} />
                   Hero Creator
                 </span>
               )}
 
-              {/* Online */}
               {creator.is_online ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-50 border border-green-100 text-green-700 text-[11px] font-bold">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-green-100 bg-green-50 px-3 py-1.5 text-[11px] font-bold text-green-700">
                   <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
                   Online
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 border border-gray-100 text-gray-700 text-[11px] font-bold">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-100 bg-gray-50 px-3 py-1.5 text-[11px] font-bold text-gray-700">
                   <span className="h-1.5 w-1.5 rounded-full bg-gray-500" />
                   Offline
                 </span>
               )}
 
-              {/* Birthday */}
               {creator.is_birthday_today && (
-                <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-pink-50 border border-pink-100 text-pink-700 text-[11px] font-bold">
+                <span className="inline-flex items-center gap-1 rounded-full border border-pink-100 bg-pink-50 px-3 py-1.5 text-[11px] font-bold text-pink-700">
                   <FiGift size={12} />
                   Birthday Today
                 </span>
@@ -234,7 +265,7 @@ export default async function CreatorPage({ params }: Props) {
             {/* CTA */}
             <Link
               href={tippingUrl}
-              className="mt-8 inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-purple-700 text-white text-sm font-bold hover:bg-purple-800 transition-colors shadow-lg"
+              className="mt-8 inline-flex items-center gap-2 rounded-full bg-purple-700 px-7 py-3.5 text-sm font-bold text-white shadow-lg transition-colors hover:bg-purple-800"
             >
               <FiZap size={16} />
               Support {creator.username}
@@ -242,53 +273,142 @@ export default async function CreatorPage({ params }: Props) {
           </div>
         </section>
 
-        {/* Creator-specific SEO content */}
+        {/* Exclusive Content */}
+        {availableContent.length > 0 && (
+          <section className="mt-10">
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#8b03e6] text-white">
+                  <FiLock size={14} />
+                </div>
+
+                <div>
+                  <h2 className="text-[15px] font-extrabold tracking-tight text-[#1a1919]">
+                    Exclusive Drops
+                  </h2>
+
+                  <p className="text-[11px] font-medium text-[#a78bfa]">
+                    {paidContents.length} content • From {creator.username}
+                  </p>
+                </div>
+              </div>
+
+              <span className="flex items-center gap-1 rounded-full bg-[#f5f3ff] px-2.5 py-1 text-[10px] font-bold text-[#7c3aed]">
+                <FiStar size={10} />
+                PREMIUM
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              {availableContent.map((content) => (
+                <Link
+                  key={content.id}
+                  href={tippingUrl}
+                  className="group overflow-hidden rounded-[1.6rem] border border-[#ede9fe] bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+                >
+                  {/* Thumbnail */}
+                  <div className="relative aspect-square overflow-hidden bg-[#f5f3ff]">
+                    {content.thumbnail_url ? (
+                      <Image
+                        src={content.thumbnail_url}
+                        alt={`${content.title || "Exclusive content"} by ${creator.username}`}
+                        className="h-full w-full scale-110 object-cover blur-xl transition-transform duration-500 group-hover:scale-115"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-purple-100 to-indigo-100">
+                        {content.content_type === "video" ? (
+                          <FiVideo size={42} className="text-purple-400" />
+                        ) : (
+                          <FiLock size={42} className="text-purple-400" />
+                        )}
+                      </div>
+                    )}
+
+                    {/* Dark overlay */}
+                    <div className="absolute inset-0 bg-black/15" />
+
+                    {/* Lock */}
+                    <div className="absolute left-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-sm">
+                      <FiLock size={14} />
+                    </div>
+
+                    {/* Content type */}
+                    <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-white/90 px-2 py-1 text-[9px] font-bold text-purple-700 backdrop-blur-sm">
+                      {content.content_type === "video" ? (
+                        <>
+                          <FiPlay size={9} />
+                          VIDEO
+                        </>
+                      ) : (
+                        "IMAGE"
+                      )}
+                    </div>
+
+                    {/* Center play/lock */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-sm">
+                        {content.content_type === "video" ? (
+                          <FiPlay size={18} fill="currentColor" />
+                        ) : (
+                          <FiLock size={17} />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Content information */}
+                  <div className="p-3">
+                    <h3 className="line-clamp-2 text-[13px] font-extrabold leading-5 text-gray-900">
+                      {content.title || "Exclusive Content"}
+                    </h3>
+
+                    <div className="mt-3 flex items-center justify-between">
+                      <span className="text-[12px] font-bold text-purple-700">
+                        {content.currency} {content.price}
+                      </span>
+
+                      <span className="rounded-full bg-[#f5f3ff] px-2.5 py-1 text-[10px] font-bold text-purple-600">
+                        Unlock
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            {/* View all CTA */}
+            {paidContents.length > 4 && (
+              <Link
+                href={tippingUrl}
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-full border border-[#ede9fe] bg-white py-3.5 text-sm font-bold text-[#6d28d9] shadow-sm transition-colors hover:bg-[#f8f5ff]"
+              >
+                <FiLock size={15} />
+                View all exclusive content
+              </Link>
+            )}
+          </section>
+        )}
+
+        {/* SEO content */}
         <section className="mt-12">
           <h2 className="text-2xl font-extrabold text-purple-950">
-            {creator.username} — {niche}
+            Support {creator.username} on Tippified
           </h2>
 
           <p className="mt-4 text-[15px] leading-8 text-gray-600">
-            {creator.username} is a {niche.toLowerCase()} based in{" "}
-            {creator.location}. {creator.username} uses Tippified to connect
-            with fans and receive direct support for their creative work.
+            {creator.username} is a {creator.niche.toLowerCase()} creator based
+            in {creator.location}. {creator.bio}
           </p>
 
           <p className="mt-4 text-[15px] leading-8 text-gray-600">
-            Fans can support {creator.username} by sending a tip or gift
-            directly through Tippified. Where available, fans can also access
-            exclusive paid content created by {creator.username}.
+            Fans can support {creator.username} on Tippified by sending tips,
+            gifts and accessing exclusive creator content when available.
           </p>
 
-          {/* Creator Bio */}
-          <div className="mt-8 rounded-3xl border border-purple-100 bg-white p-6 sm:p-7">
-            <h3 className="text-lg font-extrabold text-purple-950">
-              About {creator.username}
-            </h3>
-
-            <p className="mt-3 text-[14px] leading-7 text-gray-600">{bio}</p>
-          </div>
-
-          {/* Explore more */}
-          <div className="mt-8 rounded-3xl bg-[#f8f5ff] border border-purple-100 p-6">
-            <h3 className="text-lg font-extrabold text-purple-950">
-              Discover more Nigerian creators
-            </h3>
-
-            <p className="mt-2 text-[14px] leading-7 text-gray-600">
-              Explore creators on Tippified across different niches including{" "}
-              music, comedy, fashion, beauty, lifestyle, sports, technology,
-              business and more.
-            </p>
-
-            <Link
-              href="/explore"
-              className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-purple-600 hover:text-purple-800"
-            >
-              Explore creators
-              <FiArrowLeft className="rotate-180" size={15} />
-            </Link>
-          </div>
+          <p className="mt-4 text-[15px] leading-8 text-gray-600">
+            Discover more Nigerian creators on Tippified and find creators whose
+            work you enjoy and want to support.
+          </p>
         </section>
       </div>
     </main>
