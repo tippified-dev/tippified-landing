@@ -160,6 +160,7 @@ export default async function CreatorPage({ params }: Props) {
   }
 
   const paidContents = await getCreatorContent(referral_code);
+  console.log("PAID CONTENT:", paidContents);
 
   const availableContent = paidContents.slice(0, 4);
 
