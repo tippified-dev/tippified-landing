@@ -313,7 +313,7 @@ export default async function CreatorPage({ params }: Props) {
                       <Image
                         src={content.thumbnail_url}
                         alt={`${content.title || "Exclusive content"} by ${creator.username}`}
-                        className="h-full w-full scale-110 object-cover blur-xl transition-transform duration-500 group-hover:scale-115"
+                        className="h-full w-full scale-110 object-cover blur-[5px] transition-transform duration-500 group-hover:scale-115"
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-purple-100 to-indigo-100">
@@ -365,7 +365,8 @@ export default async function CreatorPage({ params }: Props) {
 
                     <div className="mt-3 flex items-center justify-between">
                       <span className="text-[12px] font-bold text-purple-700">
-                        {content.currency} {content.price}
+                        {content.currency}{" "}
+                        {Number(content.price).toLocaleString("en-NG")}
                       </span>
 
                       <span className="rounded-full bg-[#f5f3ff] px-2.5 py-1 text-[10px] font-bold text-purple-600">
