@@ -2,15 +2,30 @@ import { Metadata } from "next";
 import ExploreClient from "./ExploreClient";
 
 export const metadata: Metadata = {
-  title: "Explore Creators on Tippified | Support Top Nigerian Creators",
+  title:
+    "Explore Nigerian Creators on Tippified | Support Top Creators | Social Media Creators In Nigeria | Send Real Gifts To Your Favourite Creators | Send Tips To Creators | ",
   description:
-    "Discover verified creators on Tippified. Tip, send gifts, watch exclusive paid videos and support your favourite creators in Nigeria and Ghana.",
+    "Discover Nigeria’s most exciting creators on Tippified. Explore exclusive content, tip your favourites, send gifts, and connect with the creators you love.",
   keywords: [
     "tippified explore",
     "tippified creators",
     "nigeria creators",
     "support creators",
     "tippified",
+    "creator monetization",
+    "content creators in nigeria",
+    "facebook creators in nigeria",
+    "instagram creators in nigeria",
+    "social media creators in migeria",
+    "explore tippified",
+
+    "Tippified",
+    "creators supports",
+    "fans support",
+    "tip creators on tippified",
+    "search tippified",
+    "search creators",
+    "search on tippified",
   ],
   openGraph: {
     title: "Explore Creators - Tippified",
