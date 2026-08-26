@@ -106,7 +106,7 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
               whileHover={{ y: -6 }}
             >
               <Link
-                href={`https://app.tippified.com/tip/${creator.referral_code}`}
+                href={`/creator/${creator.referral_code}`}
                 className="group relative block bg-white rounded-[1.9rem] border border-purple-100/70 p-px shadow-[0_12px_40px_-18px_rgba(124,58,237,0.15)] hover:shadow-[0_24px_60px_-18px_rgba(124,58,237,0.28)] transition-all"
                 aria-label={`Support ${creator.username} on Tippified`}
               >
@@ -137,7 +137,7 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
                         </div>
 
                         <p className="text-[11px] font-bold text-purple-400 mt-0.5 tracking-wide">
-                          @{creator.referral_code}
+                          {creator.referral_code}
                         </p>
                       </div>
                     </div>

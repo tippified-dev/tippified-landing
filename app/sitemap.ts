@@ -7,11 +7,15 @@ interface GoalItem {
 
 interface CreatorItem {
   referral_code: string;
-  created_at?: string | null;
+}
+
+interface CreatorApiResponse {
+  results?: CreatorItem[];
+  next?: string | null;
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://www.tippified.com";
+  const baseUrl = "https://tippified.com";
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
@@ -20,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/about`, lastModified: new Date() },
     { url: `${baseUrl}/how-it-works`, lastModified: new Date() },
     { url: `${baseUrl}/faq`, lastModified: new Date() },
-   
+    { url: `${baseUrl}/explore`, lastModified: new Date() },
     { url: `${baseUrl}/terms-conditions`, lastModified: new Date() },
     { url: `${baseUrl}/search-goals`, lastModified: new Date() },
     { url: `${baseUrl}/privacy-policy`, lastModified: new Date() },
@@ -31,15 +35,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let goalPages: MetadataRoute.Sitemap = [];
   let creatorPages: MetadataRoute.Sitemap = [];
 
+  /*
+   * ---------------------------------------------------------
+   * GOALS
+   * ---------------------------------------------------------
+   */
+
   try {
-    // Fetch goals
     const resGoals = await fetch(
       "https://api.tippified.com/api/auth/public/goals/",
-      { cache: "no-store" }
+      {
+        cache: "no-store",
+      },
     );
 
     if (resGoals.ok) {
-      const dataGoals: { results?: GoalItem[] } = await resGoals.json();
+      const dataGoals: { results?: GoalItem[] } =
+        await resGoals.json();
+
       const goals: GoalItem[] = dataGoals.results || [];
 
       goalPages = goals
@@ -55,27 +68,52 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Goals sitemap error:", err);
   }
 
+
   try {
-    // Fetch creators
-    const resCreators = await fetch(
-      "https://api.tippified.com/api/auth/public/creators/",
-      { cache: "no-store" }
-    );
+    let nextUrl:
+      | string
+      | null =
+      "https://api.tippified.com/api/auth/creators/explore/?page=1";
 
-    if (resCreators.ok) {
-      const dataCreators = await resCreators.json();
-      const creators: CreatorItem[] = dataCreators.results || [];
+    const allCreators: CreatorItem[] = [];
 
-      creatorPages = creators.map((creator) => ({
-        url: `${baseUrl}/tip/${creator.referral_code}`,
-        lastModified: creator.created_at
-          ? new Date(creator.created_at)
-          : new Date(),
-      }));
+    while (nextUrl) {
+      const resCreators = await fetch(nextUrl, {
+        cache: "no-store",
+      });
+
+      if (!resCreators.ok) {
+        console.error(
+          `Creators sitemap request failed: ${resCreators.status}`,
+        );
+        break;
+      }
+
+      const dataCreators: CreatorApiResponse =
+        await resCreators.json();
+
+      if (dataCreators.results?.length) {
+        allCreators.push(...dataCreators.results);
+      }
+
+      nextUrl = dataCreators.next || null;
     }
+
+    creatorPages = allCreators
+      .filter((creator) => creator.referral_code)
+      .map((creator) => ({
+        url: `${baseUrl}/creator/${creator.referral_code}`,
+        lastModified: new Date(),
+      }));
   } catch (err) {
     console.error("Creators sitemap error:", err);
   }
 
-  return [...staticPages, ...goalPages, ...creatorPages];
+ 
+
+  return [
+    ...staticPages,
+    ...goalPages,
+    ...creatorPages,
+  ];
 }
