@@ -5,11 +5,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   FiArrowLeft,
+  FiCalendar,
   FiGift,
   FiLock,
   FiMapPin,
   FiPlay,
   FiStar,
+  FiTarget,
+  FiTrendingUp,
   FiUser,
   FiVideo,
   FiZap,
@@ -41,6 +44,17 @@ interface PaidContent {
   is_active: boolean;
   is_expired: boolean;
   thumbnail_url: string | null;
+}
+
+interface CreatorGoal {
+  title: string;
+  target_amount: string;
+  current_amount: string;
+  current_foreign_usd: string;
+  about: string | null;
+  is_active: boolean;
+  created_at: string;
+  progress_percent: number;
 }
 
 interface Props {
@@ -136,6 +150,33 @@ async function getCreatorContent(referralCode: string): Promise<PaidContent[]> {
   }
 }
 
+async function getCreatorGoal(
+  referralCode: string,
+): Promise<CreatorGoal | null> {
+  try {
+    const res = await fetch(
+      `https://api.tippified.com/api/auth/active-goal/${encodeURIComponent(
+        referralCode,
+      )}/`,
+      {
+        next: {
+          revalidate: 60,
+        },
+      },
+    );
+
+    if (!res.ok) {
+      return null;
+    }
+
+    const data = await res.json();
+
+    return data.active_goal ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { referral_code } = await params;
 
@@ -198,7 +239,9 @@ export default async function CreatorPage({ params }: Props) {
   const nicheLabel = NICHE_LABELS[creator.niche] || creator.niche;
 
   const paidContents = await getCreatorContent(referral_code);
+  const goal = await getCreatorGoal(referral_code);
   console.log("PAID CONTENT:", paidContents);
+  console.log("CREATOR GOAL:", goal);
 
   const availableContent = paidContents.slice(0, 4);
 
@@ -311,6 +354,90 @@ export default async function CreatorPage({ params }: Props) {
             </Link>
           </div>
         </section>
+        {/* Creator Goal */}
+        {goal && goal.is_active && (
+          <section className="mt-10">
+            <div className="relative overflow-hidden rounded-[1.8rem] border border-purple-100 bg-linear-to-br from-[#f8f5ff] to-white p-5 shadow-[0_12px_35px_-20px_rgba(88,28,174,0.3)]">
+              <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-purple-100/60 blur-2xl" />
+
+              <div className="relative">
+                {/* Goal Header */}
+                <div className="flex items-center justify-between gap-3">
+                  <h2 className="flex min-w-0 items-center gap-2 text-[15px] font-extrabold tracking-tight text-purple-950">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-purple-600 ring-1 ring-purple-100">
+                      <FiTarget size={16} />
+                    </span>
+
+                    <span className="truncate">{goal.title}</span>
+                  </h2>
+
+                  <span className="flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[10px] font-bold text-purple-600 ring-1 ring-purple-100">
+                    <FiZap size={10} />
+                    {Math.min(Number(goal.progress_percent || 0), 100).toFixed(
+                      0,
+                    )}
+                    %
+                  </span>
+                </div>
+
+                {/* About */}
+                {goal.about && (
+                  <p className="relative mt-4 text-[13px] leading-6 text-gray-600">
+                    {goal.about}
+                  </p>
+                )}
+
+                {/* Progress Bar */}
+                <div className="relative mt-5 h-3 w-full overflow-hidden rounded-full bg-purple-100">
+                  <div
+                    className="h-full rounded-full bg-linear-to-r from-purple-600 to-indigo-600 transition-all duration-700"
+                    style={{
+                      width: `${Math.min(
+                        Number(goal.progress_percent || 0),
+                        100,
+                      )}%`,
+                    }}
+                  />
+                </div>
+
+                {/* Target + Current */}
+                <div className="relative mt-4 grid grid-cols-2 gap-3">
+                  <div className="rounded-2xl bg-white p-3.5 ring-1 ring-purple-50">
+                    <p className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-purple-400">
+                      <FiTarget size={10} />
+                      Goal Target
+                    </p>
+
+                    <p className="mt-1.5 text-[14px] font-extrabold text-purple-950">
+                      ₦{Number(goal.target_amount || 0).toLocaleString("en-NG")}
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl bg-white p-3.5 ring-1 ring-purple-50">
+                    <p className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-purple-400">
+                      <FiTrendingUp size={10} />
+                      Current
+                    </p>
+
+                    <p className="mt-1.5 text-[14px] font-extrabold text-purple-950">
+                      ₦
+                      {Number(goal.current_amount || 0).toLocaleString("en-NG")}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Created Date */}
+                <p className="relative mt-4 flex items-center justify-end gap-1 text-[10px] font-medium text-purple-400">
+                  <FiCalendar size={10} />
+                  Created:{" "}
+                  {goal.created_at
+                    ? new Date(goal.created_at).toLocaleDateString("en-NG")
+                    : ""}
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Exclusive Content */}
         {availableContent.length > 0 && (
