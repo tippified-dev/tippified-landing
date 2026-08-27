@@ -28,6 +28,7 @@ interface Creator {
   hero_badge: boolean;
   is_online: boolean;
   is_birthday_today: boolean;
+  wishlist_active: boolean;
 }
 
 interface PaidContent {
@@ -407,6 +408,56 @@ export default async function CreatorPage({ params }: Props) {
           </div>
         </section>
 
+        {/* Wishlist */}
+        {creator.wishlist_active && (
+          <section className="mt-8">
+            <div className="relative overflow-hidden rounded-[1.8rem] border border-purple-100 bg-white p-6 shadow-[0_12px_35px_-20px_rgba(88,28,174,0.25)]">
+              {/* Decorative background */}
+              <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-purple-100/60 blur-2xl" />
+
+              <div className="absolute -bottom-12 -left-10 h-24 w-24 rounded-full bg-pink-100/50 blur-2xl" />
+
+              <div className="relative flex flex-col items-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+                {/* Text */}
+                <div className="max-w-xl">
+                  <div className="mb-2 flex items-center justify-center gap-2 sm:justify-start">
+                    <span className="grid h-9 w-9 place-items-center rounded-full bg-purple-50 text-purple-600 ring-1 ring-purple-100">
+                      <FiGift size={17} />
+                    </span>
+
+                    <span className="text-[11px] font-extrabold uppercase tracking-widest text-purple-500">
+                      Wishlist
+                    </span>
+                  </div>
+
+                  <h2 className="text-xl font-extrabold tracking-tight text-purple-950 sm:text-2xl">
+                    This creator has a wishlist
+                  </h2>
+
+                  <p className="mt-2 text-[13px] leading-6 text-gray-600">
+                    {creator.username} has a wishlist with things they&apos;d
+                    love to receive. Check it out and see how you can support
+                    them.
+                  </p>
+                </div>
+
+                {/* Wishlist CTA */}
+                <Link
+                  href={tippingUrl}
+                  aria-label={`Check out ${creator.username}'s wishlist`}
+                  className="group mt-5 inline-flex shrink-0 items-center gap-2 rounded-full bg-purple-700 px-6 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-purple-200 transition-all hover:-translate-y-0.5 hover:bg-purple-800 hover:shadow-xl sm:mt-0"
+                >
+                  <FiGift
+                    size={17}
+                    className="transition-transform duration-300 group-hover:rotate-12"
+                  />
+                  Check It Out
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Creator Goal */}
         {goal && goal.is_active && (
           <section className="mt-10">
@@ -416,14 +467,23 @@ export default async function CreatorPage({ params }: Props) {
               <div className="relative">
                 {/* Goal Header */}
                 <div className="flex items-center justify-between gap-3">
-                  <h2 className="flex min-w-0 items-center gap-2 text-[15px] font-extrabold tracking-tight text-purple-950">
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-purple-600 ring-1 ring-purple-100">
-                      <FiTarget size={16} />
-                    </span>
+                  <div className="min-w-0">
+                    {/* Label */}
+                    <div className="mb-2 flex items-center gap-1.5">
+                      <FiTarget size={12} className="text-purple-500" />
 
-                    <span className="truncate">{goal.title}</span>
-                  </h2>
+                      <span className="text-[10px] font-extrabold uppercase tracking-widest text-purple-500">
+                        {creator.username}&apos;s Goal
+                      </span>
+                    </div>
 
+                    {/* Goal Title */}
+                    <h2 className="text-[17px] font-extrabold tracking-tight text-purple-950 sm:text-lg">
+                      {goal.title}
+                    </h2>
+                  </div>
+
+                  {/* Progress */}
                   <span className="flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[10px] font-bold text-purple-600 ring-1 ring-purple-100">
                     <FiZap size={10} />
                     {Math.min(Number(goal.progress_percent || 0), 100).toFixed(
@@ -432,26 +492,13 @@ export default async function CreatorPage({ params }: Props) {
                     %
                   </span>
                 </div>
-
-                {/* About */}
-                {goal.about && (
-                  <p className="relative mt-4 text-[13px] leading-6 text-gray-600">
-                    {goal.about}
-                  </p>
-                )}
-
-                {/* Progress Bar */}
-                <div className="relative mt-5 h-3 w-full overflow-hidden rounded-full bg-purple-100">
-                  <div
-                    className="h-full rounded-full bg-linear-to-r from-purple-600 to-indigo-600 transition-all duration-700"
-                    style={{
-                      width: `${Math.min(
-                        Number(goal.progress_percent || 0),
-                        100,
-                      )}%`,
-                    }}
-                  />
-                </div>
+                <p className="relative mt-4 text-[13px] leading-6 text-gray-600">
+                  <span className="font-bold text-purple-900">
+                    {creator.username} has a goal
+                  </span>{" "}
+                  that they want you to help achieve. They&apos;re counting on
+                  your support to make it happen.
+                </p>
 
                 {/* Target + Current */}
                 <div className="relative mt-4 grid grid-cols-2 gap-3">
@@ -478,6 +525,13 @@ export default async function CreatorPage({ params }: Props) {
                     </p>
                   </div>
                 </div>
+                <Link
+                  href={tippingUrl}
+                  className="relative mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-purple-700 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-purple-100 transition-all hover:-translate-y-0.5 hover:bg-purple-800"
+                >
+                  <FiTarget size={16} />
+                  Help {creator.username} Reach This Goal
+                </Link>
 
                 {/* Created Date */}
                 <p className="relative mt-4 flex items-center justify-end gap-1 text-[10px] font-medium text-purple-400">
