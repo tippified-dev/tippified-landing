@@ -354,6 +354,59 @@ export default async function CreatorPage({ params }: Props) {
             </Link>
           </div>
         </section>
+
+        {/* Send a Gift */}
+
+        <section className="mt-8">
+          <div className="relative overflow-hidden rounded-[1.8rem] border border-purple-100 bg-white p-6 shadow-[0_12px_35px_-20px_rgba(88,28,174,0.25)]">
+            {/* Decorative background */}
+
+            <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-purple-100/60 blur-2xl" />
+
+            <div className="absolute -bottom-12 -left-10 h-24 w-24 rounded-full bg-pink-100/50 blur-2xl" />
+
+            <div className="relative flex flex-col items-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+              {/* Text */}
+
+              <div className="max-w-xl">
+                <div className="mb-2 flex items-center justify-center gap-2 sm:justify-start">
+                  <span className="grid h-9 w-9 place-items-center rounded-full bg-purple-50 text-purple-600 ring-1 ring-purple-100">
+                    <FiGift size={17} />
+                  </span>
+
+                  <span className="text-[11px] font-extrabold uppercase tracking-widest text-purple-500">
+                    Show Your Support
+                  </span>
+                </div>
+
+                <h2 className="text-xl font-extrabold tracking-tight text-purple-950 sm:text-2xl">
+                  Send {creator.username} a gift
+                </h2>
+
+                <p className="mt-2 text-[13px] leading-6 text-gray-600">
+                  Appreciate {creator.username}&apos;s work by sending a gift
+                  directly on Tippified. Your support helps creators continue
+                  doing what they love.
+                </p>
+              </div>
+
+              {/* Gift CTA */}
+
+              <Link
+                href={tippingUrl}
+                aria-label={`Send ${creator.username} a gift on Tippified`}
+                className="group mt-5 inline-flex shrink-0 items-center gap-2 rounded-full bg-purple-700 px-6 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-purple-200 transition-all hover:-translate-y-0.5 hover:bg-purple-800 hover:shadow-xl sm:mt-0"
+              >
+                <FiGift
+                  size={17}
+                  className="transition-transform duration-300 group-hover:rotate-12"
+                />
+                Send Gift
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* Creator Goal */}
         {goal && goal.is_active && (
           <section className="mt-10">
@@ -563,7 +616,8 @@ export default async function CreatorPage({ params }: Props) {
           </h2>
 
           <p className="mt-4 text-[15px] leading-8 text-gray-600">
-            {creator.username} is a {nicheLabel.toLowerCase()} creator based in{" "}
+            {creator.username} is a {nicheLabel.toLowerCase()}{" "}
+            {nicheLabel === "Content Creator" ? "" : "creator"} based in{" "}
             {creator.location}. {creator.bio}
           </p>
 
