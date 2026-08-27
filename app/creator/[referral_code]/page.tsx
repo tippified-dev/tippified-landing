@@ -615,10 +615,14 @@ export default async function CreatorPage({ params }: Props) {
             Support {creator.username} on Tippified
           </h2>
 
-          <p className="mt-4 text-[15px] leading-8 text-gray-600">
+          <p className="mt-4 text-[15px] leading-8 text-black font-bold">
             {creator.username} is a {nicheLabel.toLowerCase()}{" "}
             {nicheLabel === "Content Creator" ? "" : "creator"} based in{" "}
-            {creator.location}. {creator.bio}
+            {creator.location}.
+          </p>
+
+          <p className="mt-4 text-[15px] leading-8 text-gray-600">
+            {creator.bio}
           </p>
 
           <p className="mt-4 text-[15px] leading-8 text-gray-600">
