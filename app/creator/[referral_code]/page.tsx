@@ -6,7 +6,6 @@ import { notFound } from "next/navigation";
 import {
   FiArrowLeft,
   FiCalendar,
-  FiExternalLink,
   FiGift,
   FiLock,
   FiMapPin,
@@ -400,39 +399,6 @@ export default async function CreatorPage({ params }: Props) {
               )}
             </div>
 
-            {/* Social Media */}
-            {creator.social_links?.length > 0 && (
-              <div className="mt-6 flex flex-wrap justify-center gap-2">
-                {creator.social_links.map((social) => {
-                  const platform =
-                    SOCIAL_PLATFORMS[
-                      social.platform as keyof typeof SOCIAL_PLATFORMS
-                    ];
-
-                  if (!platform) return null;
-
-                  const Icon = platform.icon;
-
-                  return (
-                    <a
-                      key={social.id}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Follow ${creator.username} on ${platform.label}`}
-                      className="inline-flex items-center gap-2 rounded-full border border-purple-100 bg-[#f8f5ff] px-3.5 py-2 text-[11px] font-bold text-purple-700 transition-all hover:-translate-y-0.5 hover:border-purple-200 hover:bg-purple-50 hover:text-purple-900"
-                    >
-                      <Icon size={14} />
-
-                      <span>{platform.label}</span>
-
-                      <FiExternalLink size={11} className="text-purple-400" />
-                    </a>
-                  );
-                })}
-              </div>
-            )}
-
             {/* CTA */}
             <Link
               href={tippingUrl}
@@ -443,6 +409,63 @@ export default async function CreatorPage({ params }: Props) {
             </Link>
           </div>
         </section>
+
+        {/* Social Media */}
+        {creator.social_links?.length > 0 && (
+          <div className="mt-7 w-full border-t border-purple-50 pt-6">
+            {/* Social heading */}
+            <div className="text-center">
+              <h3 className="text-[12px] font-extrabold uppercase tracking-widest text-purple-600">
+                Stay connected with {creator.username}
+              </h3>
+
+              <p className="mx-auto mt-1.5 max-w-md text-[12px] leading-5 text-gray-500">
+                Follow them on social media for the latest updates, content and
+                happenings.
+              </p>
+            </div>
+
+            {/* Social icons */}
+            <div className="mt-4 flex flex-wrap justify-center gap-2.5">
+              {creator.social_links.map((social) => {
+                const platform =
+                  SOCIAL_PLATFORMS[
+                    social.platform as keyof typeof SOCIAL_PLATFORMS
+                  ];
+
+                if (!platform) return null;
+
+                const Icon = platform.icon;
+
+                return (
+                  <a
+                    key={social.id}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Follow ${creator.username} on ${platform.label}`}
+                    title={`Follow ${creator.username} on ${platform.label}`}
+                    className="group flex h-10 w-10 items-center justify-center rounded-full border border-purple-100 bg-[#f8f5ff] text-purple-600 transition-all duration-200 hover:-translate-y-0.5 hover:border-purple-200 hover:bg-purple-700 hover:text-white hover:shadow-md hover:shadow-purple-100"
+                  >
+                    <Icon
+                      size={16}
+                      className="transition-transform duration-200 group-hover:scale-110"
+                    />
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* CTA */}
+        <Link
+          href={tippingUrl}
+          className="mt-8 inline-flex items-center gap-2 rounded-full bg-purple-700 px-7 py-3.5 text-sm font-bold text-white shadow-lg transition-colors hover:bg-purple-800"
+        >
+          <FiZap size={16} />
+          Support {creator.username}
+        </Link>
 
         {/* Send a Gift */}
 
