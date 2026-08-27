@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import {
   FiArrowLeft,
   FiCalendar,
+  FiExternalLink,
   FiGift,
   FiLock,
   FiMapPin,
@@ -18,6 +19,23 @@ import {
   FiZap,
 } from "react-icons/fi";
 
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaSnapchat,
+  FaThreads,
+  FaTiktok,
+  FaWhatsapp,
+  FaXTwitter,
+  FaYoutube,
+} from "react-icons/fa6";
+
+interface SocialLink {
+  id: number;
+  platform: string;
+  url: string;
+}
+
 interface Creator {
   username: string;
   referral_code: string;
@@ -29,6 +47,7 @@ interface Creator {
   is_online: boolean;
   is_birthday_today: boolean;
   wishlist_active: boolean;
+  social_links: SocialLink[];
 }
 
 interface PaidContent {
@@ -98,6 +117,41 @@ const NICHE_LABELS: Record<string, string> = {
   Adult_content: "Adult Content",
   other: "Other",
 };
+
+const SOCIAL_PLATFORMS = {
+  instagram: {
+    label: "Instagram",
+    icon: FaInstagram,
+  },
+  twitter: {
+    label: "Twitter / X",
+    icon: FaXTwitter,
+  },
+  facebook: {
+    label: "Facebook",
+    icon: FaFacebookF,
+  },
+  youtube: {
+    label: "YouTube",
+    icon: FaYoutube,
+  },
+  whatsapp: {
+    label: "WhatsApp",
+    icon: FaWhatsapp,
+  },
+  snapchat: {
+    label: "Snapchat",
+    icon: FaSnapchat,
+  },
+  tiktok: {
+    label: "TikTok",
+    icon: FaTiktok,
+  },
+  threads: {
+    label: "Threads",
+    icon: FaThreads,
+  },
+} as const;
 
 async function getCreator(referralCode: string): Promise<Creator | null> {
   try {
@@ -257,6 +311,7 @@ export default async function CreatorPage({ params }: Props) {
     description: creator.bio,
     url: canonicalUrl,
     jobTitle: nicheLabel,
+    sameAs: creator.social_links?.map((social) => social.url) || [],
     homeLocation: {
       "@type": "Place",
       name: creator.location,
@@ -344,6 +399,39 @@ export default async function CreatorPage({ params }: Props) {
                 </span>
               )}
             </div>
+
+            {/* Social Media */}
+            {creator.social_links?.length > 0 && (
+              <div className="mt-6 flex flex-wrap justify-center gap-2">
+                {creator.social_links.map((social) => {
+                  const platform =
+                    SOCIAL_PLATFORMS[
+                      social.platform as keyof typeof SOCIAL_PLATFORMS
+                    ];
+
+                  if (!platform) return null;
+
+                  const Icon = platform.icon;
+
+                  return (
+                    <a
+                      key={social.id}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Follow ${creator.username} on ${platform.label}`}
+                      className="inline-flex items-center gap-2 rounded-full border border-purple-100 bg-[#f8f5ff] px-3.5 py-2 text-[11px] font-bold text-purple-700 transition-all hover:-translate-y-0.5 hover:border-purple-200 hover:bg-purple-50 hover:text-purple-900"
+                    >
+                      <Icon size={14} />
+
+                      <span>{platform.label}</span>
+
+                      <FiExternalLink size={11} className="text-purple-400" />
+                    </a>
+                  );
+                })}
+              </div>
+            )}
 
             {/* CTA */}
             <Link
