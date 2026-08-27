@@ -422,7 +422,7 @@ export default async function CreatorPage({ params }: Props) {
                 <div className="max-w-xl">
                   <div className="mb-2 flex items-center justify-center gap-2 sm:justify-start">
                     <span className="grid h-9 w-9 place-items-center rounded-full bg-purple-50 text-purple-600 ring-1 ring-purple-100">
-                      <FiGift size={17} />
+                      <FiStar size={17} />
                     </span>
 
                     <span className="text-[11px] font-extrabold uppercase tracking-widest text-purple-500">
@@ -447,7 +447,7 @@ export default async function CreatorPage({ params }: Props) {
                   aria-label={`Check out ${creator.username}'s wishlist`}
                   className="group mt-5 inline-flex shrink-0 items-center gap-2 rounded-full bg-purple-700 px-6 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-purple-200 transition-all hover:-translate-y-0.5 hover:bg-purple-800 hover:shadow-xl sm:mt-0"
                 >
-                  <FiGift
+                  <FiStar
                     size={17}
                     className="transition-transform duration-300 group-hover:rotate-12"
                   />
@@ -496,8 +496,8 @@ export default async function CreatorPage({ params }: Props) {
                   <span className="font-bold text-purple-900">
                     {creator.username} has a goal
                   </span>{" "}
-                  that they want you to help achieve. They&apos;re counting on
-                  your support to make it happen.
+                  that they want you to help achieve. They are counting on your
+                  support to make it happen.
                 </p>
 
                 {/* Target + Current */}
