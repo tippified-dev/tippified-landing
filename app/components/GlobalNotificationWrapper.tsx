@@ -8,6 +8,8 @@ export default function GlobalNotificationWrapper() {
 
   // hide on search-goals page
   if (pathname === "/search-goals") return null;
+  if (pathname === "/explore") return null;
+  if (pathname === "/creator") return null;
 
   return <GlobalNotification />;
 }
