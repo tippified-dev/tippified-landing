@@ -15,7 +15,7 @@ interface CreatorApiResponse {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://tippified.com";
+  const baseUrl = "https://www.tippified.com";
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
@@ -25,6 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/how-it-works`, lastModified: new Date() },
     { url: `${baseUrl}/faq`, lastModified: new Date() },
     { url: `${baseUrl}/explore`, lastModified: new Date() },
+    
     { url: `${baseUrl}/terms-conditions`, lastModified: new Date() },
     { url: `${baseUrl}/search-goals`, lastModified: new Date() },
     { url: `${baseUrl}/privacy-policy`, lastModified: new Date() },

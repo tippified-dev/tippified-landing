@@ -239,10 +239,10 @@ export default async function CreatorPage({ params }: Props) {
 
   const nicheLabel = NICHE_LABELS[creator.niche] || creator.niche;
 
-  const paidContents = await getCreatorContent(referral_code);
-  const goal = await getCreatorGoal(referral_code);
-  console.log("PAID CONTENT:", paidContents);
-  console.log("CREATOR GOAL:", goal);
+  const [paidContents, goal] = await Promise.all([
+    getCreatorContent(referral_code),
+    getCreatorGoal(referral_code),
+  ]);
 
   const availableContent = paidContents.slice(0, 4);
 
