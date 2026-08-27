@@ -459,13 +459,13 @@ export default async function CreatorPage({ params }: Props) {
         )}
 
         {/* CTA */}
-        <Link
+        {/* <Link
           href={tippingUrl}
           className="mt-8 inline-flex items-center gap-2 rounded-full bg-purple-700 px-7 py-3.5 text-sm font-bold text-white shadow-lg transition-colors hover:bg-purple-800"
         >
           <FiZap size={16} />
           Support {creator.username}
-        </Link>
+        </Link> */}
 
         {/* Send a Gift */}
 
