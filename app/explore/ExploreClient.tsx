@@ -11,6 +11,7 @@ import VerifiedBadge from "../components/VerifiedBadge";
 interface Creator {
   username: string;
   referral_code: string;
+  niche: string;
   is_online: boolean;
   location: string;
   bvn_verified: boolean;
@@ -26,6 +27,41 @@ interface ApiResponse {
 interface ExploreClientProps {
   initialData: ApiResponse;
 }
+
+const NICHE_LABELS: Record<string, string> = {
+  content_creator: "Content Creator",
+  music: "Music",
+  comedy: "Comedy",
+  fashion: "Fashion",
+  beauty_style: "Beauty & Style",
+  memes: "Memes",
+  film_tv: "Film & TV",
+  lifestyle: "Lifestyle",
+  food_cooking: "Food & Cooking",
+  fitness_wellness: "Fitness & Wellness",
+  sports: "Sports",
+  gaming: "Gaming",
+  technology: "Technology",
+  education: "Education",
+  business_finance: "Business & Finance",
+  real_estate: "Real Estate",
+  dance: "Dance",
+  hot_topics: "Hot Topics",
+  artificial_intelligence: "Artificial Intelligence",
+  news_gossips: "News & Gossips",
+  cars: "Cars",
+  forex: "Forex",
+  events: "Events",
+  social_media: "Social Media",
+  art_design: "Art & Design",
+  photography: "Photography",
+  writing: "Writing & Literature",
+  podcasting: "Podcasting",
+  travel: "Travel",
+  faith_inspiration: "Faith & Inspiration",
+  Adult_content: "Adult Content",
+  other: "Other",
+};
 
 export default function ExploreClient({ initialData }: ExploreClientProps) {
   const [creators, setCreators] = useState<Creator[]>(
@@ -169,6 +205,12 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
                       <FiMapPin size={12} aria-hidden="true" />
                       {creator.location}
                     </span>
+
+                    {creator.niche && (
+                      <span className="inline-flex items-center rounded-full bg-purple-50 px-3 py-1.5 text-[10px] font-bold text-purple-600 ring-1 ring-purple-100">
+                        {NICHE_LABELS[creator.niche] || creator.niche}
+                      </span>
+                    )}
 
                     {creator.hero_badge && (
                       <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-linear-to-r from-amber-400 to-orange-400 text-white text-[11px] font-bold">
