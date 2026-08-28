@@ -1,13 +1,19 @@
 "use client";
-
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FiArrowRight, FiGift, FiMapPin, FiStar, FiZap } from "react-icons/fi";
-
+import {
+  FiArrowRight,
+  FiGift,
+  FiMapPin,
+  FiSearch,
+  FiStar,
+  FiX,
+  FiZap,
+} from "react-icons/fi";
 import NavBar from "../components/NavBar";
+import ProfileImageViewer from "../components/ProfileImageViewer";
 import VerifiedBadge from "../components/VerifiedBadge";
-
 interface Creator {
   username: string;
   referral_code: string;
@@ -15,19 +21,17 @@ interface Creator {
   is_online: boolean;
   location: string;
   bvn_verified: boolean;
+  profile_image_url: string | null;
   is_birthday_today: boolean;
   hero_badge: boolean;
 }
-
 interface ApiResponse {
   results: Creator[];
   next: string | null;
 }
-
 interface ExploreClientProps {
   initialData: ApiResponse;
 }
-
 const NICHE_LABELS: Record<string, string> = {
   content_creator: "Content Creator",
   music: "Music",
@@ -62,34 +66,26 @@ const NICHE_LABELS: Record<string, string> = {
   Adult_content: "Adult Content",
   other: "Other",
 };
-
 export default function ExploreClient({ initialData }: ExploreClientProps) {
   const [creators, setCreators] = useState<Creator[]>(
     initialData.results || [],
   );
-
   const [nextUrl, setNextUrl] = useState<string | null>(initialData.next);
-
   const [loading, setLoading] = useState(false);
-
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const loaderRef = useRef<HTMLDivElement | null>(null);
-
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const fetchMore = useCallback(async () => {
     if (!nextUrl || loading) return;
-
     setLoading(true);
-
     try {
       const res = await fetch(nextUrl);
-
       if (!res.ok) {
         return;
       }
-
       const data: ApiResponse = await res.json();
-
       setCreators((prev) => [...prev, ...(data.results || [])]);
-
       setNextUrl(data.next);
     } catch (error) {
       console.error("Failed to load more creators:", error);
@@ -97,12 +93,9 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
       setLoading(false);
     }
   }, [nextUrl, loading]);
-
   useEffect(() => {
     const element = loaderRef.current;
-
     if (!element) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) {
@@ -114,24 +107,118 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
         threshold: 0,
       },
     );
-
     observer.observe(element);
-
     return () => {
       observer.disconnect();
     };
   }, [fetchMore]);
-
+  useEffect(() => {
+    if (searchOpen) {
+      requestAnimationFrame(() => {
+        searchInputRef.current?.focus();
+      });
+    }
+  }, [searchOpen]);
+  const filteredCreators = creators.filter((creator) => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return true;
+    const username = creator.username?.toLowerCase() || "";
+    const referralCode = creator.referral_code?.toLowerCase() || "";
+    const niche =
+      NICHE_LABELS[creator.niche]?.toLowerCase() ||
+      creator.niche?.toLowerCase() ||
+      "";
+    const location = creator.location?.toLowerCase() || "";
+    return (
+      username.includes(query) ||
+      referralCode.includes(query) ||
+      niche.includes(query) ||
+      location.includes(query)
+    );
+  });
   return (
     <>
       <NavBar />
-
-      {creators.length > 0 ? (
+      {/* Sticky Explore Header */}
+      <div className="sticky top-0 z-40 -mx-4 border-b border-purple-100/80 bg-[#fcfbff]/92 px-4 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
+          {/* Live on Tippified */}
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span className="relative flex h-2.5 w-2.5 shrink-0">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-purple-400 opacity-60" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-purple-600" />
+            </span>
+            <div className="min-w-0">
+              <h1 className="truncate text-sm font-extrabold tracking-tight text-purple-950 sm:text-base">
+                Live on Tippified
+              </h1>
+              <p className="hidden text-[10px] font-medium text-purple-400 sm:block">
+                Discover creators worth supporting
+              </p>
+            </div>
+          </div>
+          {/* Search */}
+          <div className="flex shrink-0 items-center justify-end">
+            <motion.div
+              initial={false}
+              animate={{
+                width: searchOpen ? "min(52vw, 300px)" : "42px",
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 350,
+                damping: 30,
+              }}
+              className="relative overflow-hidden rounded-full border border-purple-100 bg-white shadow-[0_8px_30px_-16px_rgba(124,58,237,0.35)]"
+            >
+              <div className="flex h-10 items-center">
+                {/* Search icon */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (searchOpen && searchQuery) {
+                      setSearchQuery("");
+                    } else {
+                      setSearchOpen((prev) => !prev);
+                    }
+                  }}
+                  className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center text-purple-600 transition-colors hover:text-purple-800"
+                  aria-label={searchOpen ? "Clear search" : "Search creators"}
+                >
+                  {searchOpen && searchQuery ? (
+                    <FiX size={16} />
+                  ) : (
+                    <FiSearch size={16} />
+                  )}
+                </button>
+                {/* Input */}
+                <input
+                  ref={searchInputRef}
+                  type="search"
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder="Search creators..."
+                  className="h-full min-w-0 flex-1 bg-transparent pr-4 text-[12px] font-semibold text-purple-950 outline-none placeholder:text-purple-300"
+                  aria-label="Search creators"
+                  onKeyDown={(event) => {
+                    if (event.key === "Escape") {
+                      setSearchQuery("");
+                      setSearchOpen(false);
+                    }
+                  }}
+                />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+      {/* Creator Results */}
+      {filteredCreators.length > 0 ? (
         <div
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
           aria-label="Tippified creators"
         >
-          {creators.map((creator, i) => (
+          {filteredCreators.map((creator, i) => (
             <motion.article
               key={`${creator.referral_code}-${i}`}
               initial={{ opacity: 0, y: 20 }}
@@ -143,99 +230,97 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
             >
               <Link
                 href={`/creator/${creator.referral_code}`}
-                className="group relative block bg-white rounded-[1.9rem] border border-purple-100/70 p-px shadow-[0_12px_40px_-18px_rgba(124,58,237,0.15)] hover:shadow-[0_24px_60px_-18px_rgba(124,58,237,0.28)] transition-all"
+                className="group relative block rounded-[1.9rem] border border-purple-100/70 bg-white p-px shadow-[0_12px_40px_-18px_rgba(124,58,237,0.15)] transition-all hover:shadow-[0_24px_60px_-18px_rgba(124,58,237,0.28)]"
                 aria-label={`Support ${creator.username} on Tippified`}
               >
-                <div className="rounded-[1.9rem] bg-white p-6 h-full relative overflow-hidden">
+                <div className="relative h-full overflow-hidden rounded-[1.9rem] bg-white p-6">
                   {/* Decorative top line */}
                   <div
-                    className="absolute top-0 left-6 right-6 h-px bg-linear-to-r from-transparent via-purple-200/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute left-6 right-6 top-0 h-px bg-linear-to-r from-transparent via-purple-200/70 to-transparent opacity-0 transition-opacity group-hover:opacity-100"
                     aria-hidden="true"
                   />
-
                   {/* Creator identity */}
                   <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="flex min-w-0 items-center gap-2.5">
+                      {/* Profile Image Viewer */}
                       <div
-                        className="h-10 w-10 shrink-0 rounded-2xl bg-linear-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white font-extrabold text-[13px]"
-                        aria-hidden="true"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                        }}
+                        onMouseDown={(event) => {
+                          event.stopPropagation();
+                        }}
+                        className="shrink-0"
                       >
-                        {creator.username.charAt(0).toUpperCase()}
+                        <ProfileImageViewer
+                          imageUrl={creator.profile_image_url}
+                          username={creator.username}
+                        />
                       </div>
-
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <h3 className="text-[14px] font-extrabold text-purple-900 tracking-tight truncate">
+                          <h3 className="truncate text-[14px] font-extrabold tracking-tight text-purple-900">
                             {creator.username}
                           </h3>
-
                           {creator.bvn_verified && <VerifiedBadge size={16} />}
                         </div>
-
-                        <p className="text-[11px] font-bold text-purple-400 mt-0.5 tracking-wide">
+                        <p className="mt-0.5 text-[11px] font-bold tracking-wide text-purple-400">
                           {creator.referral_code}
                         </p>
                       </div>
                     </div>
-
                     {/* Online status */}
                     <div
-                      className={`shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                      className={`flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold ${
                         creator.is_online
-                          ? "bg-green-50 text-green-700 border border-green-100"
-                          : "bg-zinc-50 text-zinc-400 border border-zinc-100"
+                          ? "border border-green-100 bg-green-50 text-green-700"
+                          : "border border-zinc-100 bg-zinc-50 text-zinc-400"
                       }`}
                     >
                       <span
                         className={`h-1.5 w-1.5 rounded-full ${
                           creator.is_online
-                            ? "bg-green-500 animate-pulse"
+                            ? "animate-pulse bg-green-500"
                             : "bg-zinc-300"
                         }`}
                         aria-hidden="true"
                       />
-
                       {creator.is_online ? "Online" : "Offline"}
                     </div>
                   </div>
-
                   {/* Creator information */}
                   <div className="mt-5 flex flex-wrap gap-2">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f8f5ff] border border-purple-100 text-[11px] font-semibold text-purple-700">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-100 bg-[#f8f5ff] px-3 py-1.5 text-[11px] font-semibold text-purple-700">
                       <FiMapPin size={12} aria-hidden="true" />
                       {creator.location}
                     </span>
-
                     {creator.niche && (
                       <span className="inline-flex items-center rounded-full bg-purple-50 px-3 py-1.5 text-[10px] font-bold text-purple-600 ring-1 ring-purple-100">
                         {NICHE_LABELS[creator.niche] || creator.niche}
                       </span>
                     )}
-
                     {creator.hero_badge && (
-                      <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-linear-to-r from-amber-400 to-orange-400 text-white text-[11px] font-bold">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-linear-to-r from-amber-400 to-orange-400 px-3 py-1.5 text-[11px] font-bold text-white">
                         <FiStar size={12} aria-hidden="true" />
                         Hero Creator
                       </span>
                     )}
-
                     {creator.is_birthday_today && (
-                      <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-linear-to-r from-pink-500 to-purple-600 text-white text-[11px] font-bold">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-linear-to-r from-pink-500 to-purple-600 px-3 py-1.5 text-[11px] font-bold text-white">
                         <FiGift size={12} aria-hidden="true" />
                         Birthday Today
                       </span>
                     )}
                   </div>
-
                   {/* CTA */}
                   <div className="mt-6 flex items-center justify-between">
-                    <span className="text-[11px] font-bold tracking-widest uppercase text-purple-400 flex items-center gap-1">
+                    <span className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-widest text-purple-400">
                       <FiZap size={12} aria-hidden="true" />
                       Support Creator
                     </span>
-
                     <div
-                      className="h-8 w-8 rounded-full bg-purple-700 text-white flex items-center justify-center group-hover:bg-purple-600 transition-colors"
+                      className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-700 text-white transition-colors group-hover:bg-purple-600"
                       aria-hidden="true"
                     >
                       <FiArrowRight />
@@ -247,36 +332,52 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
           ))}
         </div>
       ) : (
-        <div className="py-20 text-center">
-          <h2 className="text-lg font-bold text-purple-900">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="py-20 text-center"
+        >
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-purple-50 text-purple-500">
+            <FiSearch size={22} />
+          </div>
+          <h2 className="mt-4 text-lg font-bold text-purple-900">
             No creators found
           </h2>
-
-          <p className="text-sm text-gray-500 mt-2">
-            Check back soon to discover creators on Tippified.
+          <p className="mt-2 text-sm text-gray-500">
+            We couldn&apos;t find a creator matching &quot;{searchQuery}&quot;.
           </p>
+          <button
+            type="button"
+            onClick={() => {
+              setSearchQuery("");
+              setSearchOpen(false);
+            }}
+            className="mt-5 rounded-full bg-purple-700 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-purple-200 transition-all hover:-translate-y-0.5 hover:bg-purple-800"
+          >
+            Clear Search
+          </button>
+        </motion.div>
+      )}
+      {/* Infinite scroll trigger */}
+      {!searchQuery && (
+        <div
+          ref={loaderRef}
+          className="mt-12 flex min-h-8 justify-center"
+          aria-hidden={!loading}
+        >
+          {loading && (
+            <div
+              className="h-6 w-6 animate-spin rounded-full border-2 border-purple-200 border-t-purple-600"
+              role="status"
+              aria-label="Loading more creators"
+            />
+          )}
         </div>
       )}
-
-      {/* Infinite scroll trigger */}
-      <div
-        ref={loaderRef}
-        className="mt-12 min-h-8 flex justify-center"
-        aria-hidden={!loading}
-      >
-        {loading && (
-          <div
-            className="h-6 w-6 rounded-full border-2 border-purple-200 border-t-purple-600 animate-spin"
-            role="status"
-            aria-label="Loading more creators"
-          />
-        )}
-      </div>
-
       {/* End of results */}
-      {!nextUrl && creators.length > 0 && (
-        <p className="text-center text-[12px] text-purple-300 mt-10">
-          You&apos;ve discovered all available creators.
+      {!nextUrl && creators.length > 0 && !searchQuery && (
+        <p className="mt-10 text-center text-[12px] text-purple-300">
+          You&apos;ve discovered all creators in public state.
         </p>
       )}
     </>
