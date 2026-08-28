@@ -395,8 +395,8 @@ export default async function CreatorPage({ params }: Props) {
                 {nicheLabel}
               </div>
             )}
-            <b className="font-bold text-center text-sm text-black">
-              {creator.username}
+            <b className="font-bold text-center mt-3 text-sm text-black">
+              {creator.username.toUpperCase()}
             </b>
 
             {/* Creator Bio */}
@@ -807,7 +807,7 @@ export default async function CreatorPage({ params }: Props) {
         {/* SEO content */}
         <section className="mt-12">
           <h2 className="text-2xl font-extrabold text-purple-950">
-            Support {creator.username} on Tippified
+            Support {getFirstName(creator.username)} on Tippified
           </h2>
 
           <p className="mt-4 text-[15px] leading-8 text-black font-bold">
