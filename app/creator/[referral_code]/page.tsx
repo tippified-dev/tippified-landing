@@ -38,6 +38,7 @@ interface SocialLink {
 interface Creator {
   username: string;
   referral_code: string;
+  profile_image_url: string | null;
   location: string;
   bio: string;
   niche: string;
@@ -266,12 +267,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: canonicalUrl,
       siteName: "Tippified",
       type: "profile",
+
+      ...(creator.profile_image_url
+        ? {
+            images: [
+              {
+                url: creator.profile_image_url,
+                width: 800,
+                height: 800,
+                alt: `${creator.username} on Tippified`,
+              },
+            ],
+          }
+        : {}),
     },
 
     twitter: {
-      card: "summary",
+      card: creator.profile_image_url ? "summary_large_image" : "summary",
       title,
       description,
+
+      ...(creator.profile_image_url
+        ? {
+            images: [creator.profile_image_url],
+          }
+        : {}),
     },
 
     robots: {
@@ -340,8 +360,20 @@ export default async function CreatorPage({ params }: Props) {
         <section className="rounded-4xl border border-purple-100 bg-white p-8 shadow-[0_20px_60px_-25px_rgba(124,58,237,0.2)] sm:p-10">
           <div className="flex flex-col items-center text-center">
             {/* Default Person Avatar */}
-            <div className="flex h-24 w-24 items-center justify-center rounded-4xl bg-linear-to-br from-purple-600 to-indigo-600 text-white shadow-lg">
-              <FiUser size={42} strokeWidth={1.8} />
+            <div className="relative h-24 w-24 overflow-hidden rounded-4xl bg-linear-to-br from-purple-600 to-indigo-600 text-white shadow-lg">
+              {creator.profile_image_url ? (
+                <Image
+                  src={creator.profile_image_url}
+                  alt={`${creator.username} profile picture`}
+                  fill
+                  className="object-cover"
+                  sizes="96px"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center">
+                  <FiUser size={42} strokeWidth={1.8} />
+                </div>
+              )}
             </div>
 
             {/* Name */}
@@ -457,15 +489,6 @@ export default async function CreatorPage({ params }: Props) {
             </div>
           </div>
         )}
-
-        {/* CTA */}
-        {/* <Link
-          href={tippingUrl}
-          className="mt-8 inline-flex items-center gap-2 rounded-full bg-purple-700 px-7 py-3.5 text-sm font-bold text-white shadow-lg transition-colors hover:bg-purple-800"
-        >
-          <FiZap size={16} />
-          Support {creator.username}
-        </Link> */}
 
         {/* Send a Gift */}
 
