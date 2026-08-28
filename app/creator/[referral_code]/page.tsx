@@ -350,15 +350,28 @@ export default async function CreatorPage({ params }: Props) {
         }}
       />
 
-      <div className="mx-auto max-w-4xl px-6 py-12">
-        {/* Back */}
-        <Link
-          href="/explore"
-          className="mb-10 inline-flex items-center gap-2 text-sm font-semibold text-purple-600 transition-colors hover:text-purple-800"
-        >
-          <FiArrowLeft size={16} />
-          Back to Explore
-        </Link>
+      <div className="mx-auto max-w-4xl px-6 pb-12 pt-0">
+        {/* Sticky Navigation */}
+        <div className="sticky top-0 z-50 -mx-6 mb-10 border-b border-purple-100/80 bg-[#fcfbff]/95 px-6 py-3 backdrop-blur-md sm:mx-0 sm:rounded-b-2xl">
+          <div className="mx-auto flex max-w-4xl items-center justify-between gap-4">
+            {/* Back to Explore */}
+            <Link
+              href="/explore"
+              className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-purple-600 transition-colors hover:text-purple-800"
+            >
+              <FiArrowLeft size={16} />
+              <span>Back to Explore</span>
+            </Link>
+
+            {/* Creator Signup */}
+            <Link
+              href="https://www.app.tippified.com/creator/signup"
+              className="inline-flex shrink-0 items-center justify-center rounded-full bg-purple-700 px-4 py-2.5 text-xs font-extrabold text-white shadow-md shadow-purple-200 transition-all hover:-translate-y-0.5 hover:bg-purple-800 hover:shadow-lg sm:px-5 sm:text-sm"
+            >
+              Become a Creator
+            </Link>
+          </div>
+        </div>
 
         {/* Profile */}
         <section className="rounded-4xl border border-purple-100 bg-white p-8 shadow-[0_20px_60px_-25px_rgba(124,58,237,0.2)] sm:p-10">
