@@ -84,6 +84,7 @@ export default function ProfileImageViewer({
               transition={{ duration: 0.3 }}
             />
             {/* Image */}
+            {/* Image */}
             <motion.button
               type="button"
               layoutId="creator-profile-image"
@@ -91,7 +92,7 @@ export default function ProfileImageViewer({
                 event.stopPropagation();
                 setIsExpanded(false);
               }}
-              className="relative z-10 aspect-square w-[min(88vw,520px)] cursor-zoom-out overflow-hidden rounded-4xl bg-white shadow-[0_35px_100px_-25px_rgba(0,0,0,0.65)] ring-1 ring-white/20 focus:outline-none"
+              className="relative z-10 h-[min(78vh,680px)] w-[min(88vw,520px)] cursor-zoom-out overflow-hidden rounded-4xl bg-white shadow-[0_35px_100px_-25px_rgba(0,0,0,0.65)] ring-1 ring-white/20 focus:outline-none"
               transition={{
                 type: "spring",
                 stiffness: 260,
@@ -105,12 +106,12 @@ export default function ProfileImageViewer({
                 alt={`${username} profile picture`}
                 fill
                 priority
-                className="object-cover"
+                className="object-contain"
                 sizes="(max-width: 640px) 88vw, 520px"
               />
+
               {/* Image edge glow */}
               <div className="pointer-events-none absolute inset-0 rounded-4xl ring-1 ring-inset ring-white/20" />
-              {/* Close button */}
             </motion.button>
           </motion.div>
         )}
