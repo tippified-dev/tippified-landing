@@ -153,6 +153,10 @@ const SOCIAL_PLATFORMS = {
   },
 } as const;
 
+function getFirstName(name: string): string {
+  return name.trim().split(/\s+/)[0] || name;
+}
+
 async function getCreator(referralCode: string): Promise<Creator | null> {
   try {
     const res = await fetch(
@@ -379,7 +383,7 @@ export default async function CreatorPage({ params }: Props) {
             {/* Name */}
             <div className="mt-6 flex items-center gap-2">
               <h1 className="text-3xl font-extrabold tracking-tight text-purple-950 sm:text-4xl">
-                {creator.username}
+                {getFirstName(creator.username)}
               </h1>
 
               {creator.bvn_verified && <VerifiedBadge />}
@@ -391,6 +395,9 @@ export default async function CreatorPage({ params }: Props) {
                 {nicheLabel}
               </div>
             )}
+            <b className="font-bold text-center text-sm text-black">
+              {creator.username}
+            </b>
 
             {/* Creator Bio */}
             <p className="mt-5 max-w-2xl text-[15px] leading-7 text-gray-600">
@@ -437,7 +444,7 @@ export default async function CreatorPage({ params }: Props) {
               className="mt-8 inline-flex items-center gap-2 rounded-full bg-purple-700 px-7 py-3.5 text-sm font-bold text-white shadow-lg transition-colors hover:bg-purple-800"
             >
               <FiZap size={16} />
-              Support {creator.username}
+              Support {getFirstName(creator.username)}
             </Link>
           </div>
         </section>
@@ -515,7 +522,7 @@ export default async function CreatorPage({ params }: Props) {
                 </div>
 
                 <h2 className="text-xl font-extrabold tracking-tight text-purple-950 sm:text-2xl">
-                  Send {creator.username} a gift
+                  Send {getFirstName(creator.username)} a gift
                 </h2>
 
                 <p className="mt-2 text-[13px] leading-6 text-gray-600">
@@ -664,7 +671,7 @@ export default async function CreatorPage({ params }: Props) {
                   className="relative mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-purple-700 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-purple-100 transition-all hover:-translate-y-0.5 hover:bg-purple-800"
                 >
                   <FiTarget size={16} />
-                  Help {creator.username} Reach This Goal
+                  Help {getFirstName(creator.username)} Reach This Goal
                 </Link>
 
                 {/* Created Date */}
