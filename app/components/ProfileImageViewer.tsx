@@ -2,7 +2,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
-import { FiUser, FiX } from "react-icons/fi";
+import { FiUser } from "react-icons/fi";
 interface ProfileImageViewerProps {
   imageUrl: string | null;
   username: string;
@@ -111,15 +111,6 @@ export default function ProfileImageViewer({
               {/* Image edge glow */}
               <div className="pointer-events-none absolute inset-0 rounded-4xl ring-1 ring-inset ring-white/20" />
               {/* Close button */}
-              <motion.span
-                className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ delay: 0.12, duration: 0.2 }}
-              >
-                <FiX size={18} />
-              </motion.span>
             </motion.button>
           </motion.div>
         )}
