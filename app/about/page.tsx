@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import CreatorTipBanner from "../components/CreatorTipBanner";
 import NavBar from "../components/NavBar";
 import ReturnToCreatorButton from "../components/ReturnToCreatorButton";
 
@@ -45,6 +46,7 @@ export default function AboutPage() {
   return (
     <>
       <NavBar />
+      <CreatorTipBanner className="mt-8" />
 
       <main className="bg-white text-gray-800 px-6 py-16">
         <div className="max-w-4xl mx-auto">
