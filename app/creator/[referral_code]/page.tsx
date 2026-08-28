@@ -1,4 +1,5 @@
 import AdBannerSlider from "@/app/components/AdBannerSlider";
+import ProfileImageViewer from "@/app/components/ProfileImageViewer";
 import VerifiedBadge from "@/app/components/VerifiedBadge";
 import { Metadata } from "next";
 import Image from "next/image";
@@ -15,7 +16,6 @@ import {
   FiStar,
   FiTarget,
   FiTrendingUp,
-  FiUser,
   FiVideo,
   FiZap,
 } from "react-icons/fi";
@@ -378,23 +378,11 @@ export default async function CreatorPage({ params }: Props) {
         {/* Profile */}
         <section className="rounded-4xl border border-purple-100 bg-white p-8 shadow-[0_20px_60px_-25px_rgba(124,58,237,0.2)] sm:p-10">
           <div className="flex flex-col items-center text-center">
-            {/* Default Person Avatar */}
-            <div className="relative h-24 w-24 overflow-hidden rounded-4xl bg-linear-to-br from-purple-600 to-indigo-600 text-white shadow-lg">
-              {creator.profile_image_url ? (
-                <Image
-                  src={creator.profile_image_url}
-                  alt={`${creator.username} profile picture`}
-                  fill
-                  className="object-cover"
-                  sizes="96px"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center">
-                  <FiUser size={42} strokeWidth={1.8} />
-                </div>
-              )}
-            </div>
-
+            {/* Premium Profile Image Viewer */}
+            <ProfileImageViewer
+              imageUrl={creator.profile_image_url}
+              username={creator.username}
+            />
             {/* Name */}
             <div className="mt-6 flex items-center gap-2">
               <h1 className="text-3xl font-extrabold tracking-tight text-purple-950 sm:text-4xl">
@@ -591,7 +579,7 @@ export default async function CreatorPage({ params }: Props) {
                   </h2>
 
                   <p className="mt-2 text-[13px] leading-6 text-gray-600">
-                    {creator.username} has a wishlist with things they&apos;d
+                    {creator.username} has a wishlist with things they would
                     love to receive. Check it out and see how you can support
                     them.
                   </p>
