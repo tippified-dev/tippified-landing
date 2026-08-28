@@ -1,3 +1,4 @@
+import AdBannerSlider from "@/app/components/AdBannerSlider";
 import VerifiedBadge from "@/app/components/VerifiedBadge";
 import { Metadata } from "next";
 import Image from "next/image";
@@ -817,6 +818,7 @@ export default async function CreatorPage({ params }: Props) {
             )}
           </section>
         )}
+        <AdBannerSlider />
 
         {/* SEO content */}
         <section className="mt-12">
