@@ -365,7 +365,7 @@ export default async function CreatorPage({ params }: Props) {
 
             {/* Creator Signup */}
             <Link
-              href="https://www.app.tippified.com/creator/signup"
+              href="https://app.tippified.com/creator/signup"
               className="inline-flex shrink-0 items-center justify-center rounded-full bg-purple-700 px-4 py-2.5 text-xs font-extrabold text-white shadow-md shadow-purple-200 transition-all hover:-translate-y-0.5 hover:bg-purple-800 hover:shadow-lg sm:px-5 sm:text-sm"
             >
               Become a Creator
