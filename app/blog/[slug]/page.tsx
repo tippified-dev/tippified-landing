@@ -1,5 +1,6 @@
 "use client";
 
+import CreatorTipBanner from "@/app/components/CreatorTipBanner";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
@@ -30,7 +31,7 @@ export default function BlogDetail() {
     const fetchBlog = async () => {
       try {
         const res = await fetch(
-          `${API_BASE_URL}/api/adminpanel/public/blogs/${slug}/`
+          `${API_BASE_URL}/api/adminpanel/public/blogs/${slug}/`,
         );
 
         if (!res.ok) {
@@ -63,40 +64,40 @@ export default function BlogDetail() {
   if (!blog) return <p className="text-center mt-10">Blog not found.</p>;
 
   return (
-  <div className="max-w-4xl mx-auto p-6 bg-white shadow rounded mt-6">
+    <div className="max-w-4xl mx-auto p-6 bg-white shadow rounded mt-6">
+      {/* Sticky Back Button */}
+      <div className="sticky top-3 z-20 bg-white pb-3">
+        <button
+          onClick={() => router.push("/blog")}
+          className="flex items-center gap-2 text-purple-600 hover:text-purple-800 font-medium"
+        >
+          <ArrowLeftIcon className="w-5 h-5" />
+          Back to blogs
+        </button>
+      </div>
 
-    {/* Sticky Back Button */}
-    <div className="sticky top-3 z-20 bg-white pb-3">
-      <button
-        onClick={() => router.push("/blog")}
-        className="flex items-center gap-2 text-purple-600 hover:text-purple-800 font-medium"
-      >
-        <ArrowLeftIcon className="w-5 h-5" />
-        Back to blogs
-      </button>
-    </div>
+      {blog.cover_image && (
+        <Image
+          src={blog.cover_image}
+          alt={blog.title}
+          width={1200}
+          height={600}
+          className="w-full h-64 object-cover rounded"
+        />
+      )}
 
-    {blog.cover_image && (
-      <Image
-        src={blog.cover_image}
-        alt={blog.title}
-        width={1200}
-        height={600}
-        className="w-full h-64 object-cover rounded"
+      <h1 className="text-3xl font-bold mt-6">{blog.title}</h1>
+
+      <p className="text-gray-400 mt-2 mb-6">
+        By {capitalizeWords(blog.author_name)} •{" "}
+        {new Date(blog.published_at).toLocaleDateString()}
+      </p>
+      <CreatorTipBanner className="mt-8" />
+
+      <div
+        className="prose max-w-none"
+        dangerouslySetInnerHTML={{ __html: blog.content }}
       />
-    )}
-
-    <h1 className="text-3xl font-bold mt-6">{blog.title}</h1>
-
-    <p className="text-gray-400 mt-2 mb-6">
-      By {capitalizeWords(blog.author_name)} •{" "}
-      {new Date(blog.published_at).toLocaleDateString()}
-    </p>
-
-    <div
-      className="prose max-w-none"
-      dangerouslySetInnerHTML={{ __html: blog.content }}
-    />
-  </div>
- );
- }
+    </div>
+  );
+}

@@ -82,6 +82,8 @@ export default function AboutPage() {
             cards, bank transfers, USSD and other supported payment methods.
           </p>
 
+          <CreatorTipBanner className="mt-8" />
+
           <p className="mb-6">
             Creator tracked tips are maintained through creator&apos; dashboard.
           </p>
