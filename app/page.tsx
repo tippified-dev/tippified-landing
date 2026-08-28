@@ -29,6 +29,7 @@ import {
   FiX,
   FiZap,
 } from "react-icons/fi";
+import CreatorTipBanner from "./components/CreatorTipBanner";
 import { bricolage, fredoka } from "./font";
 
 import ActivityTeaserSection from "./components/ActivityTeaserSection";
@@ -249,6 +250,7 @@ export default function HomePage(): ReactElement {
             </div>
           </motion.div>
         </section>
+        <CreatorTipBanner className="mt-8" />
 
         <section id="banner">
           <BannerSlider />
