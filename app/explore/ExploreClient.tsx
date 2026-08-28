@@ -138,7 +138,7 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
 
     const interval = setInterval(() => {
       setTickerIndex((prev) => (prev + 1) % creators.length);
-    }, 2000);
+    }, 4500);
 
     return () => clearInterval(interval);
   }, [creators.length]);
@@ -169,10 +169,10 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
   return (
     <>
       <NavBar />
-      <div className="mb-6">
+      <div className="mb-6 text-center">
         <h3
           id="explore-creators-heading"
-          className="text-xl sm:text-lg font-extrabold text-purple-900"
+          className="whitespace-nowrap text-center text-base font-extrabold tracking-tight text-purple-900 sm:text-lg"
         >
           EXPLORE CREATORS ON TIPPIFIED.
         </h3>
@@ -180,7 +180,7 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
         {/* Creator ticker */}
         {creators.length > 0 && (
           <div
-            className="relative mt-2 h-6 overflow-hidden"
+            className="relative mt-2 h-6 overflow-hidden text-center"
             aria-live="polite"
             aria-atomic="true"
           >
@@ -199,7 +199,7 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
                 y: -18,
               }}
               transition={{
-                duration: 0.45,
+                duration: 0.6,
                 ease: [0.22, 1, 0.36, 1],
               }}
               className="text-sm font-medium text-purple-400"
