@@ -14,6 +14,7 @@ export const metadata: Metadata = {
     "discover Nigerian creators",
     "support Nigerian creators",
     "creator platform Nigeria",
+    "creators on tippified",
   ],
   alternates: {
     canonical: "https://tippified.com/explore",
@@ -76,7 +77,7 @@ export default async function ExplorePage() {
             />
 
             <span className="text-[11px] font-bold tracking-widest uppercase text-purple-600">
-              Live on Tippified
+              Creators on Tippified
             </span>
           </div>
 
@@ -99,12 +100,8 @@ export default async function ExplorePage() {
               id="explore-creators-heading"
               className="text-xl sm:text-2xl font-extrabold text-purple-900"
             >
-              Explore Creators
+              EXPLORE CREATORS ON TIPPIFIED.
             </h2>
-
-            <p className="text-sm text-gray-500 mt-1">
-              Find creators to discover, follow and support on Tippified.
-            </p>
           </div>
 
           <ExploreClient initialData={initialData} />

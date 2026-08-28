@@ -66,6 +66,16 @@ const NICHE_LABELS: Record<string, string> = {
   Adult_content: "Adult Content",
   other: "Other",
 };
+
+const capitalizeWords = (text: string) => {
+  if (!text) return "";
+  return text
+    .trim()
+    .split(/\s+/)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+};
+
 export default function ExploreClient({ initialData }: ExploreClientProps) {
   const [creators, setCreators] = useState<Creator[]>(
     initialData.results || [],
@@ -198,7 +208,7 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
                   value={searchQuery}
                   onChange={(event) => setSearchQuery(event.target.value)}
                   placeholder="Search creators..."
-                  className="h-full min-w-0 flex-1 bg-transparent pr-4 text-[12px] font-semibold text-purple-950 outline-none placeholder:text-purple-300"
+                  className="h-full min-w-0 flex-1 bg-transparent pr-4 text-base font-semibold text-purple-950 outline-none placeholder:text-purple-300"
                   aria-label="Search creators"
                   onKeyDown={(event) => {
                     if (event.key === "Escape") {
@@ -261,7 +271,7 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
                           <h3 className="truncate text-[14px] font-extrabold tracking-tight text-purple-900">
-                            {creator.username}
+                            {capitalizeWords(creator.username)}
                           </h3>
                           {creator.bvn_verified && <VerifiedBadge size={16} />}
                         </div>
