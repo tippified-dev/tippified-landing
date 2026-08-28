@@ -7,6 +7,7 @@ import {
   FiArrowLeft,
   FiCalendar,
   FiGift,
+  FiImage,
   FiLock,
   FiMapPin,
   FiPlay,
@@ -777,7 +778,7 @@ export default async function CreatorPage({ params }: Props) {
                         {content.content_type === "video" ? (
                           <FiPlay size={18} fill="currentColor" />
                         ) : (
-                          <FiLock size={17} />
+                          <FiImage size={17} />
                         )}
                       </div>
                     </div>
