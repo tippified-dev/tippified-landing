@@ -95,15 +95,6 @@ export default async function ExplorePage() {
 
         {/* Creator discovery section */}
         <section aria-labelledby="explore-creators-heading">
-          <div className="mb-6">
-            <h2
-              id="explore-creators-heading"
-              className="text-xl sm:text-2xl font-extrabold text-purple-900"
-            >
-              EXPLORE CREATORS ON TIPPIFIED.
-            </h2>
-          </div>
-
           <ExploreClient initialData={initialData} />
         </section>
       </div>

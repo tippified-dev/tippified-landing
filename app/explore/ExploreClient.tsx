@@ -82,6 +82,7 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
   );
   const [nextUrl, setNextUrl] = useState<string | null>(initialData.next);
   const [loading, setLoading] = useState(false);
+  const [tickerIndex, setTickerIndex] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const loaderRef = useRef<HTMLDivElement | null>(null);
@@ -103,6 +104,7 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
       setLoading(false);
     }
   }, [nextUrl, loading]);
+
   useEffect(() => {
     const element = loaderRef.current;
     if (!element) return;
@@ -122,6 +124,7 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
       observer.disconnect();
     };
   }, [fetchMore]);
+
   useEffect(() => {
     if (searchOpen) {
       requestAnimationFrame(() => {
@@ -129,6 +132,23 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
       });
     }
   }, [searchOpen]);
+
+  useEffect(() => {
+    if (creators.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setTickerIndex((prev) => (prev + 1) % creators.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [creators.length]);
+
+  useEffect(() => {
+    if (tickerIndex >= creators.length) {
+      setTickerIndex(0);
+    }
+  }, [creators.length, tickerIndex]);
+
   const filteredCreators = creators.filter((creator) => {
     const query = searchQuery.trim().toLowerCase();
     if (!query) return true;
@@ -149,6 +169,50 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
   return (
     <>
       <NavBar />
+      <div className="mb-6">
+        <h3
+          id="explore-creators-heading"
+          className="text-xl sm:text-lg font-extrabold text-purple-900"
+        >
+          EXPLORE CREATORS ON TIPPIFIED.
+        </h3>
+
+        {/* Creator ticker */}
+        {creators.length > 0 && (
+          <div
+            className="relative mt-2 h-6 overflow-hidden"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            <motion.p
+              key={`${creators[tickerIndex]?.referral_code}-${tickerIndex}`}
+              initial={{
+                opacity: 0,
+                y: 18,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              exit={{
+                opacity: 0,
+                y: -18,
+              }}
+              transition={{
+                duration: 0.45,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="text-sm font-medium text-purple-400"
+            >
+              <span className="font-extrabold text-purple-700">
+                {capitalizeWords(creators[tickerIndex]?.username || "")}
+              </span>{" "}
+              is on Tippified
+            </motion.p>
+          </div>
+        )}
+      </div>
+
       {/* Sticky Explore Header */}
       <div className="sticky top-0 z-40 -mx-4 border-b border-purple-100/80 bg-[#fcfbff]/92 px-4 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
@@ -160,7 +224,7 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
             </span>
             <div className="min-w-0">
               <h1 className="truncate text-sm font-extrabold tracking-tight text-purple-950 sm:text-base">
-                Live on Tippified
+                LIVE ON TIPPIFIED
               </h1>
               <p className="hidden text-[10px] font-medium text-purple-400 sm:block">
                 Discover creators worth supporting
