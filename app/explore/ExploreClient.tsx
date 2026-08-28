@@ -225,12 +225,13 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
       {/* Creator Results */}
       {filteredCreators.length > 0 ? (
         <div
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          className="grid min-w-0 max-w-full gap-6 sm:grid-cols-2 lg:grid-cols-3"
           aria-label="Tippified creators"
         >
           {filteredCreators.map((creator, i) => (
             <motion.article
               key={`${creator.referral_code}-${i}`}
+              className="min-w-0 max-w-full"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
@@ -240,7 +241,7 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
             >
               <Link
                 href={`/creator/${creator.referral_code}`}
-                className="group relative block rounded-[1.9rem] border border-purple-100/70 bg-white p-px shadow-[0_12px_40px_-18px_rgba(124,58,237,0.15)] transition-all hover:shadow-[0_24px_60px_-18px_rgba(124,58,237,0.28)]"
+                className="group relative block min-w-0 max-w-full overflow-hidden rounded-[1.9rem] border border-purple-100/70 bg-white p-px shadow-[0_12px_40px_-18px_rgba(124,58,237,0.15)] transition-all hover:shadow-[0_24px_60px_-18px_rgba(124,58,237,0.28)]"
                 aria-label={`Support ${creator.username} on Tippified`}
               >
                 <div className="relative h-full overflow-hidden rounded-[1.9rem] bg-white p-6">
@@ -250,8 +251,9 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
                     aria-hidden="true"
                   />
                   {/* Creator identity */}
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex min-w-0 items-center gap-2.5">
+                  <div className="flex min-w-0 w-full items-start justify-between gap-3">
+                    {/* Left side: profile + name */}
+                    <div className="flex min-w-0 flex-1 items-center gap-2.5">
                       {/* Profile Image Viewer */}
                       <div
                         onClick={(event) => {
@@ -268,18 +270,27 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
                           username={creator.username}
                         />
                       </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <h3 className="truncate text-[14px] font-extrabold tracking-tight text-purple-900">
+
+                      {/* Creator name */}
+                      <div className="min-w-0 flex-1 overflow-hidden">
+                        <div className="flex min-w-0 items-center gap-1.5">
+                          <h3 className="min-w-0 flex-1 truncate text-[14px] font-extrabold tracking-tight text-purple-900">
                             {capitalizeWords(creator.username)}
                           </h3>
-                          {creator.bvn_verified && <VerifiedBadge size={16} />}
+
+                          {creator.bvn_verified && (
+                            <span className="shrink-0">
+                              <VerifiedBadge size={16} />
+                            </span>
+                          )}
                         </div>
-                        <p className="mt-0.5 text-[11px] font-bold tracking-wide text-purple-400">
+
+                        <p className="mt-0.5 truncate text-[11px] font-bold tracking-wide text-purple-400">
                           {creator.referral_code}
                         </p>
                       </div>
                     </div>
+
                     {/* Online status */}
                     <div
                       className={`flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold ${
@@ -289,13 +300,14 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
                       }`}
                     >
                       <span
-                        className={`h-1.5 w-1.5 rounded-full ${
+                        className={`h-1.5 w-1.5 shrink-0 rounded-full ${
                           creator.is_online
                             ? "animate-pulse bg-green-500"
                             : "bg-zinc-300"
                         }`}
                         aria-hidden="true"
                       />
+
                       {creator.is_online ? "Online" : "Offline"}
                     </div>
                   </div>
