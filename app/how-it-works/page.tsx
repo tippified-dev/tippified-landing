@@ -6,6 +6,7 @@ import Hero from "./Hero";
 import HowTipsWork from "./HowTipsWork";
 import TippifiedFeatures from "./TippifiedFeatures";
 import WhyFansLoveTippified from "./WhyFansLoveTippified";
+import CreatorTipBanner from "../components/CreatorTipBanner";
 
 export default function HowItWorks() {
   return (
@@ -15,6 +16,7 @@ export default function HowItWorks() {
       <main className="bg-white">
 
         <Hero />
+        <CreatorTipBanner className="mt-8"/>
         <CreatorFeatures/>
         <HowTipsWork/>
         <FanWallet/>

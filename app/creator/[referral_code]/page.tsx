@@ -120,6 +120,32 @@ const NICHE_LABELS: Record<string, string> = {
   other: "Other",
 };
 
+const TIPPIFIED_PROMOTIONAL_COPY = [
+  "Tippified gives fans a simple way to support creators directly through monetary tips and gifts. Creators can share their Tippified page with their audience and receive support from the people who enjoy their work.",
+
+  "With Tippified, creators can turn audience support into real income. Fans can send tips and gifts directly to creators, making it easier to support the people behind the content they enjoy.",
+
+  "Tippified helps creators monetize their audience beyond traditional brand deals. Creators can receive tips, gifts and other forms of support directly from their fans.",
+
+  "Creators on Tippified can give their fans more ways to support them. From sending a simple tip or gift to contributing toward a creator's goal, fans can support creators directly through the platform.",
+
+  "Tippified also gives creators a way to raise money for personal or professional goals. Fans can contribute to an active creator goal and help turn an idea, project or ambition into something real.",
+
+  "Creators can use Tippified to offer paid exclusive content to their audience. Fans can purchase access to eligible creator content while creators earn from the content they choose to make available.",
+
+  "Tippified is built around helping creators earn directly from their communities. Whether through tips, gifts, crowdfunding goals or paid content, creators can choose the ways they want their audience to support them.",
+
+  "When creators receive support through Tippified, their earnings can be settled to their verified payout bank account, giving creators a straightforward way to access the funds generated through their audience.",
+
+  "For fans, supporting a creator on Tippified goes beyond simply following their content. Fans can send monetary tips, give gifts, contribute to creator goals and purchase exclusive content when available.",
+
+  "Tippified brings different creator monetization tools together in one place. Creators can receive tips and gifts, raise funds toward goals and monetize selected exclusive content while building a stronger relationship with their audience.",
+
+  "A creator's audience can be an important part of their journey. Tippified gives fans practical ways to contribute financially, whether they want to send a quick tip, support a specific goal or access exclusive content.",
+
+  "Tippified is designed for creators who want more direct ways to monetize the support they receive from their audience. Fans can choose how they want to support creators, while creators manage their available monetization options from one platform.",
+];
+
 const SOCIAL_PLATFORMS = {
   instagram: {
     label: "Instagram",
@@ -157,6 +183,19 @@ const SOCIAL_PLATFORMS = {
 
 function getFirstName(name: string): string {
   return name.trim().split(/\s+/)[0] || name;
+}
+
+function getTippifiedCopy(referralCode: string): string {
+  let hash = 0;
+
+  for (let i = 0; i < referralCode.length; i++) {
+    hash = (hash << 5) - hash + referralCode.charCodeAt(i);
+    hash |= 0;
+  }
+
+  const index = Math.abs(hash) % TIPPIFIED_PROMOTIONAL_COPY.length;
+
+  return TIPPIFIED_PROMOTIONAL_COPY[index];
 }
 
 async function getCreator(referralCode: string): Promise<Creator | null> {
@@ -315,6 +354,8 @@ export default async function CreatorPage({ params }: Props) {
   if (!creator) {
     notFound();
   }
+
+  const tippifiedCopy = getTippifiedCopy(creator.referral_code);
 
   const nicheLabel = NICHE_LABELS[creator.niche] || creator.niche;
 
@@ -821,7 +862,7 @@ export default async function CreatorPage({ params }: Props) {
           </p>
 
           <p className="mt-4 text-[15px] leading-8 text-gray-600">
-            {creator.bio}
+            {tippifiedCopy}
           </p>
 
           <p className="mt-4 text-[15px] leading-8 text-gray-600">

@@ -9,6 +9,7 @@ import {
   ShieldCheckIcon,
   UserGroupIcon,
   WalletIcon,
+  FolderIcon,
 } from "@heroicons/react/24/outline";
 import { Metadata } from "next";
 import NavBar from "../components/NavBar";
@@ -48,7 +49,7 @@ const faqs = [
   {
     icon: WalletIcon,
     q: "How do creators get paid?",
-    a: "Creators have a secure Tippified wallet that tracks their available balance. When they request a withdrawal, settlements are processed through our regulated banking partner, Wema Bank, directly into their verified Nigerian bank account.",
+    a: "Creators have a secure Tippified wallet that tracks their available balance. Payments are managed by Paystack, creators get their funds directly into their payout bank account.",
   },
   {
     icon: CreditCardIcon,
@@ -58,7 +59,7 @@ const faqs = [
   {
     icon: ShieldCheckIcon,
     q: "Does Tippified hold user funds?",
-    a: "No. Tippified does not operate as a bank or hold customer deposits. Payments are securely processed by Paystack, while settlement funds are managed through our regulated banking partner, Wema Bank. Tippified maintains an internal ledger that records each creator’s balance and transaction history."
+    a: "No. Tippified does not operate as a bank or hold customer deposits. Payments are securely processed and settled by Paystack, Tippified only maintains a track record of tip and gift transactions."
   },
   {
     icon: GlobeAltIcon,
@@ -84,6 +85,11 @@ const faqs = [
     icon: ShieldCheckIcon,
     q: "What happens if a payment fails?",
     a: "If a payment fails or is reversed by Paystack, the creator will not receive the funds. Fans can retry payment or contact Paystack for payment-related issues.",
+  },
+  {
+    icon: FolderIcon,
+    q: "Can a creator get paid for watched content on Tippified?",
+    a: "Yes. Tippified has a feature that let creators upload exclusive short videos and images, set a price and fans pay to watch this content provided they are still active and not expired. However, the content is only available for 24 hours after being uploaded before it expires.",
   },
   {
     icon: UserGroupIcon,
