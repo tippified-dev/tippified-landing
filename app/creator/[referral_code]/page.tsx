@@ -871,8 +871,8 @@ export default async function CreatorPage({ params }: Props) {
           </p>
 
           <p className="mt-4 text-[15px] leading-8 text-gray-600">
-            Discover more Nigerian creators on Tippified and find creators whose
-            work you enjoy and want to support.
+            Discover more {creator.location} creators on Tippified and find
+            creators whose work you enjoy and want to support.
           </p>
         </section>
       </div>
