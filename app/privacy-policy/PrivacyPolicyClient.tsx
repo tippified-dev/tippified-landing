@@ -620,7 +620,7 @@ export default function PrivacyPolicyClient() {
         <Suspense fallback={null}>
           <ReturnToCreatorButton />
         </Suspense>
-        <CreatorTipBanner className="mt-6" />
+        <CreatorTipBanner className="mt-3 mb-3" />
 
         <h1 className="text-4xl font-bold text-center text-purple-700 mb-3">
           Tippified Privacy Policy
@@ -643,7 +643,7 @@ export default function PrivacyPolicyClient() {
 
                 <div className="leading-8 text-gray-700">{section.content}</div>
               </section>
-              <CreatorTipBanner className="mt-6" />
+              <CreatorTipBanner className="mt-3 mb-3" />
             </>
           );
         })}
@@ -672,7 +672,7 @@ export default function PrivacyPolicyClient() {
       >
         <InformationCircleIcon className="w-7 h-7 md:w-8 md:h-8" />
       </a>
-      <CreatorTipBanner className="mt-6" />
+      <CreatorTipBanner className="mt-3 mb-3" />
     </>
   );
 }
