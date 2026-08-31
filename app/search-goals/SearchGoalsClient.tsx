@@ -129,7 +129,7 @@ export default function SearchGoalsClient(): ReactElement {
                 placeholder="Search goals, creators..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-transparent text-sm font-medium text-[#15052E] placeholder:text-purple-400 focus:outline-none"
+                className="w-full bg-transparent text-base font-medium text-[#15052E] placeholder:text-purple-400 focus:outline-none"
               />
             </div>
             <button

@@ -59,10 +59,10 @@ export default function AboutPage() {
 
           <p className="text-lg mb-6">
             <span className="font-semibold text-purple-600">Tippified</span> is
-            Nigeria&apos;s all-in-one creator monetization platform built to
-            help content creators, influencers, musicians, artists, educators,
-            gamers, public figures, streamers, writers and digital entrepreneurs
-            earn money directly from their supporters.
+            an all-in-one creator monetization platform built to help content
+            creators, influencers, musicians, artists, educators, gamers, public
+            figures, streamers, writers and digital entrepreneurs earn money
+            directly from their supporters worldwide.
           </p>
 
           <p className="mb-6">
@@ -77,15 +77,16 @@ export default function AboutPage() {
           </h2>
 
           <p className="mb-6">
-            Every payment on Tippified is securely processed through Paystack,
-            Nigeria&apos;s leading payment infrastructure provider, supporting
+            Every payment on Tippified is securely processed through
+            Africa&apos;s leading payment infrastructure provider, supporting
             cards, bank transfers, USSD and other supported payment methods.
           </p>
 
           <CreatorTipBanner className="mt-8" />
 
-          <p className="mb-6">
-            Creator tracked tips are maintained through creator&apos; dashboard.
+          <p className="mb-6 mt-3.5">
+            Creator tracked tips and supports are maintained through
+            creator&apos; dashboard.
           </p>
 
           <p className="mb-6">
@@ -114,10 +115,18 @@ export default function AboutPage() {
 
           <ul className="list-disc list-inside space-y-2 mb-6">
             <li>Receive direct monetary tips from fans.</li>
-            <li>Receive beautiful virtual gifts from supporters.</li>
+            <li>Receive beautiful gifts from supporters.</li>
+            <li>Receive meal gift from supporters.</li>
             <li>
               Create fundraising goals for projects, businesses or personal
               causes.
+            </li>
+            <li>
+              <b>Turn Your WhatsApp Community Into a Business</b>
+              Create a paid WhatsApp community and monetize your audience with
+              ease. Tippified handles payment collection and helps you manage
+              access to your private community, so you can focus on delivering
+              valuable content and experiences to your members.
             </li>
             <li>
               Create wishlists that fans can fulfil during birthdays and special
@@ -189,15 +198,15 @@ export default function AboutPage() {
           <h2 className="text-2xl font-semibold mt-10 mb-4">Our Mission</h2>
 
           <p className="mb-6">
-            Our mission is to empower Nigerian creators with reliable financial
-            tools that make it easy to monetize their audience, receive support
-            from fans globally, and grow sustainable digital careers.
+            Our mission is to empower creators with reliable financial tools
+            that make it easy to monetize their audience, receive support from
+            fans globally, and grow sustainable digital careers.
           </p>
 
           <p className="mb-6">
-            We aim to strengthen the Nigerian creator economy by providing
-            infrastructure that is simple to use, compliant with local
-            regulations, and trusted by both creators and supporters.
+            We aim to strengthen the creator economy by providing infrastructure
+            that is simple to use, compliant with local regulations, and trusted
+            by both creators and supporters.
           </p>
 
           <h2 className="text-2xl font-semibold mt-10 mb-4">
@@ -206,8 +215,8 @@ export default function AboutPage() {
 
           <p className="mb-3">
             Tippified is a product of{" "}
-            <span className="font-semibold">Grundex Limited</span>, a Nigerian
-            registered company.
+            <span className="font-semibold">Grundex Limited</span>, a registered
+            company.
           </p>
 
           <p className="mb-6">
@@ -228,7 +237,10 @@ export default function AboutPage() {
           </h2>
 
           <ul className="list-disc list-inside space-y-2 mb-6">
-            <li>Payments securely processed by Paystack.</li>
+            <li>
+              Payments securely processed by one of the most successful payment
+              companies.
+            </li>
 
             <li>No custody of customer deposits.</li>
             <li> creator tracked tips.</li>
@@ -238,20 +250,20 @@ export default function AboutPage() {
             <li>Live streaming monetization.</li>
             <li>Creator goals and crowdfunding.</li>
             <li>Wishlist fulfilment.</li>
-            <li>Built specifically for Africa&apos; creator economy.</li>
+            <li>Built specifically for creator economy.</li>
           </ul>
 
           <footer className="py-10 mt-16 border-t text-center">
             <p className="font-semibold text-lg text-purple-700">Tippified</p>
 
             <p className="text-gray-600 mt-2 max-w-2xl mx-auto">
-              Nigeria&apos; all-in-one creator monetization platform where fans
-              support creators through monetary tips, virtual gifts, creator
-              goals, wishlists and live streaming.
+              An all-in-one creator monetization platform where fans support
+              creators through monetary tips, virtual gifts, creator goals,
+              wishlists and live streaming.
             </p>
 
             <p className="text-sm text-gray-500 mt-5">
-              Payments securely powered by Paystack.
+              Payments securely powered by our partner company.
             </p>
 
             <p className="text-sm text-gray-500 mt-3">
