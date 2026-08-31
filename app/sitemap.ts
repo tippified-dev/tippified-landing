@@ -31,6 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/privacy-policy`, lastModified: new Date() },
     { url: `${baseUrl}/contact-us`, lastModified: new Date() },
     { url: `${baseUrl}/blog`, lastModified: new Date() },
+    { url: `${baseUrl}/signup`, lastModified: new Date() },
   ];
 
   let goalPages: MetadataRoute.Sitemap = [];
@@ -46,7 +47,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const resGoals = await fetch(
       "https://api.tippified.com/api/auth/public/goals/",
       {
-        cache: "no-store",
+        next:{
+          revalidate: 3600,
+        }
       },
     );
 
@@ -80,7 +83,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     while (nextUrl) {
       const resCreators = await fetch(nextUrl, {
-        cache: "no-store",
+        next: {
+          revalidate: 3600,
+        }
       });
 
       if (!resCreators.ok) {
