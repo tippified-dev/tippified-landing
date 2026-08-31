@@ -808,7 +808,7 @@ export default function CreatorSignupForm() {
           <p className="mt-6 text-center text-sm text-purple-700/60">
             Already have an account?{" "}
             <Link
-              href="/creator/signin"
+              href="https://app.tippified.com/creator/signin"
               className="font-bold text-purple-600 hover:underline"
             >
               Sign in
