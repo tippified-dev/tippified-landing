@@ -12,6 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { Suspense } from "react";
+import CreatorTipBanner from "../components/CreatorTipBanner";
 import NavBar from "../components/NavBar";
 import ReturnToCreatorButton from "../components/ReturnToCreatorButton";
 
@@ -619,6 +620,7 @@ export default function PrivacyPolicyClient() {
         <Suspense fallback={null}>
           <ReturnToCreatorButton />
         </Suspense>
+        <CreatorTipBanner className="mt-6" />
 
         <h1 className="text-4xl font-bold text-center text-purple-700 mb-3">
           Tippified Privacy Policy
@@ -632,14 +634,17 @@ export default function PrivacyPolicyClient() {
           const Icon = section.icon;
 
           return (
-            <section key={index} className="mb-10">
-              <h2 className="flex items-center gap-3 text-2xl font-bold text-purple-800 mb-4">
-                <Icon className="w-6 h-6 text-purple-600" />
-                {section.title}
-              </h2>
+            <>
+              <section key={index} className="mb-10">
+                <h2 className="flex items-center gap-3 text-2xl font-bold text-purple-800 mb-4">
+                  <Icon className="w-6 h-6 text-purple-600" />
+                  {section.title}
+                </h2>
 
-              <div className="leading-8 text-gray-700">{section.content}</div>
-            </section>
+                <div className="leading-8 text-gray-700">{section.content}</div>
+              </section>
+              <CreatorTipBanner className="mt-6" />
+            </>
           );
         })}
       </main>
@@ -667,6 +672,7 @@ export default function PrivacyPolicyClient() {
       >
         <InformationCircleIcon className="w-7 h-7 md:w-8 md:h-8" />
       </a>
+      <CreatorTipBanner className="mt-6" />
     </>
   );
 }

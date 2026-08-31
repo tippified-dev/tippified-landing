@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
+import CreatorTipBanner from "../components/CreatorTipBanner";
 import NavBar from "../components/NavBar";
 import ReturnToCreatorButton from "../components/ReturnToCreatorButton";
 
@@ -13,6 +14,7 @@ export default function TermsClient() {
         <Suspense fallback={null}>
           <ReturnToCreatorButton />
         </Suspense>
+        <CreatorTipBanner className="mt-6" />
 
         <h1 className="text-4xl font-bold text-purple-700 mb-3">
           Tippified Terms and Conditions
@@ -528,7 +530,7 @@ export default function TermsClient() {
             </p>
           </section>
         </section>
-
+        <CreatorTipBanner className="mt-6" />
         <section>
           <h2 className="text-2xl font-bold mt-12 mb-4">
             10. Prohibited Activities
@@ -656,6 +658,8 @@ export default function TermsClient() {
           </p>
         </section>
 
+        <CreatorTipBanner className="mt-6" />
+
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">
             11. Fraud Prevention and Security
@@ -747,6 +751,8 @@ export default function TermsClient() {
           </p>
         </section>
 
+        <CreatorTipBanner className="mt-6" />
+
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">
             14. Third-Party Services
@@ -831,6 +837,7 @@ export default function TermsClient() {
             Tippified from the transaction giving rise to the claim.
           </p>
         </section>
+        <CreatorTipBanner className="mt-6" />
 
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">17. Indemnification</h2>
@@ -993,6 +1000,7 @@ export default function TermsClient() {
               </a>
             </p>
           </div>
+          <CreatorTipBanner className="mt-6" />
 
           <p className="mt-6">
             By accessing or using Tippified, you acknowledge that you have
