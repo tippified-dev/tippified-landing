@@ -1,5 +1,3 @@
-
-
 import { notFound } from "next/navigation";
 
 interface Goal {
@@ -27,7 +25,7 @@ export default async function GoalPage({ params }: GoalPageProps) {
   // Fetch current goal
   const res = await fetch(
     `https://api.tippified.com/api/auth/public/goals/${params.slug}/`,
-    { next: { revalidate: 3600 } }
+    { next: { revalidate: 3600 } },
   );
   if (!res.ok) notFound();
 
@@ -37,20 +35,17 @@ export default async function GoalPage({ params }: GoalPageProps) {
   // Fetch 3 other goals for dynamic section
   const otherRes = await fetch(
     "https://api.tippified.com/api/auth/public/goals/",
-    { next: { revalidate: 3600 } }
+    { next: { revalidate: 3600 } },
   );
   let otherGoals: Goal[] = [];
   if (otherRes.ok) {
     const data = await otherRes.json();
     const allGoals: Goal[] = data.results || data;
-    otherGoals = allGoals
-      .filter((g) => g.slug !== params.slug) 
-      .slice(0, 3);
+    otherGoals = allGoals.filter((g) => g.slug !== params.slug).slice(0, 3);
   }
 
   return (
     <main className="max-w-4xl mx-auto px-4 py-10">
-
       {/* Title */}
       <h1 className="text-3xl md:text-4xl font-bold mb-4">
         Support {goal.creator_name} Goal: {goal.title}
@@ -88,34 +83,44 @@ export default async function GoalPage({ params }: GoalPageProps) {
 
       {/* Platform Explanation for SEO */}
       <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-2">Support creators through Tippified</h2>
+        <h2 className="text-xl font-semibold mb-2">
+          Support creators through Tippified
+        </h2>
         <p className="text-gray-700 mb-4">
-          Tippified, developed by <strong>Grundex Limited</strong>, is a Nigerian creator tipping platform
-          that allows fans and supporters to send financial tips directly to content creators. Instead of
-          relying solely on advertising revenue or sponsorships, creators receive direct support from their audience.
+          Tippified, developed by <strong>Grundex Limited</strong>, is a creator
+          tipping platform that allows fans and supporters to send financial
+          tips directly to content creators. Instead of relying solely on
+          advertising revenue or sponsorships, creators receive direct support
+          from their audience.
         </p>
         <p className="text-gray-700 mb-4">
-          Each creator is provided a unique tipping link that can be shared across social platforms for easy tipping.
-          Payments are processed securely via <strong>Paystack</strong>, allowing fans to tip in multiple currencies
-          from anywhere in the world. Tips are settled into the creator’s <strong>OPay wallet</strong>, where privacy
-          and security are handled according to OPay’s policies.
+          Each creator is provided a unique tipping link that can be shared
+          across social platforms for easy tipping. Payments are processed
+          securely via <strong>Paystack</strong>, allowing fans to tip in
+          multiple currencies from anywhere in the world. Tips are settled into
+          the creator’s <strong>Payout bank account</strong>, where privacy and
+          security are handled according to respective banking institution.
         </p>
         <p className="text-gray-700 mb-4">
-          Tippified charges a platform fee from each transaction to maintain and improve the service while creators
-          keep the majority of the tips they receive.
+          Tippified charges a platform fee from each transaction to maintain and
+          improve the service while creators keep the majority of the tips they
+          receive.
         </p>
         <p className="text-gray-700">
-          Creators can also set up goals—either personal or public—to raise funds for a specific purpose, making it
-          easier than ever to receive financial support from fans.
+          Creators can also set up goals—either personal or public—to raise
+          funds for a specific purpose, making it easier than ever to receive
+          financial support from fans.
         </p>
       </section>
 
       {/* CTA */}
       <div className="bg-gray-50 p-6 rounded-lg border mb-12">
-        <h3 className="text-lg font-semibold mb-2">Help {goal.creator_name} reach this goal</h3>
+        <h3 className="text-lg font-semibold mb-2">
+          Help {goal.creator_name} reach this goal
+        </h3>
         <p className="text-gray-700 mb-4">
-          You can support this goal by sending a tip through Tippified. Every contribution helps the creator move
-          closer to achieving their goal.
+          You can support this goal by sending a tip through Tippified. Every
+          contribution helps the creator move closer to achieving their goal.
         </p>
         <a
           href={`/tip/${params.slug}`}
@@ -128,7 +133,9 @@ export default async function GoalPage({ params }: GoalPageProps) {
       {/* Explore More Creator Goals */}
       {otherGoals.length > 0 && (
         <section className="mb-12">
-          <h3 className="text-xl font-bold mb-6 text-center">Explore More Creator Goals</h3>
+          <h3 className="text-xl font-bold mb-6 text-center">
+            Explore More Creator Goals
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {otherGoals.map((g) => {
               const gProgress = (g.current_amount / g.target_amount) * 100;
@@ -140,7 +147,9 @@ export default async function GoalPage({ params }: GoalPageProps) {
                 >
                   <div>
                     <h4 className="font-semibold text-lg mb-2">{g.title}</h4>
-                    <p className="text-gray-500 text-sm mb-2">by <span className="font-semibold">{g.creator_name}</span></p>
+                    <p className="text-gray-500 text-sm mb-2">
+                      by <span className="font-semibold">{g.creator_name}</span>
+                    </p>
                     <div className="w-full bg-gray-200 h-2 rounded mb-1">
                       <div
                         className="bg-purple-600 h-2 rounded"
@@ -148,7 +157,8 @@ export default async function GoalPage({ params }: GoalPageProps) {
                       />
                     </div>
                     <p className="text-gray-600 text-sm">
-                      ₦{g.current_amount.toLocaleString()} raised of ₦{g.target_amount.toLocaleString()}
+                      ₦{g.current_amount.toLocaleString()} raised of ₦
+                      {g.target_amount.toLocaleString()}
                     </p>
                   </div>
                   <span className="mt-2 inline-block bg-purple-600 text-white px-3 py-1 text-sm rounded hover:bg-purple-700 transition text-center">

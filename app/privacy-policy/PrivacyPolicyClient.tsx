@@ -66,11 +66,7 @@ export default function PrivacyPolicyClient() {
           </p>
 
           <p>
-            No. 15 Lawrence Egbor Close,
-            <br />
-            Iyana Isashi,
-            <br />
-            Ojo,
+            No. 15 Lawrence Egbom Close,
             <br />
             Lagos State,
             <br />
@@ -596,9 +592,8 @@ export default function PrivacyPolicyClient() {
             <strong>Grundex Limited</strong>
           </p>
 
-          <p>No. 15 Lawrence Egbor Close</p>
-          <p>Iyana Isashi</p>
-          <p>Ojo</p>
+          <p>No. 15 Lawrence Egbom Close</p>
+
           <p>Lagos State</p>
           <p>Nigeria</p>
 

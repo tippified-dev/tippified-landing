@@ -345,8 +345,8 @@ export default function TermsClient() {
 
             <p>
               Once a payment has been successfully completed, the transaction
-              will be reflected within the Creator&pos; bank account by partner,
-              Paystack.
+              will be reflected within the Creator&apos;s bank account by
+              partner, Paystack.
             </p>
 
             <p>

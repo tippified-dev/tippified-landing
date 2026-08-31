@@ -214,9 +214,9 @@ export default function HomePage(): ReactElement {
               </h1>
 
               <p className="text-[15px] md:text-[17px] leading-7 text-white/85 mb-8 max-w-xl font-medium">
-                Nigeria&apos;s all-in-one creator monetization platform. Receive
-                tips, gifts, goal contributions, crowd funding and wishlist
-                purchases with secure payments powered by Paystack.
+                An all-in-one creator monetization platform. Receive tips,
+                gifts, goal contributions, live streaming, crowd funding and
+                wishlist purchases with secure payments.
               </p>
               <div className="flex flex-wrap gap-3">
                 {/* Primary: stays white bg, but text is now #4C1D95 not 700 */}

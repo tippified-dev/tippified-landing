@@ -1,19 +1,17 @@
-
-
 import {
   BanknotesIcon,
   CreditCardIcon,
+  FolderIcon,
   GlobeAltIcon,
   InformationCircleIcon,
   QuestionMarkCircleIcon,
   ShieldCheckIcon,
   UserGroupIcon,
+  UserPlusIcon,
   WalletIcon,
-  FolderIcon,
 } from "@heroicons/react/24/outline";
 import { Metadata } from "next";
 import NavBar from "../components/NavBar";
-
 
 /* ================= SEO ================= */
 export const metadata: Metadata = {
@@ -23,15 +21,15 @@ export const metadata: Metadata = {
   keywords: [
     "Tippified FAQ",
     "tipping platform Nigeria",
-    "wema bank",
+    "content creators",
     "Paystack payments",
     "creator tipping",
-    "support Nigerian creators",
+    "support  creators",
     "frequently asked questions",
     "tippified",
     "tip a creator",
     "support a creator",
-    "Nigerian tipping platform",
+    "tipping platform",
     "creators goals",
     "tippified.com",
   ],
@@ -44,27 +42,32 @@ const faqs = [
   {
     icon: UserGroupIcon,
     q: "What is Tippified?",
-    a: "Tippified is Nigeria’s all-in-one creator monetization platform that allows fans to support creators through monetary tips, goal contributions, virtual gifts, and wishlist purchases. Payments are securely processed by Paystack, while settlements are handled through our regulated banking partner, Wema Bank.",
+    a: "Tippified is an all-in-one creator monetization platform that allows fans to support creators through monetary tips, goal contributions, virtual gifts, and wishlist purchases. Payments and settlements are securely processed by our payment partners.",
   },
   {
     icon: WalletIcon,
     q: "How do creators get paid?",
-    a: "Creators have a secure Tippified wallet that tracks their available balance. Payments are managed by Paystack, creators get their funds directly into their payout bank account.",
+    a: "Payments are managed by our payment partners, creators get their funds directly into their payout bank account.",
+  },
+  {
+    icon: UserPlusIcon,
+    q: "Who can signup or use tippified?",
+    a: " If you are a creator of any sort, you have fans and supporters, then, tippified is for you.",
   },
   {
     icon: CreditCardIcon,
     q: "How do fans make payments?",
-    a: "Fans make payments using Paystack’s secure checkout. Supported methods include debit cards, bank transfer, and USSD, depending on availability.",
+    a: "Fans make payments using any of the payment methods provided by our payment partners. Supported methods include debit cards, bank transfer, and USSD, depending on availability.",
   },
   {
     icon: ShieldCheckIcon,
     q: "Does Tippified hold user funds?",
-    a: "No. Tippified does not operate as a bank or hold customer deposits. Payments are securely processed and settled by Paystack, Tippified only maintains a track record of tip and gift transactions."
+    a: "No. Tippified does not operate as a bank or hold customer deposits. Payments are securely processed and settled by Payment partners, Tippified only maintains a track record of tip and gift transactions.",
   },
   {
     icon: GlobeAltIcon,
     q: "Can people outside Nigeria send tips?",
-    a: "Yes. Fans from anywhere in the world can send tips using Paystack’s international payment support, depending on card and country availability.",
+    a: "Yes. Fans from anywhere in the world can send tips using our payment partner's international payment support, depending on card and country availability.",
   },
   {
     icon: BanknotesIcon,
@@ -79,12 +82,12 @@ const faqs = [
   {
     icon: UserGroupIcon,
     q: "Do fans need an account to tip?",
-    a: "No. Fans do not need to create an account. They simply open the creator’s link, enter an amount, and pay securely via Paystack.",
+    a: "No. Fans do not need to create an account. They simply open the creator’s link, enter an amount, and pay securely via checkouts provided by our payment partners.",
   },
   {
     icon: ShieldCheckIcon,
     q: "What happens if a payment fails?",
-    a: "If a payment fails or is reversed by Paystack, the creator will not receive the funds. Fans can retry payment or contact Paystack for payment-related issues.",
+    a: "If a payment fails or is reversed by Partners, the creator will not receive the funds. Fans can retry payment or contact our partner for payment-related issues.",
   },
   {
     icon: FolderIcon,
@@ -111,13 +114,14 @@ export default function FAQPage() {
             Frequently Asked Questions
           </h1>
           <p className="text-gray-600 max-w-3xl mx-auto text-lg">
-             Here are answers to the most common questions about Tippified, including how fans make payments, how creators receive settlements, and how we keep every transaction secure.
+            Here are answers to the most common questions about Tippified,
+            including how fans make payments, how creators receive settlements,
+            and how we keep every transaction secure.
           </p>
         </header>
 
         {/* FAQ LIST */}
         <section className="space-y-6">
-            
           {faqs.map((item, i) => {
             const Icon = item.icon;
             return (
@@ -135,7 +139,6 @@ export default function FAQPage() {
               </div>
             );
           })}
-          
         </section>
 
         {/* FOOTER */}
@@ -145,12 +148,12 @@ export default function FAQPage() {
         </footer>
 
         <a
-                  href="/about"
-                  className="fixed right-4 bottom-20 md:bottom-10 z-50 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-purple-600 text-white shadow-lg hover:bg-purple-700 transition transform hover:scale-105"
-                  aria-label="About Tippified"
-                >
-                  <InformationCircleIcon className="w-7 h-7 md:w-8 md:h-8" />
-                </a>
+          href="/about"
+          className="fixed right-4 bottom-20 md:bottom-10 z-50 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-purple-600 text-white shadow-lg hover:bg-purple-700 transition transform hover:scale-105"
+          aria-label="About Tippified"
+        >
+          <InformationCircleIcon className="w-7 h-7 md:w-8 md:h-8" />
+        </a>
       </main>
     </>
   );
