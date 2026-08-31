@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import CreatorSignupForm from "./CreatorSignupForm";
 
 export const metadata: Metadata = {
@@ -77,7 +78,10 @@ export default function SignupPage() {
             </div>
           </div>
 
-          <CreatorSignupForm />
+          {/* SIGNUP FORM */}
+          <Suspense fallback={<div className="min-h-150" />}>
+            <CreatorSignupForm />
+          </Suspense>
         </div>
       </section>
     </main>
