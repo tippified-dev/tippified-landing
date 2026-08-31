@@ -221,7 +221,7 @@ export default function HomePage(): ReactElement {
               <div className="flex flex-wrap gap-3">
                 {/* Primary: stays white bg, but text is now #4C1D95 not 700 */}
                 <a
-                  href="https://app.tippified.com/creator/signup"
+                  href="/signup"
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#4C1D95] font-bold shadow-[0_10px_25px_-10px_rgba(0,0,0,0.5)] hover:bg-zinc-100 transition"
                 >
                   <FiUserPlus /> Become a Creator
