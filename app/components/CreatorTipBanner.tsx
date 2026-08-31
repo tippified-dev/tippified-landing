@@ -152,7 +152,7 @@ export default function CreatorTipBanner({
         </div>
         {/* Username */}
         <div className="min-w-0 max-w-[35%]">
-          <p className="truncate text-[12px] font-extrabold tracking-tight text-purple-950 sm:text-[13px]">
+          <p className=" text-[12px] font-extrabold tracking-tight text-purple-950 sm:text-[13px]">
             {username}
           </p>
         </div>
@@ -165,7 +165,7 @@ export default function CreatorTipBanner({
         </span>
         {/* Niche */}
         <div className="min-w-0 max-w-[28%]">
-          <p className="truncate text-[10px] font-bold text-purple-400 sm:text-[11px]">
+          <p className=" text-[10px] font-bold text-purple-400 sm:text-[11px]">
             {niche}
           </p>
         </div>
