@@ -91,7 +91,7 @@ export default function CommunityClient({
       setPaying(true);
 
       const response = await fetch(
-        `${API_BASE_URL}/api/auth/community/${accessToken}/pay/`,
+        `${API_BASE_URL}/api/auth/paid-community/${accessToken}/pay/`,
         {
           method: "POST",
           headers: {

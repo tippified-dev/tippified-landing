@@ -69,7 +69,7 @@ export async function generateMetadata({
 
   const description =
     community.description ||
-    `Join ${community.name} by @${community.creator_username} on Tippified.`;
+    `Join ${community.name} by ${community.creator_username} on Tippified.`;
 
   return {
     title,
