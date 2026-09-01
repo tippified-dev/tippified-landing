@@ -4,13 +4,13 @@ import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   FiArrowRight,
-  FiCheckCircle,
   FiEdit3,
   FiMail,
   FiMapPin,
   FiRefreshCw,
   FiUser,
 } from "react-icons/fi";
+import VerifiedBadge from "../components/VerifiedBadge";
 
 interface Creator {
   id: number;
@@ -74,6 +74,12 @@ const NICHE_LABELS: Record<string, string> = {
   other: "Other",
 };
 
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  Nigeria: "₦",
+  Ghana: "₵",
+  Kenya: "KSh",
+};
+
 const capitalizeWords = (text: string) => {
   if (!text) return "";
 
@@ -113,6 +119,9 @@ export default function TipCreators() {
    */
 
   const currentCreator = creators[creatorIndex] || null;
+
+  const currencySymbol =
+    CURRENCY_SYMBOLS[currentCreator?.location || "Nigeria"] || "₦";
 
   /*
    * ---------------------------------------------------------
@@ -395,7 +404,7 @@ export default function TipCreators() {
 
       <div className="text-center">
         <p className="text-[11px] font-extrabold uppercase tracking-[0.15em] text-purple-400">
-          You&apos;re supporting
+          You are supporting
         </p>
 
         {/* Profile image */}
@@ -419,13 +428,7 @@ export default function TipCreators() {
             {creatorName}
           </h2>
 
-          {currentCreator.bvn_verified && (
-            <FiCheckCircle
-              size={18}
-              className="text-purple-600"
-              aria-label="Verified creator"
-            />
-          )}
+          {currentCreator.bvn_verified && <VerifiedBadge />}
         </div>
 
         {/* Username */}
@@ -534,7 +537,7 @@ export default function TipCreators() {
           {/* Amount */}
           <div className="relative">
             <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm font-extrabold text-purple-500">
-              ₦
+              {currencySymbol}
             </span>
 
             <input
@@ -552,7 +555,8 @@ export default function TipCreators() {
           {/* Amount preview */}
           {formattedAmount && (
             <p className="px-2 text-right text-[11px] font-bold text-purple-400">
-              ₦{formattedAmount}
+              {currencySymbol}
+              {formattedAmount}
             </p>
           )}
         </div>
