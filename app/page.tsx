@@ -241,7 +241,7 @@ export default function HomePage(): ReactElement {
                   <FiHelpCircle /> FAQ
                 </a>
                 <a
-                  href="/contact-us"
+                  href="/tip-page"
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#1E1040]/80 backdrop-blur-md border border-white/15 text-white font-semibold hover:bg-[#2A1760] transition"
                 >
                   <FiPhone /> Contact
