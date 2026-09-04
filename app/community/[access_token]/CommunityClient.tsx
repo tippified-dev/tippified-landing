@@ -62,6 +62,7 @@ export default function CommunityClient({
 
   const handlePayment = async () => {
     setError("");
+    if (!fanName.trim()) return setError("please enter your name");
     if (!email.trim()) return setError("Please enter your email address.");
     if (!whatsappNumber.trim())
       return setError("Please enter your WhatsApp number.");
@@ -118,7 +119,7 @@ export default function CommunityClient({
 
               <div className="absolute top-5 left-5 right-5 flex justify-between items-start">
                 <div className="rounded-full bg-white/15 backdrop-blur-xl border border-white/20 px-3.5 py-1.5 text-[10px] font-bold tracking-widest uppercase text-white">
-                  @{community.creator_username}
+                  {community.creator_username}
                 </div>
                 <div className="w-9 h-9 rounded-full bg-white/15 backdrop-blur-xl border border-white/20 grid place-items-center text-white">
                   <FiMessageCircle size={16} />
@@ -164,7 +165,7 @@ export default function CommunityClient({
               <div className="mt-7 space-y-4">
                 {[
                   {
-                    label: "Your Name (optional)",
+                    label: "Your Name",
                     value: fanName,
                     setter: setFanName,
                     placeholder: "Anonymous",
@@ -194,7 +195,7 @@ export default function CommunityClient({
                       value={f.value}
                       onChange={(e) => f.setter(e.target.value)}
                       placeholder={f.placeholder}
-                      className="w-full rounded-xl bg-[#f8f5ff] border border-[#15052E]/10 px-4 py-3.5 text-[14px] font-medium text-[#15052E] placeholder:text-[#15052E]/30 outline-none focus:bg-white focus:border-[#4C1D95]/30 focus:ring-4 focus:ring-[#4C1D95]/10 transition"
+                      className="w-full rounded-xl bg-[#f8f5ff] border border-[#15052E]/10 px-4 py-3.5 text-base font-medium text-[#15052E] placeholder:text-[#15052E]/30 outline-none focus:bg-white focus:border-[#4C1D95]/30 focus:ring-4 focus:ring-[#4C1D95]/10 transition"
                     />
                   </div>
                 ))}
