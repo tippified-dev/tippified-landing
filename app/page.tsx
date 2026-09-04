@@ -29,7 +29,7 @@ import {
   FiX,
   FiZap,
 } from "react-icons/fi";
-import AdSense from "./components/AdSense";
+
 import CreatorTipBanner from "./components/CreatorTipBanner";
 import { bricolage, fredoka } from "./font";
 
@@ -315,7 +315,6 @@ export default function HomePage(): ReactElement {
             )}
           </div>
         </section>
-        <AdSense />
 
         {/* ALL BLOGS MODAL */}
         <AnimatePresence>
