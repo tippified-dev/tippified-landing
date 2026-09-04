@@ -66,11 +66,11 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${community.name} | Tippified`;
+  const title = `${community.creator_username} | ${community.name}`;
 
-  const description =
-    community.description ||
-    `Join ${community.name} by ${community.creator_username} on Tippified.`;
+  const description = `Join ${community.creator_username} WhatsApp community`;
+
+  const canonicalUrl = `https://tippified.com/community/${access_token}`;
 
   return {
     title,
@@ -87,19 +87,29 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `https://tippified.com/community/${access_token}`,
+      url: canonicalUrl,
       siteName: "Tippified",
       type: "website",
+
+      images: [
+        {
+          url: community.image_url,
+          width: 1200,
+          height: 675,
+          alt: `${community.creator_username} | ${community.name}`,
+        },
+      ],
     },
 
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title,
       description,
+      images: [community.image_url],
     },
 
     alternates: {
-      canonical: `https://tippified.com/community/${access_token}`,
+      canonical: canonicalUrl,
     },
   };
 }
