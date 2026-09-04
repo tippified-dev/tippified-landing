@@ -664,7 +664,7 @@ export default async function CreatorPage({ params }: Props) {
             >
               <div className="relative overflow-hidden rounded-[1.8rem] border border-purple-100 bg-white shadow-[0_14px_40px_-22px_rgba(88,28,174,0.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_-22px_rgba(88,28,174,0.45)]">
                 {/* Banner */}
-                <div className="relative aspect-16/7 overflow-hidden bg-purple-100">
+                <div className="relative aspect-video overflow-hidden bg-purple-100">
                   <Image
                     src={creator.paid_community.image_url}
                     alt={`${creator.paid_community.name} WhatsApp community`}
@@ -683,26 +683,26 @@ export default async function CreatorPage({ params }: Props) {
                   </div>
 
                   {/* Community name on image */}
-                  <div className="absolute inset-x-0 bottom-0 px-5 pb-5">
+                  <div className="absolute inset-x-0 bottom-0 px-5 pb-6">
                     <h2 className="text-xl font-extrabold tracking-tight text-white sm:text-2xl">
                       {creator.paid_community.name}
                     </h2>
 
-                    <p className="mt-1 text-[11px] font-medium text-white/80">
+                    <p className="mt-1.5 text-[11px] font-medium text-white/80 sm:text-xs">
                       Exclusive community by {creator.username}
                     </p>
                   </div>
                 </div>
 
                 {/* Information */}
-                <div className="p-5">
+                <div className="p-5 sm:p-6">
                   {creator.paid_community.description && (
                     <p className="line-clamp-2 text-[13px] leading-6 text-gray-600">
                       {creator.paid_community.description}
                     </p>
                   )}
 
-                  <div className="mt-4 flex items-center justify-between gap-4">
+                  <div className="mt-5 flex items-center justify-between gap-4">
                     {/* Price */}
                     <div>
                       <p className="text-[9px] font-extrabold uppercase tracking-widest text-purple-400">
