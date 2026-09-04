@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 
 import "./globals.css";
 import Providers from "./providers";
@@ -32,6 +33,11 @@ export default function RootLayout({
         <meta
           name="google-site-verification"
           content="7BRVgEDf0IMYDUZ6wuAcX_JzqvDBeUQmHwa_0Tz5LJM"
+        />
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9782370968070463"
+          crossOrigin="anonymous"
         />
       </head>
       <body
