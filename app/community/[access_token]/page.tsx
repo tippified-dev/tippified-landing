@@ -5,6 +5,7 @@ interface Community {
   id: number;
   name: string;
   description: string;
+  image_url: string;
   price: string;
   currency: "NGN" | "GHS" | "KES";
   creator_username: string;

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { useState } from "react";
 import {
   FiCheckCircle,
@@ -13,6 +14,7 @@ interface Community {
   id: number;
   name: string;
   description: string;
+  image_url: string;
   price: string;
   currency: "NGN" | "GHS" | "KES";
   creator_username: string;
@@ -148,26 +150,44 @@ export default function CommunityClient({
         <div className="absolute left-0 top-0 h-1 w-full bg-linear-to-r from-purple-600 via-violet-500 to-indigo-500" />
 
         <div className="p-6 sm:p-8">
-          {/* COMMUNITY ICON */}
-          <div className="flex justify-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-purple-600 to-indigo-600 text-white shadow-lg">
-              <FiMessageCircle size={27} />
+          {/* COMMUNITY BANNER */}
+          <div className="-mx-6 -mt-6 overflow-hidden sm:-mx-8 sm:-mt-8">
+            <div className="relative aspect-video w-full overflow-hidden">
+              <Image
+                src={community.image_url}
+                alt={`${community.name} community banner`}
+                className="h-full w-full object-cover"
+              />
+
+              {/* Premium image overlay */}
+              <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/15 to-transparent" />
+
+              {/* Creator badge */}
+              <div className="absolute left-4 top-4 sm:left-6 sm:top-5">
+                <div className="rounded-full border border-white/20 bg-black/25 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md">
+                  {community.creator_username}
+                </div>
+              </div>
+
+              {/* Community information */}
+              <div className="absolute inset-x-0 bottom-0 px-5 pb-5 sm:px-7 sm:pb-6">
+                <div className="flex items-end justify-between gap-4">
+                  <div className="min-w-0">
+                    <h1 className="text-2xl font-extrabold tracking-tight text-white drop-shadow-sm sm:text-3xl">
+                      {community.name}
+                    </h1>
+
+                    <p className="mt-1.5 text-xs font-medium text-white/80 sm:text-sm">
+                      Exclusive WhatsApp community
+                    </p>
+                  </div>
+
+                  <div className="hidden shrink-0 items-center justify-center rounded-2xl border border-white/20 bg-white/15 p-3 text-white backdrop-blur-md sm:flex">
+                    <FiMessageCircle size={20} />
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-
-          {/* TITLE */}
-          <div className="mt-5 text-center">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-purple-400">
-              @{community.creator_username}
-            </p>
-
-            <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-purple-950 sm:text-3xl">
-              {community.name}
-            </h1>
-
-            <p className="mt-2 text-sm text-purple-500">
-              Join this exclusive WhatsApp community.
-            </p>
           </div>
 
           {/* DESCRIPTION */}
