@@ -50,6 +50,7 @@ interface Creator {
   is_birthday_today: boolean;
   wishlist_active: boolean;
   social_links: SocialLink[];
+  paid_community: PaidCommunity | null;
 }
 
 interface PaidContent {
@@ -77,6 +78,16 @@ interface CreatorGoal {
   is_active: boolean;
   created_at: string;
   progress_percent: number;
+}
+
+interface PaidCommunity {
+  name: string;
+  description: string;
+  image_url: string;
+  price: string;
+  currency: "NGN" | "GHS" | "KES";
+  access_token: string;
+  is_active: boolean;
 }
 
 interface Props {
@@ -640,6 +651,88 @@ export default async function CreatorPage({ params }: Props) {
                 </Link>
               </div>
             </div>
+          </section>
+        )}
+
+        {/* WhatsApp Community */}
+        {creator.paid_community?.is_active && (
+          <section className="mt-8">
+            <Link
+              href={`/community/${creator.paid_community.access_token}`}
+              className="group block"
+              aria-label={`Join ${creator.paid_community.name}`}
+            >
+              <div className="relative overflow-hidden rounded-[1.8rem] border border-purple-100 bg-white shadow-[0_14px_40px_-22px_rgba(88,28,174,0.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_-22px_rgba(88,28,174,0.45)]">
+                {/* Banner */}
+                <div className="relative aspect-16/7 overflow-hidden bg-purple-100">
+                  <Image
+                    src={creator.paid_community.image_url}
+                    alt={`${creator.paid_community.name} WhatsApp community`}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 768px"
+                  />
+
+                  {/* Premium overlay */}
+                  <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/20 to-transparent" />
+
+                  {/* WhatsApp badge */}
+                  <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-white/20 bg-black/30 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-widest text-white backdrop-blur-md">
+                    <FaWhatsapp size={13} />
+                    WhatsApp Community
+                  </div>
+
+                  {/* Community name on image */}
+                  <div className="absolute inset-x-0 bottom-0 px-5 pb-5">
+                    <h2 className="text-xl font-extrabold tracking-tight text-white sm:text-2xl">
+                      {creator.paid_community.name}
+                    </h2>
+
+                    <p className="mt-1 text-[11px] font-medium text-white/80">
+                      Exclusive community by {creator.username}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Information */}
+                <div className="p-5">
+                  {creator.paid_community.description && (
+                    <p className="line-clamp-2 text-[13px] leading-6 text-gray-600">
+                      {creator.paid_community.description}
+                    </p>
+                  )}
+
+                  <div className="mt-4 flex items-center justify-between gap-4">
+                    {/* Price */}
+                    <div>
+                      <p className="text-[9px] font-extrabold uppercase tracking-widest text-purple-400">
+                        Community Access
+                      </p>
+
+                      <p className="mt-1 text-lg font-extrabold text-purple-950">
+                        {creator.paid_community.currency === "NGN"
+                          ? "₦"
+                          : creator.paid_community.currency === "GHS"
+                            ? "GH₵"
+                            : "KSh"}
+                        {Number(creator.paid_community.price).toLocaleString(
+                          "en-NG",
+                        )}
+                      </p>
+                    </div>
+
+                    {/* CTA */}
+                    <div className="flex shrink-0 items-center gap-2 rounded-full bg-purple-700 px-5 py-3 text-xs font-extrabold text-white shadow-md shadow-purple-200 transition-all group-hover:bg-purple-800 group-hover:shadow-lg">
+                      Join Community
+                      <FaWhatsapp
+                        size={15}
+                        className="transition-transform duration-300 group-hover:scale-110"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
           </section>
         )}
 
