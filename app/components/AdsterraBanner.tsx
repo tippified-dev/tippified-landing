@@ -1,9 +1,12 @@
 "use client";
+
 import Script from "next/script";
+
 export default function AdsterraBanner() {
   return (
-    <div className="flex w-full justify-center">
+    <div className="flex w-full justify-center items-center">
       <div
+        className="flex items-center justify-center"
         style={{
           width: "320px",
           height: "50px",
@@ -21,6 +24,7 @@ export default function AdsterraBanner() {
             };
           `}
         </Script>
+
         <Script
           id="adsterra-banner-script"
           src="https://www.highrevenueformat.com/7eb9c9fd820b8dcb6ca343dca13d0245/invoke.js"
