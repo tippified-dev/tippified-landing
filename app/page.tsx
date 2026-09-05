@@ -318,6 +318,7 @@ export default function HomePage(): ReactElement {
             )}
           </div>
         </section>
+        <NativeBannerAd />
 
         {/* ALL BLOGS MODAL */}
         <AnimatePresence>
@@ -829,7 +830,6 @@ export default function HomePage(): ReactElement {
             </motion.div>
           </motion.div>
         </section>
-        <NativeBannerAd />
 
         {/* ABOUT - PREMIUM */}
         <section
