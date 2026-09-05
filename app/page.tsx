@@ -36,6 +36,7 @@ import AdsterraBanner from "./components/AdsterraBanner";
 import CreatorTipBanner from "./components/CreatorTipBanner";
 import { bricolage, fredoka } from "./font";
 
+import BannerSlider from "./components/BannerSlider";
 import BlogCardHorizontal from "./components/BlogCardHorizontal";
 import LiveNowBar from "./components/LiveNowBar";
 import NavBar from "./components/NavBar";
@@ -259,9 +260,10 @@ export default function HomePage(): ReactElement {
           </motion.div>
         </section>
         <CreatorTipBanner className="mt-8" />
+        <AdsterraBanner />
 
         <section id="banner">
-          <AdsterraBanner />
+          <BannerSlider />
         </section>
         <section id="discover">
           <ActivityTeaserSection />
