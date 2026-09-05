@@ -29,6 +29,7 @@ import {
   FiX,
   FiZap,
 } from "react-icons/fi";
+import NativeBannerAd from "./components/NativeBannerAd";
 
 import CreatorTipBanner from "./components/CreatorTipBanner";
 import { bricolage, fredoka } from "./font";
@@ -826,6 +827,7 @@ export default function HomePage(): ReactElement {
             </motion.div>
           </motion.div>
         </section>
+        <NativeBannerAd />
 
         {/* ABOUT - PREMIUM */}
         <section
@@ -871,8 +873,8 @@ export default function HomePage(): ReactElement {
                   >
                     Tippified
                   </a>{" "}
-                  is Nigeria&apos;s all-in-one creator monetization platform
-                  that enables creators to receive monetary tips, virtual gifts,
+                  is Africa&apos;s all-in-one creator monetization platform that
+                  enables creators to receive monetary tips, virtual gifts,
                   birthday wishlist purchases, goal contributions and live
                   stream support from fans worldwide.
                 </p>
