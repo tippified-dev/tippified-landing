@@ -1,4 +1,5 @@
 "use client";
+import AdsterraBanner from "@/app/components/AdsterraBanner";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
@@ -161,6 +162,7 @@ export default function CommunityClient({
                   <FiCheckCircle size={18} />
                 </div>
               </div>
+              <AdsterraBanner />
 
               <div className="mt-7 space-y-4">
                 {[

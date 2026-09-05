@@ -118,6 +118,7 @@ export default function SearchGoalsClient(): ReactElement {
   return (
     <>
       <NavBar />
+      <AdsterraBanner />
       <main className="min-h-screen bg-[#fdfcff] pb-20">
         {/* SEARCH BAR - fixed */}
         <div className="fixed top-0 left-0 right-0 z-50 border-b border-purple-100/60 bg-white/90 backdrop-blur-xl">
@@ -140,7 +141,6 @@ export default function SearchGoalsClient(): ReactElement {
             </button>
           </div>
         </div>
-        <AdsterraBanner />
 
         {/* GOALS - pushed lower to not hide under search */}
         <section className="mx-auto max-w-5xl px-4 pt-22 md:pt-24">
