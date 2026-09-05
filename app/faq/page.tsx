@@ -11,6 +11,8 @@ import {
   WalletIcon,
 } from "@heroicons/react/24/outline";
 import { Metadata } from "next";
+import AdsterraBanner from "../components/AdsterraBanner";
+import NativeBannerAd from "../components/NativeBannerAd";
 import NavBar from "../components/NavBar";
 
 /* ================= SEO ================= */
@@ -119,6 +121,7 @@ export default function FAQPage() {
             and how we keep every transaction secure.
           </p>
         </header>
+        <AdsterraBanner />
 
         {/* FAQ LIST */}
         <section className="space-y-6">
@@ -140,6 +143,7 @@ export default function FAQPage() {
             );
           })}
         </section>
+        <NativeBannerAd />
 
         {/* FOOTER */}
         <footer className="py-8 text-center text-sm text-gray-500 mt-16">

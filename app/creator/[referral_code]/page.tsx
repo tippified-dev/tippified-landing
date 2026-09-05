@@ -1,4 +1,5 @@
 import AdBannerSlider from "@/app/components/AdBannerSlider";
+import AdsterraBanner from "@/app/components/AdsterraBanner";
 import NativeBannerAd from "@/app/components/NativeBannerAd";
 import ProfileImageViewer from "@/app/components/ProfileImageViewer";
 import VerifiedBadge from "@/app/components/VerifiedBadge";
@@ -970,6 +971,7 @@ export default async function CreatorPage({ params }: Props) {
             creators whose work you enjoy and want to support.
           </p>
         </section>
+        <AdsterraBanner />
       </div>
     </main>
   );

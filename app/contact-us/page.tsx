@@ -1,5 +1,6 @@
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { Metadata } from "next";
+import AdsterraBanner from "../components/AdsterraBanner";
 import NavBar from "../components/NavBar";
 import ContactForm from "./ContactForm";
 
@@ -25,9 +26,12 @@ export default function ContactUsPage() {
       <NavBar />
       <main className="bg-white text-gray-900 min-h-screen px-6 py-20 max-w-4xl mx-auto">
         <header className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-purple-700 mb-3">Contact Tippified</h1>
+          <h1 className="text-4xl font-bold text-purple-700 mb-3">
+            Contact Tippified
+          </h1>
           <p className="text-gray-600 max-w-xl mx-auto">
-            Need help or want to partner with us? Send us a message and our team will respond shortly.
+            Need help or want to partner with us? Send us a message and our team
+            will respond shortly.
           </p>
         </header>
 
@@ -37,6 +41,7 @@ export default function ContactUsPage() {
             support@tippified.com
           </div>
         </div>
+        <AdsterraBanner />
 
         <ContactForm />
 

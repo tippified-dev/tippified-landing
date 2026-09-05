@@ -12,6 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { Suspense } from "react";
+import AdsterraBanner from "../components/AdsterraBanner";
 import CreatorTipBanner from "../components/CreatorTipBanner";
 import NavBar from "../components/NavBar";
 import ReturnToCreatorButton from "../components/ReturnToCreatorButton";
@@ -620,6 +621,7 @@ export default function PrivacyPolicyClient() {
         <Suspense fallback={null}>
           <ReturnToCreatorButton />
         </Suspense>
+        <AdsterraBanner />
         <CreatorTipBanner className="mt-3 mb-3" />
 
         <h1 className="text-4xl font-bold text-center text-purple-700 mb-3">

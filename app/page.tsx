@@ -31,11 +31,11 @@ import {
 } from "react-icons/fi";
 import NativeBannerAd from "./components/NativeBannerAd";
 
+import ActivityTeaserSection from "./components/ActivityTeaserSection";
+import AdsterraBanner from "./components/AdsterraBanner";
 import CreatorTipBanner from "./components/CreatorTipBanner";
 import { bricolage, fredoka } from "./font";
 
-import ActivityTeaserSection from "./components/ActivityTeaserSection";
-import BannerSlider from "./components/BannerSlider";
 import BlogCardHorizontal from "./components/BlogCardHorizontal";
 import LiveNowBar from "./components/LiveNowBar";
 import NavBar from "./components/NavBar";
@@ -261,7 +261,7 @@ export default function HomePage(): ReactElement {
         <CreatorTipBanner className="mt-8" />
 
         <section id="banner">
-          <BannerSlider />
+          <AdsterraBanner />
         </section>
         <section id="discover">
           <ActivityTeaserSection />

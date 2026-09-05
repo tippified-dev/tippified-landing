@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import AdsterraBanner from "../components/AdsterraBanner";
 import TipCreators from "./TipCreators";
 
 export const metadata: Metadata = {
@@ -53,6 +54,7 @@ export default function TipPage() {
               Support Creators on Tippified
             </span>
           </div>
+          <AdsterraBanner />
 
           <h1 className="text-4xl font-extrabold tracking-tight text-purple-950 sm:text-5xl">
             Tip a creator on Tippified

@@ -14,6 +14,7 @@ import {
   FiX,
   FiZap,
 } from "react-icons/fi";
+import AdsterraBanner from "../components/AdsterraBanner";
 import NavBar from "../components/NavBar";
 
 interface PublicGoal {
@@ -139,6 +140,7 @@ export default function SearchGoalsClient(): ReactElement {
             </button>
           </div>
         </div>
+        <AdsterraBanner />
 
         {/* GOALS - pushed lower to not hide under search */}
         <section className="mx-auto max-w-5xl px-4 pt-22 md:pt-24">
