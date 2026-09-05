@@ -29,6 +29,7 @@ import {
   FiX,
   FiZap,
 } from "react-icons/fi";
+import NativeBannerAd from "./components/NativeBannerAd";
 
 import CreatorTipBanner from "./components/CreatorTipBanner";
 import { bricolage, fredoka } from "./font";
@@ -826,6 +827,7 @@ export default function HomePage(): ReactElement {
             </motion.div>
           </motion.div>
         </section>
+        <NativeBannerAd />
 
         {/* ABOUT - PREMIUM */}
         <section

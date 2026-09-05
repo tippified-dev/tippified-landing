@@ -11,6 +11,7 @@ import {
   FiX,
   FiZap,
 } from "react-icons/fi";
+import NativeBannerAd from "../components/NativeBannerAd";
 import NavBar from "../components/NavBar";
 import ProfileImageViewer from "../components/ProfileImageViewer";
 import VerifiedBadge from "../components/VerifiedBadge";
@@ -212,6 +213,7 @@ export default function ExploreClient({ initialData }: ExploreClientProps) {
           </div>
         )}
       </div>
+      <NativeBannerAd />
 
       {/* Sticky Explore Header */}
       <div className="sticky top-0 z-40 -mx-4 border-b border-purple-100/80 bg-[#fcfbff]/92 px-4 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6">

@@ -1,4 +1,5 @@
 import AdBannerSlider from "@/app/components/AdBannerSlider";
+import NativeBannerAd from "@/app/components/NativeBannerAd";
 import ProfileImageViewer from "@/app/components/ProfileImageViewer";
 import VerifiedBadge from "@/app/components/VerifiedBadge";
 import { Metadata } from "next";
@@ -940,6 +941,7 @@ export default async function CreatorPage({ params }: Props) {
             )}
           </section>
         )}
+        <NativeBannerAd />
         <AdBannerSlider />
 
         {/* SEO content */}
