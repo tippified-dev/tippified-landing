@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 
 import "./globals.css";
 import Providers from "./providers";
@@ -15,9 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tippified- Nigeria's No 1 tipping platform for creators.",
+  title: "Tippified- Africa's No 1 tipping platform for creators.",
   description:
-    "Tippified is a Nigerian creator tipping platform that let fans tip their favorite content creators quickly and without stress.",
+    "Tippified is a creator tipping platform that let fans tip their favorite content creators quickly and without stress.",
 };
 
 export default function RootLayout({
@@ -33,16 +34,23 @@ export default function RootLayout({
           name="google-site-verification"
           content="7BRVgEDf0IMYDUZ6wuAcX_JzqvDBeUQmHwa_0Tz5LJM"
         />
-
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9782370968070463"
-          crossOrigin="anonymous"
-        ></script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        {/* Google AdSense */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9782370968070463"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+
+        <Script
+          src="https://pl31195636.profitableratecpmnetwork.com/f2/29/77/f22977ce4dd1849011b54c890005f145.js"
+          strategy="afterInteractive"
+        />
+
         <Providers>{children}</Providers>
       </body>
     </html>
