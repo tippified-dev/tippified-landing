@@ -66,23 +66,15 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${community.creator_username} | ${community.name}`;
+  const title = `${community.creator_username} | Tippified`;
 
-  const description = `Join ${community.creator_username} WhatsApp community`;
+  const description = community.description;
 
   const canonicalUrl = `https://tippified.com/community/${access_token}`;
 
   return {
     title,
     description,
-
-    keywords: [
-      "Tippified",
-      "Tippified community",
-      "paid WhatsApp community",
-      community.name,
-      community.creator_username,
-    ],
 
     openGraph: {
       title,
@@ -96,7 +88,7 @@ export async function generateMetadata({
           url: community.image_url,
           width: 1200,
           height: 675,
-          alt: `${community.creator_username} | ${community.name}`,
+          alt: `${community.creator_username} | Tippified`,
         },
       ],
     },
