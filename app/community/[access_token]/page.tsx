@@ -66,7 +66,7 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${community.creator_username} | Tippified`;
+  const title = `${community.name} | Tippified`;
 
   const description = community.description;
 
@@ -88,7 +88,7 @@ export async function generateMetadata({
           url: community.image_url,
           width: 1200,
           height: 675,
-          alt: `${community.creator_username} | Tippified`,
+          alt: `${community.name} | Tippified`,
         },
       ],
     },
