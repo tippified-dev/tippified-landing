@@ -8,7 +8,7 @@ interface BlogPost {
   title: string;
   slug: string;
   excerpt: string;
-  content: string
+  content: string;
   cover_image?: string;
   published_at: string;
   author_name: string;
@@ -35,7 +35,7 @@ export default async function BlogListPage() {
 
   return (
     <>
-     <NavBar/>
+      <NavBar />
       <Head>
         <title>Tippified Blog</title>
         <meta
@@ -82,7 +82,9 @@ export default async function BlogListPage() {
             <div className="p-4">
               <h2 className="font-bold text-lg mb-2">{blog.title}</h2>
               <p className="text-gray-600">
-                {blog.excerpt || blog.meta_description || blog.content.slice(0, 120) + "..."}
+                {blog.excerpt ||
+                  blog.meta_description ||
+                  blog.content.slice(0, 120) + "..."}
               </p>
               <p className="text-sm text-gray-400 mt-2">
                 By {blog.author_name} •{" "}
