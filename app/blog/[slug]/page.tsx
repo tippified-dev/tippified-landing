@@ -1,6 +1,8 @@
 "use client";
 
+import AdsterraBanner from "@/app/components/AdsterraBanner";
 import CreatorTipBanner from "@/app/components/CreatorTipBanner";
+import NativeBannerAd from "@/app/components/NativeBannerAd";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
@@ -87,12 +89,14 @@ export default function BlogDetail() {
       )}
 
       <h1 className="text-3xl font-bold mt-6">{blog.title}</h1>
+      <AdsterraBanner />
 
       <p className="text-gray-400 mt-2 mb-6">
         By {capitalizeWords(blog.author_name)} •{" "}
         {new Date(blog.published_at).toLocaleDateString()}
       </p>
       <CreatorTipBanner className="mt-3 mb-3" />
+      <NativeBannerAd />
 
       <div
         className="prose max-w-none"
