@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import NativeBannerAd from "../components/NativeBannerAd";
 import NavBar from "../components/NavBar";
 
 interface BlogPost {
@@ -63,6 +64,7 @@ export default async function BlogListPage() {
         {blogs.length === 0 && (
           <p className="text-center col-span-2">No blogs found yet.</p>
         )}
+        <NativeBannerAd />
 
         {blogs.map((blog) => (
           <Link
