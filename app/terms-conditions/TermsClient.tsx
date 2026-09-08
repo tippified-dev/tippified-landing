@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import CreatorTipBanner from "../components/CreatorTipBanner";
 import NavBar from "../components/NavBar";
 import ReturnToCreatorButton from "../components/ReturnToCreatorButton";
+import AdsterraBanner from "../components/AdsterraBanner";
 
 export default function TermsClient() {
   return (
@@ -14,6 +15,7 @@ export default function TermsClient() {
         <Suspense fallback={null}>
           <ReturnToCreatorButton />
         </Suspense>
+        <AdsterraBanner/>
         <CreatorTipBanner className="mt-3 mb-3" />
 
         <h1 className="text-4xl font-bold text-purple-700 mb-3">
