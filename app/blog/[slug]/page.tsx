@@ -92,7 +92,7 @@ export default function BlogDetail() {
         By {capitalizeWords(blog.author_name)} •{" "}
         {new Date(blog.published_at).toLocaleDateString()}
       </p>
-      <CreatorTipBanner className="mt-8" />
+      <CreatorTipBanner className="mt-3 mb-3" />
 
       <div
         className="prose max-w-none"
