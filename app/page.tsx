@@ -29,7 +29,7 @@ import {
   FiX,
   FiZap,
 } from "react-icons/fi";
-import CreatorJobOffers from "./components/CreatorJobOffers";
+
 import NativeBannerAd from "./components/NativeBannerAd";
 
 import ActivityTeaserSection from "./components/ActivityTeaserSection";
@@ -266,9 +266,7 @@ export default function HomePage(): ReactElement {
         <section id="banner">
           <BannerSlider />
         </section>
-        <section>
-          <CreatorJobOffers />
-        </section>
+
         <section id="discover">
           <ActivityTeaserSection />
         </section>
