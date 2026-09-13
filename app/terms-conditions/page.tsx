@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     "influencers",
   ],
   alternates: {
-    canonical: "https://tippified.com/terms-conditions",
+    canonical: "https://www.tippified.com/terms-conditions",
   },
 };
 

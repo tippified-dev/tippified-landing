@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     "website",
   ],
   alternates: {
-    canonical: "https://tippified.com/privacy-policy",
+    canonical: "https://www.tippified.com/privacy-policy",
   },
 };
 

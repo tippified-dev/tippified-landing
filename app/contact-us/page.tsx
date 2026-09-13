@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     "Grundex Limited",
     "contact us tippified",
   ],
-  alternates: { canonical: "https://tippified.com/contact-us" },
+  alternates: { canonical: "https://www.tippified.com/contact-us" },
 };
 
 export default function ContactUsPage() {

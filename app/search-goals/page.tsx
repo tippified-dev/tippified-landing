@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: "Support Nigerian Creators | Tippified",
     description:
       "Find Nigerian creators and support their goals with secure tipping. Built for the Nigerian creator economy.",
-    url: "https://tippified.com/search-goals",
+    url: "https://www.tippified.com/search-goals",
     siteName: "Tippified",
     locale: "en_NG",
     type: "website",

@@ -309,7 +309,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     creator.bio ||
     `Discover ${creator.username} on Tippified. Support this creator with tips, gifts and exclusive content.`;
 
-  const canonicalUrl = `https://tippified.com/creator/${creator.referral_code}`;
+  const canonicalUrl = `https://www.tippified.com/creator/${creator.referral_code}`;
 
   return {
     title,
@@ -381,7 +381,7 @@ export default async function CreatorPage({ params }: Props) {
 
   const tippingUrl = `https://app.tippified.com/tip/${creator.referral_code}`;
 
-  const canonicalUrl = `https://tippified.com/creator/${creator.referral_code}`;
+  const canonicalUrl = `https://www.tippified.com/creator/${creator.referral_code}`;
 
   const jsonLd = {
     "@context": "https://schema.org",

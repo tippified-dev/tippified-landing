@@ -17,13 +17,13 @@ export const metadata: Metadata = {
     "creators on tippified",
   ],
   alternates: {
-    canonical: "https://tippified.com/explore",
+    canonical: "https://www.tippified.com/explore",
   },
   openGraph: {
     title: "Discover Nigerian Creators | Tippified",
     description:
       "Discover talented Nigerian creators on Tippified. Explore creators, send tips and gifts, and support the creators you love.",
-    url: "https://tippified.com/explore",
+    url: "https://www.tippified.com/explore",
     siteName: "Tippified",
     type: "website",
   },

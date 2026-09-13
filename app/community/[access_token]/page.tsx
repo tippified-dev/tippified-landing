@@ -70,7 +70,7 @@ export async function generateMetadata({
 
   const description = community.description;
 
-  const canonicalUrl = `https://tippified.com/community/${access_token}`;
+  const canonicalUrl = `https://www.tippified.com/community/${access_token}`;
 
   return {
     title,
