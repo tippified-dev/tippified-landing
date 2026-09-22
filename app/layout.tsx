@@ -16,9 +16,42 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tippified- Africa's No 1 tipping platform for creators.",
+  metadataBase: new URL("https://www.tippified.com"),
+
+  title: "Tippified | Africa's No. 1 Tipping Platform for Creators",
+
   description:
-    "Tippified is a creator tipping platform that let fans tip their favorite content creators quickly and without stress.",
+    "Tippified is a creator tipping platform that lets fans support their favorite content creators through tips, gifts, goals, exclusive content and more.",
+
+  openGraph: {
+    title: "Tippified | Support the Creators You Love",
+    description:
+      "Tippified helps creators receive direct support from their fans through tips, gifts, goals, exclusive content and more.",
+    url: "https://www.tippified.com",
+    siteName: "Tippified",
+    images: [
+      {
+        url: "/social_banner.jpeg",
+        width: 1664,
+        height: 936,
+        alt: "Tippified - Support the creators you love",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Tippified | Support the Creators You Love",
+    description:
+      "Support your favorite creators through tips, gifts, goals, exclusive content and more.",
+    images: ["/social_banner.jpeg"],
+  },
+
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -29,12 +62,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/logo.png" />
         <meta
           name="google-site-verification"
           content="7BRVgEDf0IMYDUZ6wuAcX_JzqvDBeUQmHwa_0Tz5LJM"
         />
       </head>
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

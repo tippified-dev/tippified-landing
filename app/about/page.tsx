@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     title: "About Tippified",
     description:
       "Nigeria's creator monetization platform where fans send tips, virtual gifts, support goals, fulfil wishlists and participate in live streams. Payments powered by Paystack. Settlements handled through Wema Bank.",
-    url: "https://tippified.com/about",
+    url: "https://www.tippified.com/about",
     siteName: "Tippified",
     type: "website",
   },
