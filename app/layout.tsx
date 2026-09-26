@@ -79,10 +79,10 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
 
-        <Script
+        {/* <Script
           src="https://pl31195636.profitableratecpmnetwork.com/f2/29/77/f22977ce4dd1849011b54c890005f145.js"
           strategy="afterInteractive"
-        />
+        /> */}
 
         <Providers>{children}</Providers>
       </body>

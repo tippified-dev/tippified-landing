@@ -30,10 +30,10 @@ import {
   FiZap,
 } from "react-icons/fi";
 
-import NativeBannerAd from "./components/NativeBannerAd";
+// import NativeBannerAd from "./components/NativeBannerAd";
 
 import ActivityTeaserSection from "./components/ActivityTeaserSection";
-import AdsterraBanner from "./components/AdsterraBanner";
+// import AdsterraBanner from "./components/AdsterraBanner";
 import CreatorTipBanner from "./components/CreatorTipBanner";
 import { bricolage, fredoka } from "./font";
 
@@ -261,7 +261,7 @@ export default function HomePage(): ReactElement {
           </motion.div>
         </section>
         <CreatorTipBanner className="mt-8" />
-        <AdsterraBanner />
+        {/* <AdsterraBanner /> */}
 
         <section id="banner">
           <BannerSlider />
@@ -320,7 +320,7 @@ export default function HomePage(): ReactElement {
             )}
           </div>
         </section>
-        <NativeBannerAd />
+        {/* <NativeBannerAd /> */}
 
         {/* ALL BLOGS MODAL */}
         <AnimatePresence>
