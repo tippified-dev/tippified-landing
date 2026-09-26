@@ -904,29 +904,76 @@ export default function HomePage(): ReactElement {
         <section
           id="cta"
           ref={ctaRef}
-          className="py-20 px-6 bg-linear-to-br from-purple-900 via-violet-900 to-indigo-900 text-white text-center relative overflow-hidden"
+          className="relative py-24 md:py-32 px-6 bg-linear-to-br from-[#150821] via-[#2E1065] to-[#3D1A6B] text-white text-center overflow-hidden"
         >
-          <div className="absolute inset-0 bg-purple-600,transparent_50%)]" />
+          {/* Premium Background System */}
+          <div className="absolute inset-0">
+            <div className="absolute -top-40 -left-40 w-175 h-175 bg-violet-500/20 rounded-full blur-[120px]" />
+            <div className="absolute -bottom-40 -right-40 w-150 h-150 bg-purple-500/20 rounded-full blur-[120px]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.25),rgba(255,255,255,0))]" />
+            <div
+              className="absolute inset-0 opacity-[0.04]"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,[STRIPPED] )`,
+              }}
+            />
+          </div>
+          {/* subtle top glow line */}
+          <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent" />
+
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={ctaVisible ? { opacity: 1, y: 0 } : {}}
-            className="relative"
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="relative max-w-3xl mx-auto"
           >
-            <h2 className="text-xl md:text-3xl font-extrabold tracking-tight mb-6">
-              Ready to start receiving tips from your fans?
+            {/* Pill */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-md text-[11px] tracking-widest uppercase font-semibold text-violet-200 mb-6">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Creator Monetization in Nigeria & Africa
+            </div>
+
+            <h2 className="text-[28px] md:text-5xl font-extrabold tracking-[-0.03em] leading-[1.05] mb-4">
+              Ready to start receiving
+              <br />
+              <span className="bg-linear-to-r from-white via-violet-200 to-purple-200 bg-clip-text text-transparent">
+                tips from your fans?
+              </span>
             </h2>
+
+            <p className="text-violet-200/70 text-[15px] md:text-[17px] leading-relaxed max-w-xl mx-auto mb-9">
+              Turn your audience into support. Tips, gifts, goals & fan funding
+              — all in one premium link.
+            </p>
+
             <div className="flex gap-3 justify-center flex-wrap">
               <a
                 href="https://app.tippified.com/creator/signup"
-                className="px-7 py-3 bg-white text-purple-700 font-bold rounded-full shadow hover:bg-purple-50 transition inline-flex items-center gap-2"
+                className="group px-8 py-3.5 bg-white text-[#2E1065] font-bold rounded-full shadow-[0_10px_30px_-10px_rgba(255,255,255,0.5)] hover:shadow-[0_15px_40px_-12px_rgba(255,255,255,0.6)] hover:-translate-y-0.5 transition-all duration-300 inline-flex items-center gap-2"
               >
-                <FiHeart /> Get Started
+                <FiHeart className="group-hover:scale-110 transition-transform" />{" "}
+                Get Started
               </a>
               <a
                 href="https://app.tippified.com/creator/signin"
-                className="px-7 py-3 bg-white/15 border border-white/20 text-white font-bold rounded-full hover:bg-white/20 transition"
+                className="px-8 py-3.5 bg-white/8 border border-white/15 text-white font-semibold rounded-full backdrop-blur-md hover:bg-white/0.12 hover:border-white/20 transition-all duration-300"
               >
                 Sign In
+              </a>
+            </div>
+
+            {/* NEW LINK: /creator-monetization */}
+            <div className="mt-8">
+              <a
+                href="/creator-monetization"
+                className="inline-flex items-center gap-2 text-sm text-violet-200/80 hover:text-white transition-colors group"
+              >
+                <span className="border-b border-violet-300/30 group-hover:border-white/50 pb-0.5">
+                  Learn how creator monetization works
+                </span>
+                <span className="h-6 w-6 grid place-items-center rounded-full bg-white/10 group-hover:bg-white/15 transition-colors">
+                  →
+                </span>
               </a>
             </div>
           </motion.div>
@@ -975,40 +1022,89 @@ export default function HomePage(): ReactElement {
           )}
         </AnimatePresence>
 
-        {/* FOOTER */}
-        <footer className="py-10 bg-linear-to-br from-purple-900 via-violet-900 to-indigo-900 text-purple-100 text-center text-sm border-t border-white/10">
-          <div className="flex justify-center gap-5 mb-4">
-            <a
-              href="https://instagram.com/tippified_app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="h-9 w-9 grid place-items-center rounded-full bg-white/10 hover:bg-white/15 transition"
-            >
-              <FaInstagram />
-            </a>
-            <a
-              href="https://facebook.com/tippified"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="h-9 w-9 grid place-items-center rounded-full bg-white/10 hover:bg-white/15 transition"
-            >
-              <FaFacebookF />
-            </a>
-            <a
-              href="https://x.com/tippified"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="h-9 w-9 grid place-items-center rounded-full bg-white/10 hover:bg-white/15 transition"
-            >
-              <FaTwitter />
-            </a>
+        {/* FOOTER - Premium */}
+        <footer className="relative py-12 px-6 bg-linear-to-br from-[#150821] via-[#2E1065] to-[#3D1A6B] text-purple-100 border-t border-white/[0.07] overflow-hidden">
+          {/* same glow system for continuity */}
+          <div className="absolute inset-0">
+            <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-200 h-100 bg-violet-600/10 rounded-full blur-[100px]" />
+            <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-white/15 to-transparent" />
           </div>
-          <div>
-            &copy; {new Date().getFullYear()} Tippified. All rights reserved.
-            <p className="text-[11px] text-purple-200/60 mt-2 max-w-2xl mx-auto">
-              Tippified is a product of Grundex Limited. Payments securely
-              powered by Paystack.
-            </p>
+
+          <div className="relative max-w-6xl mx-auto">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-8 pb-8">
+              {/* Brand + Nav */}
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <span className="font-black tracking-tight text-white text-[22px]">
+                  Tippified
+                </span>
+                <div className="h-4 w-px bg-white/10 hidden md:block" />
+                <nav className="flex items-center gap-6 text-[13px] font-medium text-violet-200/70">
+                  <a
+                    href="/creator-monetization"
+                    className="hover:text-white transition-colors"
+                  >
+                    Creator Monetization
+                  </a>
+                  <a
+                    href="/support"
+                    className="hover:text-white transition-colors"
+                  >
+                    Support
+                  </a>
+                  <a
+                    href="/terms"
+                    className="hover:text-white transition-colors"
+                  >
+                    Terms
+                  </a>
+                  <a
+                    href="/privacy"
+                    className="hover:text-white transition-colors"
+                  >
+                    Privacy
+                  </a>
+                </nav>
+              </div>
+
+              {/* Socials */}
+              <div className="flex items-center gap-2.5">
+                <a
+                  href="https://instagram.com/tippified_app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="h-10 w-10 grid place-items-center rounded-full bg-white/[0.07] border border-white/8 backdrop-blur-md hover:bg-white/12 hover:border-white/15 hover:-translate-y-0.5 transition-all duration-300 text-white"
+                >
+                  <FaInstagram />
+                </a>
+                <a
+                  href="https://facebook.com/tippified"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="h-10 w-10 grid place-items-center rounded-full bg-white/[0.07] border border-white/8 backdrop-blur-md hover:bg-white/12 hover:border-white/15 hover:-translate-y-0.5 transition-all duration-300 text-white"
+                >
+                  <FaFacebookF />
+                </a>
+                <a
+                  href="https://x.com/tippified"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="h-10 w-10 grid place-items-center rounded-full bg-white/[0.07] border border-white/8 backdrop-blur-md hover:bg-white/12 hover:border-white/15 hover:-translate-y-0.5 transition-all duration-300 text-white"
+                >
+                  <FaTwitter />
+                </a>
+              </div>
+            </div>
+
+            <div className="pt-8 border-t border-white/6 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
+              <div className="text-[13px] text-violet-200/50">
+                &copy; {new Date().getFullYear()} Tippified. All rights
+                reserved.
+              </div>
+              <p className="text-[11px] text-violet-200/40 max-w-md leading-relaxed">
+                Tippified is a product of Grundex Limited. Payments securely
+                powered by Paystack.
+              </p>
+            </div>
           </div>
         </footer>
 
