@@ -16,20 +16,18 @@ import {
   FiGift,
   FiGrid,
   FiHeart,
-  FiHelpCircle,
   FiInfo,
   FiLock,
-  FiPhone,
   FiSearch,
   FiShield,
   FiShieldOff,
   FiTarget,
   FiTrendingUp,
-  FiUserPlus,
   FiX,
   FiZap,
 } from "react-icons/fi";
 import EarningsProof from "./components/EarningsProof";
+import PremiumHero from "./components/PremiumHero";
 
 // import NativeBannerAd from "./components/NativeBannerAd";
 
@@ -44,7 +42,7 @@ import LiveNowBar from "./components/LiveNowBar";
 import NavBar from "./components/NavBar";
 import TrendingCreatorsBar from "./components/TrendingCreatorsBar";
 import WhoUsesTippified from "./components/WhoUsesTippified";
-import { pacifico } from "./font";
+
 import { useScrollRestoration } from "./useScrollRestoration";
 
 interface PublicGoal {
@@ -84,7 +82,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export default function HomePage(): ReactElement {
-  const heroRef = useRef<HTMLDivElement>(null);
+  // const heroRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -120,7 +118,7 @@ export default function HomePage(): ReactElement {
     gcTime: 1000 * 60 * 30,
   });
 
-  const [heroVisible, setHeroVisible] = useState<boolean>(false);
+  // const [heroVisible, setHeroVisible] = useState<boolean>(false);
   const [featuresVisible, setFeaturesVisible] = useState<boolean[]>([
     false,
     false,
@@ -176,7 +174,7 @@ export default function HomePage(): ReactElement {
   };
 
   useEffect(() => {
-    observeElement(heroRef.current, () => setHeroVisible(true));
+    // observeElement(heroRef.current, () => setHeroVisible(true));
     observeElement(aboutRef.current, () => setAboutVisible(true));
     observeElement(ctaRef.current, () => setCtaVisible(true));
     featuresRef.current.forEach((el: HTMLDivElement | null, i: number) =>
@@ -195,72 +193,7 @@ export default function HomePage(): ReactElement {
       <NavBar onNavigate={rememberScroll} />
       <main className="bg-[#fdfcff] text-purple-900 pb-20 md:pb-0">
         {/* HERO */}
-        <section
-          id="hero"
-          ref={heroRef}
-          className="relative overflow-hidden bg-linear-to-br from-[#15052E] via-[#4C1D95] to-[#6D28D9] text-white py-16 px-6 isolate"
-        >
-          {/* dashboard gradient orbs - darker so text stays readable */}
-          <div className="absolute -right-24 -top-24 h-105 w-105 rounded-full bg-[#7C3AED]/30 blur-[80px] pointer-events-none" />
-          <div className="absolute -left-24 -bottom-24 h-105 w-105 rounded-full bg-[#2E1065]/80 blur-[90px] pointer-events-none" />
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={heroVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7 }}
-            className="relative max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center"
-          >
-            <div>
-              <p className={`text-xl mb-4 text-white ${pacifico.className}`}>
-                tippified.
-              </p>
-              <h1 className="text-4xl md:text-6xl font-extrabold leading-[0.95] tracking-tight mb-6 text-white">
-                Get Tippified for What You Create
-              </h1>
-
-              <p className="text-[15px] md:text-[17px] leading-7 text-white/85 mb-8 max-w-xl font-medium">
-                An all-in-one creator monetization platform. Receive tips,
-                gifts, goal contributions, live streaming, crowd funding and
-                wishlist purchases with secure payments.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {/* Primary: stays white bg, but text is now #4C1D95 not 700 */}
-                <a
-                  href="/signup"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#4C1D95] font-bold shadow-[0_10px_25px_-10px_rgba(0,0,0,0.5)] hover:bg-zinc-100 transition"
-                >
-                  <FiUserPlus /> Become a Creator
-                </a>
-
-                {/* Secondary: all same dark solid for contrast, not translucent white */}
-                <a
-                  href="/how-it-works"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#2E1065]/80 backdrop-blur-md border border-white/20 text-white font-semibold hover:bg-[#3B1F8A] hover:border-white/30 transition"
-                >
-                  <FiInfo /> How it works
-                </a>
-                <a
-                  href="/faq"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#2E1065]/80 backdrop-blur-md border border-white/20 text-white font-semibold hover:bg-[#3B1F8A] hover:border-white/30 transition"
-                >
-                  <FiHelpCircle /> FAQ
-                </a>
-                <a
-                  href="/tip-page"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#1E1040]/80 backdrop-blur-md border border-white/15 text-white font-semibold hover:bg-[#2A1760] transition"
-                >
-                  <FiCreditCard /> Tip
-                </a>
-                <a
-                  href="/contact-us"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#1E1040]/80 backdrop-blur-md border border-white/15 text-white font-semibold hover:bg-[#2A1760] transition"
-                >
-                  <FiPhone /> Contact
-                </a>
-              </div>
-            </div>
-          </motion.div>
-        </section>
+        <PremiumHero />
         <EarningsProof />
         <CreatorTipBanner className="mt-8" />
         {/* <AdsterraBanner /> */}
@@ -889,7 +822,7 @@ export default function HomePage(): ReactElement {
                   className={`${bricolage.className} mt-6 inline-flex items-center gap-2 rounded-full bg-[#15052E] px-4 py-2 text-[11px] font-bold text-white`}
                 >
                   <span className="h-2 w-2 animate-pulse rounded-full bg-[#A78BFA]" />
-                  Payments securely processed through Paystack
+                  Payments securely processed through our partner.
                 </div>
 
                 <p
