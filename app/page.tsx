@@ -29,6 +29,7 @@ import {
   FiX,
   FiZap,
 } from "react-icons/fi";
+import EarningsProof from "./components/EarningsProof";
 
 // import NativeBannerAd from "./components/NativeBannerAd";
 
@@ -260,6 +261,7 @@ export default function HomePage(): ReactElement {
             </div>
           </motion.div>
         </section>
+        <EarningsProof />
         <CreatorTipBanner className="mt-8" />
         {/* <AdsterraBanner /> */}
 

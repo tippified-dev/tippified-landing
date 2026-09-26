@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import NavBar from "../components/NavBar";
 
 const pageUrl = "https://www.tippified.com/exclusive-content";
 
@@ -267,6 +268,7 @@ export default function ExclusiveContentPage() {
 
   return (
     <>
+      <NavBar />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
