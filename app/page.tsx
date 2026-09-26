@@ -975,6 +975,17 @@ export default function HomePage(): ReactElement {
                   →
                 </span>
               </a>
+              <a
+                href="/exclusive-content"
+                className="inline-flex items-center gap-2 text-sm text-violet-200/80 hover:text-white transition-colors group"
+              >
+                <span className="border-b border-violet-300/30 group-hover:border-white/50 pb-0.5">
+                  Learn how exclusive content works
+                </span>
+                <span className="h-6 w-6 grid place-items-center rounded-full bg-white/10 group-hover:bg-white/15 transition-colors">
+                  →
+                </span>
+              </a>
             </div>
           </motion.div>
         </section>
