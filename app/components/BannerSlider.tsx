@@ -69,7 +69,8 @@ export default function BannerSlider() {
                   alt=""
                   width={1200}
                   height={700}
-                  className="h-full w-full object-contain p-4 md:p-8"
+                  className="h-full w-full object-cover object-center select-none"
+                  draggable={false}
                 />
               </div>
 
@@ -91,7 +92,8 @@ export default function BannerSlider() {
                     alt=""
                     width={1200}
                     height={700}
-                    className="h-full w-full object-contain p-4 md:p-8"
+                    className="h-full w-full object-cover object-center select-none p-4"
+                    draggable={false}
                     priority
                   />
                   <div className="absolute inset-y-0 left-0 w-10 bg-linear-to-r from-[#15052E]/20 to-transparent" />
@@ -103,7 +105,8 @@ export default function BannerSlider() {
                     alt=""
                     width={1200}
                     height={700}
-                    className="h-full w-full object-contain p-4 md:p-8"
+                    className="h-full w-full object-cover object-center select-none "
+                    draggable={false}
                   />
                   <div className="absolute inset-y-0 right-0 w-10 bg-linear-to-l from-black/10 to-transparent" />
                 </div>
