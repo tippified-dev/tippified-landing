@@ -3,7 +3,13 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-const images = ["/golive1.png", "/goals2.png", "/receivetips.png"];
+const images = [
+  "/adban1.jpeg",
+  "/adban2.jpeg",
+  "/adban3.jpeg",
+  "/adban4.jpeg",
+  "/adban5.jpeg",
+];
 
 const ANIMATION_DURATION = 1100;
 
