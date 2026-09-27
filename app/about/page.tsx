@@ -8,7 +8,7 @@ import ReturnToCreatorButton from "../components/ReturnToCreatorButton";
 export const metadata: Metadata = {
   title: "About Tippified | Nigerian Creator Tipping Platform",
   description:
-    "Tippified is Nigeria's all-in-one creator monetization platform where fans can send monetary tips, virtual gifts, support creator goals, fulfil wishlists, and participate in live streaming. Payments are securely processed by Paystack while settlements are handled through Wema Bank. A product of Grundex Limited.",
+    "Tippified is Africa's all-in-one creator monetization platform where fans can send monetary tips, virtual gifts, support creator goals, fulfil wishlists, and participate in live streaming. Payments are securely processed by Paystack while settlements are handled through Wema Bank. A product of Grundex Limited.",
   keywords: [
     "Tippified",
     "tippified",
