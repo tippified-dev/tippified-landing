@@ -69,7 +69,7 @@ export default function BannerSlider() {
                   return (
                     <div
                       key={img}
-                      className="absolute inset-0 transition-all duration-900 ease-[cubic-bezier(0.7,0,0.3,1)]"
+                      className={`${active ? "relative" : "absolute inset-0"} w-full transition-all duration-900 ease-[cubic-bezier(0.7,0,0.3,1)]`}
                       style={{
                         opacity: active ? 1 : 0,
                         transform: active
@@ -77,6 +77,7 @@ export default function BannerSlider() {
                           : "scale(1.06)",
                         filter: active ? "blur(0px)" : "blur(18px)",
                         zIndex: active ? 2 : 1,
+                        pointerEvents: active ? "auto" : "none",
                       }}
                     >
                       <Image
