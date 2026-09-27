@@ -63,7 +63,7 @@ export default function BannerSlider() {
             <div className="relative overflow-hidden rounded-[35px] bg-white/6 backdrop-blur-2x1 border border-white/15">
               <div className="pointer-events-none absolute top-0 inset-x-[12%] h-px bg-linear-to-r from-transparent via-white/60 to-transparent" />
 
-              <div className="relative h-105 md:h-130 overflow-hidden">
+              <div className="relative w-full overflow-hidden bg-[#F6F3FF]">
                 {images.map((img, idx) => {
                   const active = idx === current;
                   return (
@@ -84,7 +84,8 @@ export default function BannerSlider() {
                         alt={`banner ${idx + 1}`}
                         width={1200}
                         height={520}
-                        className="h-full w-full object-cover"
+                        className=" w-full h-auto object-contain"
+                        sizes="100vw"
                         priority={idx === 0}
                       />
                       <div className="absolute left-6 md:left-10 bottom-21 max-w-95 rounded-[20px] p-px bg-linear-to-b from-white/30 to-transparent">
@@ -146,7 +147,7 @@ export default function BannerSlider() {
                     alt=""
                     width={1200}
                     height={56}
-                    className="h-full w-full object-cover object-top"
+                    className=" w-full h-auto object-contain object-top"
                   />
                 </div>
                 <div className="absolute inset-0 bg-linear-to-b from-white/10 to-[#FCFBFF]" />
