@@ -1054,12 +1054,12 @@ export default function HomePage(): ReactElement {
           </div>
         </footer>
 
-        <a
+        {/* <a
           href="/about"
           className="fixed right-4 bottom-20 md:bottom-10 z-50 grid place-items-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-linear-to-br from-purple-600 to-violet-600 text-white shadow-[0_12px_24px_-8px_rgba(124,58,237,0.7)] hover:scale-105 transition"
         >
           <FiInfo className="w-6 h-6" />
-        </a>
+        </a> */}
       </main>
     </>
   );

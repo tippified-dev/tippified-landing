@@ -1,10 +1,9 @@
 "use client";
-
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Baloo_2 } from "next/font/google";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type ReactElement } from "react";
+import { useState, type ReactElement } from "react";
 import {
   FiCompass,
   FiFileText,
@@ -27,6 +26,7 @@ interface NavLink {
 
 export default function NavBar({ onNavigate }: NavBarProps): ReactElement {
   const pathname: string = usePathname();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const links: NavLink[] = [
     { label: "Home", href: "/", icon: FiHome },
@@ -81,41 +81,165 @@ export default function NavBar({ onNavigate }: NavBarProps): ReactElement {
         </div>
       </nav>
 
-      {/* Mobile - no active bg pill, only icon flips to black */}
+      {/* Mobile */}
       <nav className="fixed bottom-0 left-0 right-0 md:hidden z-50 w-full border-t border-black/10 bg-white/95 backdrop-blur-2xl">
-        <div className="flex justify-between gap-1 px-2 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
-          {links.map((link: NavLink) => {
-            const Icon = link.icon;
-            const isActive: boolean = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={onNavigate}
-                className="flex-1"
-              >
-                <motion.div
-                  whileTap={{ scale: 0.88 }}
-                  className="flex flex-col items-center gap-1.5 py-1"
+        <div className="relative flex items-center justify-between gap-1 px-2 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
+          {/* Main navigation */}
+          {links
+            .filter((link) => link.label !== "T&C")
+            .map((link: NavLink) => {
+              const Icon = link.icon;
+              const isActive: boolean = pathname === link.href;
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={onNavigate}
+                  className="flex-1"
                 >
-                  <div
-                    className={`grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${
-                      isActive
-                        ? "bg-purple-600 text-white shadow-[0_8px_16px_-8px_rgba(0,0,0,0.6)]"
-                        : "bg-zinc-100 text-zinc-400"
-                    }`}
+                  <motion.div
+                    whileTap={{ scale: 0.88 }}
+                    className="flex flex-col items-center gap-1.5 py-1"
                   >
-                    <Icon size={16} />
-                  </div>
-                  <span
-                    className={`${baloo.className} text-[11px] font-bold leading-none tracking-tight ${isActive ? "text-[#0a0a0a]" : "text-zinc-400"}`}
+                    <div
+                      className={`grid h-9 w-9 place-items-center rounded-full transition-all duration-300 ${
+                        isActive
+                          ? "bg-purple-600 text-white shadow-[0_8px_16px_-8px_rgba(0,0,0,0.6)]"
+                          : "bg-zinc-100 text-zinc-400"
+                      }`}
+                    >
+                      <Icon size={16} />
+                    </div>
+
+                    <span
+                      className={`${baloo.className} text-[11px] font-bold leading-none tracking-tight ${
+                        isActive ? "text-[#0a0a0a]" : "text-zinc-400"
+                      }`}
+                    >
+                      {link.label}
+                    </span>
+                  </motion.div>
+                </Link>
+              );
+            })}
+
+          {/* Menu */}
+          <div className="relative flex-1">
+            {/* Upward menu */}
+            <AnimatePresence>
+              {isMenuOpen && (
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    scale: 0.85,
+                    y: 20,
+                    transformOrigin: "bottom right",
+                  }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.85,
+                    y: 20,
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 420,
+                    damping: 28,
+                  }}
+                  className="absolute bottom-17 right-0 w-48 overflow-hidden rounded-3xl border border-black/10 bg-white/95 p-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.35)] backdrop-blur-2xl"
+                >
+                  <Link
+                    href="/terms-conditions"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      onNavigate?.();
+                    }}
                   >
-                    {link.label}
-                  </span>
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.08 }}
+                      className="flex items-center gap-3 rounded-2xl px-3 py-3 hover:bg-zinc-100"
+                    >
+                      <span className="grid h-9 w-9 place-items-center rounded-xl bg-zinc-100">
+                        <FiFileText size={16} />
+                      </span>
+
+                      <span
+                        className={`${baloo.className} text-sm font-bold text-zinc-800`}
+                      >
+                        Terms & Conditions
+                      </span>
+                    </motion.div>
+                  </Link>
                 </motion.div>
-              </Link>
-            );
-          })}
+              )}
+            </AnimatePresence>
+
+            {/* Hamburger */}
+            <motion.button
+              type="button"
+              whileTap={{ scale: 0.88 }}
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+              className="mx-auto flex flex-col items-center gap-1.5 py-1"
+            >
+              <motion.div
+                animate={isMenuOpen ? "open" : "closed"}
+                className="relative grid h-9 w-9 place-items-center rounded-full bg-zinc-100"
+              >
+                <motion.span
+                  variants={{
+                    closed: {
+                      rotate: 0,
+                      y: -5,
+                    },
+                    open: {
+                      rotate: 45,
+                      y: 0,
+                    },
+                  }}
+                  className="absolute h-0.5 w-4 rounded-full bg-zinc-500"
+                />
+
+                <motion.span
+                  variants={{
+                    closed: {
+                      opacity: 1,
+                    },
+                    open: {
+                      opacity: 0,
+                    },
+                  }}
+                  className="absolute h-0.5 w-4 rounded-full bg-zinc-500"
+                />
+
+                <motion.span
+                  variants={{
+                    closed: {
+                      rotate: 0,
+                      y: 5,
+                    },
+                    open: {
+                      rotate: -45,
+                      y: 0,
+                    },
+                  }}
+                  className="absolute h-0.5 w-4 rounded-full bg-zinc-500"
+                />
+              </motion.div>
+
+              <span
+                className={`${baloo.className} text-[11px] font-bold leading-none tracking-tight text-zinc-400`}
+              >
+                Menu
+              </span>
+            </motion.button>
+          </div>
         </div>
       </nav>
     </>
