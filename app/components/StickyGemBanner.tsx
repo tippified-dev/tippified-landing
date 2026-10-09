@@ -3,7 +3,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FiArrowRight } from "react-icons/fi";
 
 const GEMS = [
   {
@@ -49,75 +48,102 @@ export default function StickyGemBanner() {
   const activeGem = GEMS[activeGemIndex];
 
   return (
-    <div className="sticky top-0 z-100 w-full">
-      <Link
-        href="/send-gem"
-        aria-label="Send a Gem to a creator on Tippified"
-        className="group block w-full"
-      >
-        <div className="relative overflow-hidden border-b border-white/10 bg-[#21103f] shadow-[0_8px_24px_-12px_rgba(40,12,75,0.55)]">
-          {/* Ambient background glow */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-linear-to-r from-purple-700/20 via-transparent to-fuchsia-500/10"
-          />
+    <>
+      {/* Floating banner */}
+      <div className="fixed inset-x-0 top-3 z-100 flex justify-center px-3 pointer-events-none">
+        <div className="pointer-events-auto w-full max-w-85 sm:max-w-95.5">
+          <div className="relative rounded-full bg-linear-to-r from-[#18072f] via-[#30105a] to-[#24103f] p-px shadow-[0_12px_36px_-12px_rgba(45,16,85,0.65)]">
+            <div className="relative flex items-center gap-3 overflow-hidden rounded-full border border-white/8 bg-[#211039]/95 px-3 py-2.5 backdrop-blur-2xl">
+              {/* Subtle ambient glow */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 bg-linear-to-r from-purple-500/13 via-transparent to-fuchsia-400/8"
+              />
 
-          <div className="relative mx-auto flex min-h-15.5 max-w-7xl items-center justify-center gap-3 px-3 py-2 sm:gap-4 sm:px-6">
-            {/* Animated Gem */}
-            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/[0.07] sm:h-11 sm:w-11">
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={activeGem.name}
-                  src={activeGem.icon}
-                  alt={activeGem.name}
-                  initial={
-                    prefersReducedMotion
-                      ? { opacity: 1 }
-                      : { opacity: 0, y: 24, scale: 0.7, rotate: -12 }
-                  }
-                  animate={{ opacity: 1, y: 0, scale: 1, rotate: 0 }}
-                  exit={
-                    prefersReducedMotion
-                      ? { opacity: 0 }
-                      : { opacity: 0, y: -18, scale: 0.8, rotate: 12 }
-                  }
-                  transition={{ duration: 0.4, ease: "easeOut" }}
-                  className="h-8 w-8 object-contain sm:h-9 sm:w-9"
+              {/* Clickable animated Gem */}
+              <Link
+                href="/send-gem"
+                aria-label={`Send a Gem to a creator. Current Gem: ${activeGem.name}`}
+                className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-purple-300/20 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] transition-colors hover:bg-white/13 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-300"
+              >
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={activeGem.name}
+                    src={activeGem.icon}
+                    alt={activeGem.name}
+                    initial={
+                      prefersReducedMotion
+                        ? { opacity: 1 }
+                        : {
+                            opacity: 0,
+                            y: 20,
+                            scale: 0.65,
+                            rotate: -12,
+                          }
+                    }
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                      scale: 1,
+                      rotate: 0,
+                    }}
+                    exit={
+                      prefersReducedMotion
+                        ? { opacity: 0 }
+                        : {
+                            opacity: 0,
+                            y: -15,
+                            scale: 0.8,
+                            rotate: 10,
+                          }
+                    }
+                    transition={{
+                      duration: 0.42,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    className="h-8 w-8 object-contain"
+                  />
+                </AnimatePresence>
+
+                {/* Gem glow */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-white/6"
                 />
-              </AnimatePresence>
-            </div>
+              </Link>
 
-            {/* Banner text */}
-            <div className="flex min-w-0 flex-col justify-center">
-              <span className="text-[12px] font-extrabold tracking-tight text-white sm:text-sm">
-                Send a Gem to a creator
-              </span>
+              {/* Text */}
+              <Link
+                href="/send-gem"
+                className="relative min-w-0 flex-1 py-0.5 focus-visible:outline-none"
+              >
+                <span className="block truncate text-[12px] font-extrabold tracking-[-0.02em] text-white sm:text-[13px]">
+                  Send a Gem to a creator
+                </span>
 
-              <span className="mt-0.5 hidden text-[10px] font-medium text-purple-200/80 sm:block sm:text-[11px]">
-                Celebrate the creators you love
-              </span>
-            </div>
+                <span className="mt-0.5 block truncate text-[10px] font-medium text-purple-200/65">
+                  Celebrate the creators you love
+                </span>
+              </Link>
 
-            {/* CTA */}
-            <div className="ml-auto flex shrink-0 items-center gap-2 rounded-full border border-white/15 bg-white/8 py-2 pl-3 pr-2.5 transition duration-300 group-hover:border-purple-300/40 group-hover:bg-white/[0.14] sm:ml-3 sm:pl-4 sm:pr-3">
-              <span className="text-[10px] font-bold text-white sm:text-xs">
-                Explore
-              </span>
+              {/* Fine decorative accent */}
+              <div
+                aria-hidden="true"
+                className="relative mr-1 h-7 w-px shrink-0 bg-linear-to-b from-transparent via-purple-300/30 to-transparent"
+              />
 
-              <FiArrowRight
-                size={14}
-                className="text-purple-200 transition-transform duration-300 group-hover:translate-x-0.5"
+              <span
+                aria-hidden="true"
+                className="relative mr-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-300 shadow-[0_0_10px_rgba(196,181,253,0.8)]"
               />
             </div>
           </div>
-
-          {/* Fine accent line */}
-          <div
-            aria-hidden="true"
-            className="h-px w-full bg-linear-to-r from-transparent via-purple-400/60 to-transparent"
-          />
         </div>
-      </Link>
-    </div>
+      </div>
+
+      {/* Reserve space when the component is first placed in the page.
+          The fixed banner itself does not occupy layout space. */}
+      <div aria-hidden="true" className="mb-4 h-0" />
+    </>
   );
 }

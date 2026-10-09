@@ -206,9 +206,9 @@ export default function HomePage(): ReactElement {
         <section id="discover">
           <ActivityTeaserSection />
         </section>
-        <section>
-          <StickyGemBanner />
-        </section>
+
+        <StickyGemBanner />
+
         <div className="sticky top-0 z-40" id="live">
           <LiveNowBar />
         </div>
