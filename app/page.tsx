@@ -28,6 +28,7 @@ import {
 } from "react-icons/fi";
 import EarningsProof from "./components/EarningsProof";
 import PremiumHero from "./components/PremiumHero";
+import StickyGemBanner from "./components/StickyGemBanner";
 
 // import NativeBannerAd from "./components/NativeBannerAd";
 
@@ -204,6 +205,9 @@ export default function HomePage(): ReactElement {
 
         <section id="discover">
           <ActivityTeaserSection />
+        </section>
+        <section>
+          <StickyGemBanner />
         </section>
         <div className="sticky top-0 z-40" id="live">
           <LiveNowBar />
