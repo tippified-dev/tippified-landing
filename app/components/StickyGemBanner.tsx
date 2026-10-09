@@ -38,9 +38,10 @@ export default function StickyGemBanner() {
   useEffect(() => {
     if (prefersReducedMotion) return;
 
+    // Allow each gem to remain visible before the next transition.
     const interval = window.setInterval(() => {
       setActiveGemIndex((current) => (current + 1) % GEMS.length);
-    }, 2400);
+    }, 3200);
 
     return () => window.clearInterval(interval);
   }, [prefersReducedMotion]);
@@ -48,25 +49,69 @@ export default function StickyGemBanner() {
   const activeGem = GEMS[activeGemIndex];
 
   return (
-    <>
-      {/* Floating banner */}
-      <div className="fixed inset-x-0 top-3 z-100 flex justify-center px-3 pointer-events-none">
-        <div className="pointer-events-auto w-full max-w-85 sm:max-w-95.5">
-          <div className="relative rounded-full bg-linear-to-r from-[#18072f] via-[#30105a] to-[#24103f] p-px shadow-[0_12px_36px_-12px_rgba(45,16,85,0.65)]">
-            <div className="relative flex items-center gap-3 overflow-hidden rounded-full border border-white/8 bg-[#211039]/95 px-3 py-2.5 backdrop-blur-2xl">
-              {/* Subtle ambient glow */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 bg-linear-to-r from-purple-500/13 via-transparent to-fuchsia-400/8"
-              />
+    /*
+     * Keep this wrapper in the normal document flow.
+     * The banner becomes sticky when scrolling reaches it.
+     */
+    <div className="relative z-100 mb-8 flex justify-center px-3">
+      <div className="sticky top-3 w-full max-w-105">
+        <Link
+          href="/send-gem"
+          aria-label={`Send a Gem to a creator. Current gem: ${activeGem.name}`}
+          className="group relative block rounded-2xl outline-none transition-transform duration-300 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 active:scale-[0.99]"
+        >
+          {/* Premium glass-style container */}
+          <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-[#21103f]/95 shadow-[0_12px_35px_-12px_rgba(46,16,101,0.55)] backdrop-blur-xl">
+            {/* Ambient background lighting */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-linear-to-r from-violet-600/20 via-purple-500/10 to-fuchsia-500/20"
+            />
 
-              {/* Clickable animated Gem */}
-              <Link
-                href="/send-gem"
-                aria-label={`Send a Gem to a creator. Current Gem: ${activeGem.name}`}
-                className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-purple-300/20 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] transition-colors hover:bg-white/13 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-300"
-              >
-                <AnimatePresence mode="wait">
+            <div className="relative flex min-h-19 items-center justify-between gap-3 px-4 py-3 sm:px-5">
+              {/* Text appears before the gem icon */}
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-extrabold tracking-tight text-white sm:text-[15px]">
+                  Send a Gem to a creator
+                </p>
+
+                {/* Animated gem name */}
+                <div className="mt-1 flex h-5 items-center">
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.span
+                      key={activeGem.name}
+                      initial={
+                        prefersReducedMotion
+                          ? { opacity: 1 }
+                          : { opacity: 0, y: 10 }
+                      }
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={
+                        prefersReducedMotion
+                          ? { opacity: 0 }
+                          : { opacity: 0, y: -8 }
+                      }
+                      transition={{
+                        duration: 0.35,
+                        ease: "easeOut",
+                      }}
+                      className="text-xs font-semibold tracking-wide text-purple-200"
+                    >
+                      {activeGem.name}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
+              </div>
+
+              {/* Animated gem icon on the right */}
+              <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/[0.07] sm:h-13 sm:w-13">
+                {/* Subtle glow behind the gem */}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-1 rounded-full bg-purple-400/10 blur-md transition-colors duration-300 group-hover:bg-purple-400/25"
+                />
+
+                <AnimatePresence mode="wait" initial={false}>
                   <motion.img
                     key={activeGem.name}
                     src={activeGem.icon}
@@ -74,76 +119,42 @@ export default function StickyGemBanner() {
                     initial={
                       prefersReducedMotion
                         ? { opacity: 1 }
-                        : {
-                            opacity: 0,
-                            y: 20,
-                            scale: 0.65,
-                            rotate: -12,
-                          }
+                        : { opacity: 0, y: 28, scale: 0.72 }
                     }
                     animate={{
                       opacity: 1,
                       y: 0,
                       scale: 1,
-                      rotate: 0,
                     }}
                     exit={
                       prefersReducedMotion
                         ? { opacity: 0 }
-                        : {
-                            opacity: 0,
-                            y: -15,
-                            scale: 0.8,
-                            rotate: 10,
-                          }
+                        : { opacity: 0, y: -16, scale: 0.82 }
                     }
                     transition={{
-                      duration: 0.42,
+                      duration: 0.45,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    className="h-8 w-8 object-contain"
+                    className="relative h-9 w-9 object-contain sm:h-10 sm:w-10"
                   />
                 </AnimatePresence>
-
-                {/* Gem glow */}
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-white/6"
-                />
-              </Link>
-
-              {/* Text */}
-              <Link
-                href="/send-gem"
-                className="relative min-w-0 flex-1 py-0.5 focus-visible:outline-none"
-              >
-                <span className="block truncate text-[12px] font-extrabold tracking-[-0.02em] text-white sm:text-[13px]">
-                  Send a Gem to a creator
-                </span>
-
-                <span className="mt-0.5 block truncate text-[10px] font-medium text-purple-200/65">
-                  Celebrate the creators you love
-                </span>
-              </Link>
-
-              {/* Fine decorative accent */}
-              <div
-                aria-hidden="true"
-                className="relative mr-1 h-7 w-px shrink-0 bg-linear-to-b from-transparent via-purple-300/30 to-transparent"
-              />
-
-              <span
-                aria-hidden="true"
-                className="relative mr-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-300 shadow-[0_0_10px_rgba(196,181,253,0.8)]"
-              />
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Reserve space when the component is first placed in the page.
-          The fixed banner itself does not occupy layout space. */}
-      <div aria-hidden="true" className="mb-4 h-0" />
-    </>
+            {/* Fine purple accent along the bottom */}
+            <div
+              aria-hidden="true"
+              className="h-px bg-linear-to-r from-transparent via-purple-400/70 to-transparent"
+            />
+          </div>
+
+          {/* Soft outer glow */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -inset-1 -z-10 rounded-2xl bg-purple-600/10 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100"
+          />
+        </Link>
+      </div>
+    </div>
   );
 }
