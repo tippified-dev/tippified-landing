@@ -196,7 +196,9 @@ export default function HomePage(): ReactElement {
         {/* HERO */}
         <PremiumHero />
         <EarningsProof />
-        <CreatorTipBanner className="mt-8" />
+
+        <StickyGemBanner />
+
         {/* <AdsterraBanner /> */}
 
         <section id="banner">
@@ -207,7 +209,7 @@ export default function HomePage(): ReactElement {
           <ActivityTeaserSection />
         </section>
 
-        <StickyGemBanner />
+        <CreatorTipBanner className="mt-8" />
 
         <div className="sticky top-0 z-40" id="live">
           <LiveNowBar />
