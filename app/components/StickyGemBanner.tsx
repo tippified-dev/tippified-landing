@@ -48,7 +48,7 @@ export default function StickyGemBanner() {
   const activeGem = GEMS[activeGemIndex];
 
   return (
-    <div className="sticky top-3 z-100 mb-8 flex w-full justify-center px-3">
+    <div className="sticky top-0 z-100 mb-8 mt-3 flex w-full justify-center px-3">
       <Link
         href="/send-gem"
         aria-label={`Send a Gem to a creator. Current gem: ${activeGem.name}`}
