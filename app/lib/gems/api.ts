@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://api.tippified.com/api/auth";
+const API_BASE_URL = "https://api.tippified.com/api/auth/public/gem-creators";
 
 export interface GemCreator {
   username: string;
