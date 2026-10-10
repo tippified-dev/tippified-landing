@@ -7,6 +7,7 @@ import { useState, type ReactElement } from "react";
 import {
   FiCompass,
   FiFileText,
+  FiHexagon,
   FiHome,
   FiInfo,
   FiShield,
@@ -74,9 +75,9 @@ export default function NavBar({ onNavigate }: NavBarProps): ReactElement {
       icon: FiInfo,
     },
     {
-      label: "Privacy",
-      href: "/privacy-policy",
-      icon: FiShield,
+      label: "Gem",
+      href: "/buy-gem",
+      icon: FiHexagon,
     },
     {
       label: "T&C",
