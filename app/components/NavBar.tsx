@@ -75,9 +75,14 @@ export default function NavBar({ onNavigate }: NavBarProps): ReactElement {
       icon: FiInfo,
     },
     {
-      label: "Gem",
+      label: "Buy Gems",
       href: "/buy-gem",
       icon: FiHexagon,
+    },
+    {
+      label: "Gem Vault",
+      href: "/gem-vault",
+      icon: FiShield,
     },
     {
       label: "T&C",

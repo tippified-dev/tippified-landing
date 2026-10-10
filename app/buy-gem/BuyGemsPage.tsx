@@ -717,8 +717,11 @@ export default function BuyGemsPage() {
                           {gem.icon && (
                             <Image
                               src={gem.icon}
-                              alt=""
-                              className="h-6 w-6 object-contain"
+                              alt={gem.name}
+                              width={24}
+                              height={24}
+                              unoptimized
+                              className="h-6 w-6 shrink-0 object-contain"
                             />
                           )}
                           <span className="text-xs font-bold text-purple-800">
@@ -969,7 +972,7 @@ export default function BuyGemsPage() {
                     value={buyerName}
                     onChange={(event) => setBuyerName(event.target.value)}
                     placeholder="Enter your full name"
-                    className="min-h-12 w-full rounded-xl border border-purple-100 bg-white px-4 text-sm text-purple-950 outline-none transition placeholder:text-gray-400 focus:border-purple-400 focus:ring-4 focus:ring-purple-100"
+                    className="min-h-12 w-full rounded-xl border border-purple-100 bg-white px-4 text-base text-purple-950 outline-none transition placeholder:text-gray-400 focus:border-purple-400 focus:ring-4 focus:ring-purple-100"
                   />
                 </div>
 
@@ -988,7 +991,7 @@ export default function BuyGemsPage() {
                     value={buyerEmail}
                     onChange={(event) => setBuyerEmail(event.target.value)}
                     placeholder="you@example.com"
-                    className="min-h-12 w-full rounded-xl border border-purple-100 bg-white px-4 text-sm text-purple-950 outline-none transition placeholder:text-gray-400 focus:border-purple-400 focus:ring-4 focus:ring-purple-100"
+                    className="min-h-12 w-full rounded-xl border border-purple-100 bg-white px-4 text-base text-purple-950 outline-none transition placeholder:text-gray-400 focus:border-purple-400 focus:ring-4 focus:ring-purple-100"
                   />
                 </div>
 
