@@ -398,7 +398,12 @@ export default async function CreatorPage({ params }: Props) {
   };
 
   return (
-    <main className="min-h-screen bg-[#fcfbff]">
+    <main className="relative min-h-screen overflow-hidden bg-[#fcfbff] text-[#211536] selection:bg-purple-200 selection:text-purple-950">
+      <style>{`
+        @media (prefers-reduced-motion: reduce) {
+          .animate-pulse { animation: none !important; }
+        }
+      `}</style>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -406,9 +411,9 @@ export default async function CreatorPage({ params }: Props) {
         }}
       />
 
-      <div className="mx-auto max-w-4xl px-6 pb-12 pt-0">
+      <div className="relative mx-auto max-w-5xl px-4 pb-16 pt-0 sm:px-6 lg:px-8">
         {/* Sticky Navigation */}
-        <div className="sticky top-0 z-50 -mx-6 mb-10 border-b border-purple-100/80 bg-[#fcfbff]/95 px-6 py-3 backdrop-blur-md sm:mx-0 sm:rounded-b-2xl">
+        <div className="sticky top-0 z-50 -mx-4 mb-8 border-b border-white/70 bg-[#fcfbff]/80 px-4 py-4 shadow-[0_8px_30px_-20px_rgba(76,29,149,0.35)] backdrop-blur-2xl sm:-mx-6 sm:rounded-b-3xl sm:px-6 lg:-mx-8 lg:px-8">
           <div className="mx-auto flex max-w-4xl items-center justify-between gap-4">
             {/* Back to Explore */}
             <Link
@@ -430,7 +435,7 @@ export default async function CreatorPage({ params }: Props) {
         </div>
 
         {/* Profile */}
-        <section className="rounded-4xl border border-purple-100 bg-white p-8 shadow-[0_20px_60px_-25px_rgba(124,58,237,0.2)] sm:p-10">
+        <section className="relative overflow-hidden rounded-4xl border border-white/90 bg-white/65 p-6 shadow-[0_30px_90px_-42px_rgba(76,29,149,0.35)] ring-1 ring-purple-100/70 backdrop-blur-2xl sm:rounded-[2.5rem] sm:p-10">
           <div className="flex flex-col items-center text-center">
             {/* Premium Profile Image Viewer */}
             <ProfileImageViewer
@@ -439,7 +444,7 @@ export default async function CreatorPage({ params }: Props) {
             />
             {/* Name */}
             <div className="mt-6 flex items-center gap-2">
-              <h1 className="text-3xl font-extrabold tracking-tight text-purple-950 sm:text-4xl">
+              <h1 className="text-4xl font-black tracking-[-0.045em] text-purple-950 sm:text-5xl">
                 {getFirstName(creator.username)}
               </h1>
 
@@ -457,7 +462,7 @@ export default async function CreatorPage({ params }: Props) {
             </b>
 
             {/* Creator Bio */}
-            <p className="mt-5 max-w-2xl text-[15px] leading-7 text-gray-600">
+            <p className="mt-5 max-w-2xl text-[15px] leading-8 text-slate-600 sm:text-base">
               {creator.bio}
             </p>
 
@@ -469,7 +474,7 @@ export default async function CreatorPage({ params }: Props) {
               </span>
 
               {creator.hero_badge && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-linear-to-r from-amber-400 to-orange-400 px-3 py-1.5 text-[11px] font-bold text-white">
+                <span className="inline-flex items-center gap-1 rounded-full bg-amber-500 px-3 py-1.5 text-[11px] font-bold text-white">
                   <FiStar size={12} />
                   Hero Creator
                 </span>
@@ -498,7 +503,7 @@ export default async function CreatorPage({ params }: Props) {
             {/* CTA */}
             <Link
               href={tippingUrl}
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-purple-700 px-7 py-3.5 text-sm font-bold text-white shadow-lg transition-colors hover:bg-purple-800"
+              className="mt-8 inline-flex items-center gap-2 rounded-full bg-purple-700 px-7 py-3.5 text-sm font-extrabold text-white shadow-[0_12px_28px_-10px_rgba(109,40,217,0.65)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-purple-800 hover:shadow-[0_18px_35px_-12px_rgba(109,40,217,0.7)] focus:outline-none focus-visible:ring-4 focus-visible:ring-purple-200"
             >
               <FiZap size={16} />
               Support {getFirstName(creator.username)}
@@ -541,7 +546,7 @@ export default async function CreatorPage({ params }: Props) {
                     rel="noopener noreferrer"
                     aria-label={`Follow ${creator.username} on ${platform.label}`}
                     title={`Follow ${creator.username} on ${platform.label}`}
-                    className="group flex h-10 w-10 items-center justify-center rounded-full border border-purple-100 bg-[#f8f5ff] text-purple-600 transition-all duration-200 hover:-translate-y-0.5 hover:border-purple-200 hover:bg-purple-700 hover:text-white hover:shadow-md hover:shadow-purple-100"
+                    className="group flex h-10 w-10 items-center justify-center rounded-2xl border border-white/90 bg-white/70 text-purple-700 shadow-sm backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-purple-200 hover:bg-purple-700 hover:text-white hover:shadow-md hover:shadow-purple-100"
                   >
                     <Icon
                       size={16}
@@ -557,7 +562,7 @@ export default async function CreatorPage({ params }: Props) {
         {/* Send a Gift */}
 
         <section className="mt-8">
-          <div className="relative overflow-hidden rounded-[1.8rem] border border-purple-100 bg-white p-6 shadow-[0_12px_35px_-20px_rgba(88,28,174,0.25)]">
+          <div className="relative overflow-hidden rounded-4xl border border-white/90 bg-white/65 p-6 shadow-[0_24px_65px_-35px_rgba(88,28,174,0.35)] ring-1 ring-purple-100/70 backdrop-blur-2xl transition-all duration-300 hover:border-purple-200/90 hover:shadow-[0_28px_70px_-35px_rgba(88,28,174,0.4)] sm:p-7">
             {/* Decorative background */}
 
             <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-purple-100/60 blur-2xl" />
@@ -609,7 +614,7 @@ export default async function CreatorPage({ params }: Props) {
         {/* Wishlist */}
         {creator.wishlist_active && (
           <section className="mt-8">
-            <div className="relative overflow-hidden rounded-[1.8rem] border border-purple-100 bg-white p-6 shadow-[0_12px_35px_-20px_rgba(88,28,174,0.25)]">
+            <div className="relative overflow-hidden rounded-4xl border border-white/90 bg-white/65 p-6 shadow-[0_24px_65px_-35px_rgba(88,28,174,0.35)] ring-1 ring-purple-100/70 backdrop-blur-2xl transition-all duration-300 hover:border-purple-200/90 hover:shadow-[0_28px_70px_-35px_rgba(88,28,174,0.4)] sm:p-7">
               {/* Decorative background */}
               <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-purple-100/60 blur-2xl" />
 
@@ -664,7 +669,7 @@ export default async function CreatorPage({ params }: Props) {
               className="group block"
               aria-label={`Join ${creator.paid_community.name}`}
             >
-              <div className="relative overflow-hidden rounded-[1.8rem] border border-purple-100 bg-white shadow-[0_14px_40px_-22px_rgba(88,28,174,0.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_-22px_rgba(88,28,174,0.45)]">
+              <div className="relative overflow-hidden rounded-4xl border border-white/90 bg-white/70 shadow-[0_24px_70px_-35px_rgba(88,28,174,0.38)] ring-1 ring-purple-100/70 backdrop-blur-2xl transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_30px_80px_-35px_rgba(88,28,174,0.45)]">
                 {/* Banner */}
                 <div className="relative aspect-video overflow-hidden bg-purple-100">
                   <Image
@@ -676,7 +681,7 @@ export default async function CreatorPage({ params }: Props) {
                   />
 
                   {/* Premium overlay */}
-                  <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-black/40" />
 
                   {/* WhatsApp badge */}
                   <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-white/20 bg-black/30 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-widest text-white backdrop-blur-md">
@@ -741,7 +746,7 @@ export default async function CreatorPage({ params }: Props) {
         {/* Creator Goal */}
         {goal && goal.is_active && (
           <section className="mt-10">
-            <div className="relative overflow-hidden rounded-[1.8rem] border border-purple-100 bg-linear-to-br from-[#f8f5ff] to-white p-5 shadow-[0_12px_35px_-20px_rgba(88,28,174,0.3)]">
+            <div className="relative overflow-hidden rounded-4xl border border-white/90 bg-[#f8f5ff]/85 p-5 shadow-[0_24px_65px_-35px_rgba(88,28,174,0.35)] ring-1 ring-purple-100/80 backdrop-blur-2xl sm:p-7">
               <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-purple-100/60 blur-2xl" />
 
               <div className="relative">
@@ -782,7 +787,7 @@ export default async function CreatorPage({ params }: Props) {
 
                 {/* Target + Current */}
                 <div className="relative mt-4 grid grid-cols-2 gap-3">
-                  <div className="rounded-2xl bg-white p-3.5 ring-1 ring-purple-50">
+                  <div className="rounded-2xl border border-white/90 bg-white/75 p-4 shadow-sm ring-1 ring-purple-100/70 backdrop-blur-xl">
                     <p className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-purple-400">
                       <FiTarget size={10} />
                       Goal Target
@@ -793,7 +798,7 @@ export default async function CreatorPage({ params }: Props) {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl bg-white p-3.5 ring-1 ring-purple-50">
+                  <div className="rounded-2xl border border-white/90 bg-white/75 p-4 shadow-sm ring-1 ring-purple-100/70 backdrop-blur-xl">
                     <p className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-purple-400">
                       <FiTrendingUp size={10} />
                       Current
@@ -857,7 +862,7 @@ export default async function CreatorPage({ params }: Props) {
                 <Link
                   key={content.id}
                   href={tippingUrl}
-                  className="group overflow-hidden rounded-[1.6rem] border border-[#ede9fe] bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+                  className="group overflow-hidden rounded-[1.8rem] border border-white/90 bg-white/75 shadow-[0_16px_45px_-30px_rgba(76,29,149,0.35)] ring-1 ring-purple-100/80 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_55px_-28px_rgba(76,29,149,0.4)]"
                 >
                   {/* Thumbnail */}
                   <div className="relative aspect-square overflow-hidden bg-[#f5f3ff]">
@@ -868,7 +873,7 @@ export default async function CreatorPage({ params }: Props) {
                         className="h-full w-full scale-110 object-cover blur-[5px] transition-transform duration-500 group-hover:scale-115"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-purple-100 to-indigo-100">
+                      <div className="flex h-full w-full items-center justify-center bg-purple-100">
                         {content.content_type === "video" ? (
                           <FiVideo size={42} className="text-purple-400" />
                         ) : (
@@ -934,7 +939,7 @@ export default async function CreatorPage({ params }: Props) {
             {paidContents.length > 4 && (
               <Link
                 href={tippingUrl}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-full border border-[#ede9fe] bg-white py-3.5 text-sm font-bold text-[#6d28d9] shadow-sm transition-colors hover:bg-[#f8f5ff]"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-white/90 bg-white/75 py-3.5 text-sm font-bold text-[#6d28d9] shadow-sm ring-1 ring-purple-100/80 backdrop-blur-xl transition-all hover:bg-white"
               >
                 <FiLock size={15} />
                 View all exclusive content
