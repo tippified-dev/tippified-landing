@@ -20,7 +20,6 @@ import {
   FiArrowUpRight,
   FiCalendar,
   FiGift,
-  FiImage,
   FiLock,
   FiMapPin,
   FiStar,
@@ -35,7 +34,6 @@ interface SocialLink {
   platform: string;
   url: string;
 }
-
 interface Creator {
   username: string;
   referral_code: string;
@@ -51,7 +49,6 @@ interface Creator {
   social_links: SocialLink[];
   paid_community: PaidCommunity | null;
 }
-
 interface PaidContent {
   id: number;
   title: string;
@@ -67,7 +64,6 @@ interface PaidContent {
   is_expired: boolean;
   thumbnail_url: string | null;
 }
-
 interface CreatorGoal {
   title: string;
   target_amount: string;
@@ -78,7 +74,6 @@ interface CreatorGoal {
   created_at: string;
   progress_percent: number;
 }
-
 interface PaidCommunity {
   name: string;
   description: string;
@@ -88,11 +83,8 @@ interface PaidCommunity {
   access_token: string;
   is_active: boolean;
 }
-
 interface Props {
-  params: Promise<{
-    referral_code: string;
-  }>;
+  params: Promise<{ referral_code: string }>;
 }
 
 const NICHE_LABELS: Record<string, string> = {
@@ -159,7 +151,6 @@ const SOCIAL_PLATFORMS = {
 function getFirstName(name: string): string {
   return name.trim().split(/\s+/)[0] || name;
 }
-
 function getTippifiedCopy(referralCode: string): string {
   let hash = 0;
   for (let i = 0; i < referralCode.length; i++) {
@@ -169,7 +160,6 @@ function getTippifiedCopy(referralCode: string): string {
   const index = Math.abs(hash) % TIPPIFIED_PROMOTIONAL_COPY.length;
   return TIPPIFIED_PROMOTIONAL_COPY[index];
 }
-
 async function getCreator(referralCode: string): Promise<Creator | null> {
   try {
     const res = await fetch(
@@ -183,7 +173,6 @@ async function getCreator(referralCode: string): Promise<Creator | null> {
     return null;
   }
 }
-
 async function getCreatorContent(referralCode: string): Promise<PaidContent[]> {
   try {
     const res = await fetch(
@@ -197,7 +186,6 @@ async function getCreatorContent(referralCode: string): Promise<PaidContent[]> {
     return [];
   }
 }
-
 async function getCreatorGoal(
   referralCode: string,
 ): Promise<CreatorGoal | null> {
@@ -217,12 +205,11 @@ async function getCreatorGoal(
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { referral_code } = await params;
   const creator = await getCreator(referral_code);
-  if (!creator) {
+  if (!creator)
     return {
       title: "Creator Not Found | Tippified",
       description: "This creator could not be found on Tippified.",
     };
-  }
   const nicheLabel = NICHE_LABELS[creator.niche] || creator.niche;
   const title = `${creator.username} | ${nicheLabel} | Tippified`;
   const description =
@@ -269,8 +256,8 @@ export default async function CreatorPage({ params }: Props) {
   const creator = await getCreator(referral_code);
   if (!creator) notFound();
 
-  const tippifiedCopy = getTippifiedCopy(creator.referral_code);
   const nicheLabel = NICHE_LABELS[creator.niche] || creator.niche;
+  const tippifiedCopy = getTippifiedCopy(creator.referral_code);
   const [paidContents, goal] = await Promise.all([
     getCreatorContent(referral_code),
     getCreatorGoal(referral_code),
@@ -278,7 +265,6 @@ export default async function CreatorPage({ params }: Props) {
   const availableContent = paidContents.slice(0, 4);
   const tippingUrl = `https://app.tippified.com/tip/${creator.referral_code}`;
   const canonicalUrl = `https://www.tippified.com/creator/${creator.referral_code}`;
-
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -286,7 +272,7 @@ export default async function CreatorPage({ params }: Props) {
     description: creator.bio,
     url: canonicalUrl,
     jobTitle: nicheLabel,
-    sameAs: creator.social_links?.map((social) => social.url) || [],
+    sameAs: creator.social_links?.map((s) => s.url) || [],
     homeLocation: { "@type": "Place", name: creator.location },
   };
 
@@ -296,10 +282,9 @@ export default async function CreatorPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-
       <div className="relative mx-auto max-w-300 px-4 pb-20 pt-5 sm:px-6 lg:px-8">
-        {/* ISLAND NAV */}
-        <div className="sticky top-4 z-50 flex justify-center">
+        {/* NAV */}
+        <div className="sticky top-0.5 z-50 flex justify-center">
           <div className="flex w-full max-w-225 items-center justify-between rounded-full border border-purple-100 bg-white/90 px-2 py-2 shadow-[0_12px_32px_-16px_rgba(124,58,237,0.3)] backdrop-blur-2xl">
             <Link
               href="/explore"
@@ -322,9 +307,9 @@ export default async function CreatorPage({ params }: Props) {
           </div>
         </div>
 
-        {/* PREMIUM CREATOR PROFILE - COMPLETELY REDESIGNED */}
+        {/* PREMIUM PROFILE */}
         <section className="mt-7 overflow-hidden rounded-[2.6rem] border border-purple-100 bg-white shadow-[0_28px_80px_-36px_rgba(124,58,237,0.35)]">
-          <div className="h-33 w-full bg-purple-700 sm:h-37" />
+          <div className="h-33w-full bg-purple-700 sm:h-37" />
           <div className="px-5 pb-7 sm:px-8 lg:px-9">
             <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
               <div className="flex flex-col gap-5 sm:flex-row sm:items-end -mt-16 sm:-mt-14">
@@ -348,7 +333,6 @@ export default async function CreatorPage({ params }: Props) {
                     </div>
                   )}
                 </div>
-
                 <div className="min-w-0 pt-2 sm:pb-2">
                   <div className="flex flex-wrap items-center gap-2.5">
                     <h1 className="text-[2.2rem] font-black leading-[0.9] tracking-[-0.05em] text-purple-950 sm:text-[3rem]">
@@ -378,7 +362,6 @@ export default async function CreatorPage({ params }: Props) {
                   </div>
                 </div>
               </div>
-
               <div className="flex w-full flex-col gap-3 sm:w-auto lg:pt-3">
                 <Link
                   href={tippingUrl}
@@ -407,25 +390,18 @@ export default async function CreatorPage({ params }: Props) {
                       </a>
                     );
                   })}
-                  {(creator.social_links?.length || 0) > 5 && (
-                    <span className="ml-1 text-xs font-bold text-purple-700/50">
-                      +{creator.social_links.length - 5}
-                    </span>
-                  )}
                 </div>
               </div>
             </div>
-
             <p className="mt-7 max-w-3xl text-[14.5px] leading-7 text-zinc-600">
               {creator.bio}
             </p>
           </div>
         </section>
 
-        {/* BENTO GRID - BREAKS VERTICAL PATTERN */}
+        {/* BENTO */}
         <div className="mt-6 grid grid-cols-12 gap-5 lg:gap-6">
           <div className="col-span-12 space-y-6 lg:col-span-8">
-            {/* Exclusive Drops */}
             {availableContent.length > 0 && (
               <div className="rounded-4xl border border-purple-100 bg-white p-5 shadow-[0_16px_40px_-24px_rgba(124,58,237,0.2)] sm:p-7">
                 <div className="mb-5 flex items-center justify-between">
@@ -449,7 +425,6 @@ export default async function CreatorPage({ params }: Props) {
                     View all
                   </Link>
                 </div>
-
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   {availableContent.map((content) => (
                     <Link
@@ -461,17 +436,13 @@ export default async function CreatorPage({ params }: Props) {
                         {content.thumbnail_url ? (
                           <Image
                             src={content.thumbnail_url}
-                            alt={`${content.title} by ${creator.username}`}
+                            alt={content.title}
                             fill
                             className="object-cover opacity-80 blur-[10px] scale-110 transition duration-700 group-hover:scale-125"
                           />
                         ) : (
                           <div className="grid h-full w-full place-items-center text-purple-300">
-                            {content.content_type === "video" ? (
-                              <FiVideo size={28} />
-                            ) : (
-                              <FiImage size={28} />
-                            )}
+                            <FiVideo size={28} />
                           </div>
                         )}
                         <div className="absolute left-3 top-3 rounded-full bg-white px-2.5 py-1 text-[9px] font-black tracking-widest text-purple-700 ring-1 ring-purple-100">
@@ -498,7 +469,6 @@ export default async function CreatorPage({ params }: Props) {
               </div>
             )}
 
-            {/* Goal */}
             {goal && goal.is_active && (
               <div className="rounded-4xl border border-purple-100 bg-[#f8f5ff] p-6 sm:p-7">
                 <div className="flex items-start justify-between gap-4">
@@ -517,7 +487,6 @@ export default async function CreatorPage({ params }: Props) {
                     %
                   </span>
                 </div>
-
                 <div className="mt-6 h-2.5 w-full overflow-hidden rounded-full bg-white ring-1 ring-purple-100">
                   <div
                     className="h-full bg-purple-700"
@@ -526,7 +495,6 @@ export default async function CreatorPage({ params }: Props) {
                     }}
                   />
                 </div>
-
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   <div className="rounded-2xl bg-white p-4 ring-1 ring-purple-100">
                     <p className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-purple-700/50">
@@ -546,7 +514,6 @@ export default async function CreatorPage({ params }: Props) {
                     </p>
                   </div>
                 </div>
-
                 <Link
                   href={tippingUrl}
                   className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-purple-700 py-3.5 text-sm font-bold text-white transition hover:bg-purple-800"
@@ -554,7 +521,6 @@ export default async function CreatorPage({ params }: Props) {
                   <FiTarget size={16} /> Help {getFirstName(creator.username)}{" "}
                   Reach This Goal
                 </Link>
-
                 <p className="mt-4 flex items-center justify-end gap-1 text-[10px] font-medium text-purple-700/50">
                   <FiCalendar size={10} /> Created:{" "}
                   {goal.created_at
@@ -564,27 +530,31 @@ export default async function CreatorPage({ params }: Props) {
               </div>
             )}
 
+            {/* SEO - FULL TEXT RESTORED */}
             <div className="rounded-4xl border border-purple-100 bg-white p-6 sm:p-8">
-              <h2 className="text-lg font-extrabold tracking-tight text-purple-950">
+              <h2 className="text-2xl font-extrabold tracking-tight text-purple-950">
                 Support {getFirstName(creator.username)} on Tippified
               </h2>
-              <p className="mt-3 text-sm font-bold leading-7 text-[#211536]">
+              <p className="mt-4 text-[15px] font-bold leading-8 text-[#211536]">
                 {creator.username} is a {nicheLabel.toLowerCase()}{" "}
                 {nicheLabel === "Content Creator" ? "" : "creator"} based in{" "}
                 {creator.location}.
               </p>
-              <p className="mt-4 text-[14px] leading-7 text-zinc-600">
+              <p className="mt-4 text-[15px] leading-8 text-zinc-600">
                 {tippifiedCopy}
               </p>
-              <p className="mt-4 text-[14px] leading-7 text-zinc-600">
+              <p className="mt-4 text-[15px] leading-8 text-zinc-600">
                 Fans can support {creator.username} on Tippified by sending
                 tips, gifts and accessing exclusive creator content when
                 available.
               </p>
+              <p className="mt-4 text-[15px] leading-8 text-zinc-600">
+                Discover more {creator.location} creators on Tippified and find
+                creators whose work you enjoy and want to support.
+              </p>
             </div>
           </div>
 
-          {/* RIGHT STICKY RAIL */}
           <div className="col-span-12 lg:col-span-4">
             <div className="sticky top-22 space-y-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1">
@@ -611,7 +581,6 @@ export default async function CreatorPage({ params }: Props) {
                     Send Gift
                   </Link>
                 </div>
-
                 {creator.wishlist_active && (
                   <div className="rounded-[1.9rem] border border-purple-100 bg-[#f5f3ff] p-5">
                     <div className="grid h-10 w-10 place-items-center rounded-full bg-purple-700 text-white">
@@ -632,7 +601,6 @@ export default async function CreatorPage({ params }: Props) {
                   </div>
                 )}
               </div>
-
               {creator.paid_community?.is_active && (
                 <Link
                   href={`/community/${creator.paid_community.access_token}`}
@@ -677,7 +645,6 @@ export default async function CreatorPage({ params }: Props) {
                   </div>
                 </Link>
               )}
-
               <AdBannerSlider />
             </div>
           </div>
