@@ -284,7 +284,7 @@ export default async function CreatorPage({ params }: Props) {
       />
       <div className="relative mx-auto max-w-300 px-4 pb-20 pt-5 sm:px-6 lg:px-8">
         {/* NAV */}
-        <div className="sticky top-0.5 z-50 flex justify-center">
+        <div className="sticky top-0 z-50 flex justify-center">
           <div className="flex w-full max-w-225 items-center justify-between rounded-full border border-purple-100 bg-white/90 px-2 py-2 shadow-[0_12px_32px_-16px_rgba(124,58,237,0.3)] backdrop-blur-2xl">
             <Link
               href="/explore"
@@ -309,7 +309,7 @@ export default async function CreatorPage({ params }: Props) {
 
         {/* PREMIUM PROFILE */}
         <section className="mt-7 overflow-hidden rounded-[2.6rem] border border-purple-100 bg-white shadow-[0_28px_80px_-36px_rgba(124,58,237,0.35)]">
-          <div className="h-33w-full bg-purple-700 sm:h-37" />
+          <div className="h-32 w-full bg-purple-700 sm:h-37" />
           <div className="px-5 pb-7 sm:px-8 lg:px-9">
             <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
               <div className="flex flex-col gap-5 sm:flex-row sm:items-end -mt-16 sm:-mt-14">
