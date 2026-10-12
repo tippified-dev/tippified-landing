@@ -1,136 +1,118 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
-import NativeBannerAd from "../components/NativeBannerAd";
 import NavBar from "../components/NavBar";
-interface BlogPost {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  content: string;
-  cover_image?: string;
-  published_at: string;
-  author_name: string;
-  meta_title?: string;
-  meta_description?: string;
-  status?: "draft" | "published";
-}
+import BlogExplorer, { type BlogCategory, type BlogPost } from "./BlogExplorer";
+
 const API_BASE_URL = "https://api.tippified.com";
 const SITE_URL = "https://www.tippified.com";
+
 export const metadata: Metadata = {
-  title: "Tippified Blog | Creator Economy, Tips & Insights",
+  title: "Tippified Blog | Creator Economy, Monetization & Growth",
   description:
-    "Explore Tippified's latest articles, guides, tips, and insights on creator monetization, content creation, fan engagement, digital communities, and the creator economy.",
+    "Explore creator monetization guides, African creator success stories, crowdfunding insights, brand partnership advice, and practical strategies for growing your creative business.",
   alternates: {
     canonical: `${SITE_URL}/blog`,
   },
   openGraph: {
-    title: "Tippified Blog | Creator Economy, Tips & Insights",
+    title: "Tippified Blog | Creator Economy, Monetization & Growth",
     description:
-      "Explore articles, guides, tips, and insights on creator monetization, content creation, fan engagement, digital communities, and the creator economy.",
+      "Discover practical guides, creator success stories, and insights to help creators grow their audience and earn from their work.",
     url: `${SITE_URL}/blog`,
     siteName: "Tippified",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tippified Blog | Creator Economy, Tips & Insights",
+    title: "Tippified Blog | Creator Economy, Monetization & Growth",
     description:
-      "Explore articles, guides, tips, and insights on creator monetization, content creation, fan engagement, digital communities, and the creator economy.",
+      "Creator monetization guides, African creator stories, and practical insights for building a creative business.",
   },
   robots: {
     index: true,
     follow: true,
   },
 };
-export default async function BlogListPage() {
-  let blogs: BlogPost[] = [];
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/adminpanel/public/blogs/`, {
+
+async function fetchAllPages<T>(endpoint: string): Promise<T[]> {
+  const items: T[] = [];
+  const visitedUrls = new Set<string>();
+
+  let nextUrl: string | null = `${API_BASE_URL}${endpoint}`;
+
+  while (nextUrl) {
+    if (visitedUrls.has(nextUrl)) {
+      throw new Error(`Repeated pagination URL: ${nextUrl}`);
+    }
+
+    visitedUrls.add(nextUrl);
+
+    const response: Response = await fetch(nextUrl, {
       next: {
         revalidate: 60,
       },
     });
-    if (!res.ok) {
-      throw new Error("Failed to fetch blogs");
+
+    if (!response.ok) {
+      throw new Error(
+        `API request failed (${response.status}) for ${endpoint}`,
+      );
     }
-    const data = await res.json();
-    blogs = (data.results || []).filter(
-      (blog: BlogPost) => !blog.status || blog.status === "published",
-    );
-  } catch (err) {
-    console.error("Error fetching blogs:", err);
-    blogs = [];
+
+    const data: unknown = await response.json();
+
+    // Support either an unpaginated array or a paginated DRF response.
+    if (Array.isArray(data)) {
+      items.push(...(data as T[]));
+      nextUrl = null;
+      continue;
+    }
+
+    if (
+      !data ||
+      typeof data !== "object" ||
+      !("results" in data) ||
+      !Array.isArray(data.results)
+    ) {
+      throw new Error(`Unexpected API response format for ${endpoint}`);
+    }
+
+    items.push(...(data.results as T[]));
+
+    const next = "next" in data ? data.next : null;
+
+    if (next !== null && typeof next !== "string") {
+      throw new Error(`Invalid pagination URL returned by ${endpoint}`);
+    }
+
+    nextUrl = next;
   }
+
+  return items;
+}
+
+export default async function BlogListPage() {
+  let blogs: BlogPost[] = [];
+  let categories: BlogCategory[] = [];
+
+  try {
+    const [blogResults, categoryResults] = await Promise.all([
+      fetchAllPages<BlogPost>("/api/adminpanel/public/blogs/"),
+      fetchAllPages<BlogCategory>("/api/adminpanel/blog-categories/"),
+    ]);
+
+    blogs = blogResults.filter(
+      (blog) => !blog.status || blog.status === "published",
+    );
+
+    categories = categoryResults;
+  } catch (error) {
+    console.error("Error fetching Tippified blog data:", error);
+  }
+
   return (
     <>
       <NavBar />
-      <main className="max-w-6xl mx-auto px-6 py-10">
-        {/* Blog Header */}
-        <header className="max-w-3xl mx-auto text-center mb-10">
-          <h1 className="text-4xl md:text-5xl font-bold text-purple-950">
-            Tippified Blog
-          </h1>
-          <p className="mt-4 text-lg leading-8 text-gray-600">
-            Discover practical tips, guides, and insights on creator
-            monetization, content creation, fan engagement, digital communities,
-            and the creator economy.
-          </p>
-        </header>
-        {/* Native Advertisement */}
-        <div className="mb-8">
-          <NativeBannerAd />
-        </div>
-        {/* Blog Posts */}
-        {blogs.length === 0 ? (
-          <p className="text-center text-gray-500 py-12">No blogs found yet.</p>
-        ) : (
-          <section
-            aria-label="Tippified blog articles"
-            className="grid md:grid-cols-2 gap-6"
-          >
-            {blogs.map((blog, index) => (
-              <article
-                key={blog.id}
-                className="bg-white shadow rounded-xl overflow-hidden hover:shadow-lg transition"
-              >
-                <Link href={`/blog/${blog.slug}`} className="block">
-                  {/* Cover Image */}
-                  {blog.cover_image && (
-                    <Image
-                      src={blog.cover_image}
-                      alt={blog.title}
-                      width={800}
-                      height={400}
-                      priority={index === 0}
-                      className="w-full h-48 object-cover"
-                    />
-                  )}
-                  {/* Article Information */}
-                  <div className="p-5">
-                    <h2 className="font-bold text-xl mb-3 text-gray-900">
-                      {blog.title}
-                    </h2>
-                    <p className="text-gray-600 leading-7">
-                      {blog.excerpt ||
-                        blog.meta_description ||
-                        blog.content.replace(/<[^>]*>/g, "").slice(0, 160) +
-                          "..."}
-                    </p>
-                    <div className="flex items-center justify-between mt-5 text-sm text-gray-400">
-                      <span>By {blog.author_name}</span>
-                      <time dateTime={blog.published_at}>
-                        {new Date(blog.published_at).toLocaleDateString()}
-                      </time>
-                    </div>
-                  </div>
-                </Link>
-              </article>
-            ))}
-          </section>
-        )}
-      </main>
+
+      <BlogExplorer blogs={blogs} categories={categories} />
     </>
   );
 }
