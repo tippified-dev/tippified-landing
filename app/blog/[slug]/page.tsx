@@ -1,6 +1,6 @@
-import AdsterraBanner from "@/app/components/AdsterraBanner";
+// import AdsterraBanner from "@/app/components/AdsterraBanner";
 import CreatorTipBanner from "@/app/components/CreatorTipBanner";
-import NativeBannerAd from "@/app/components/NativeBannerAd";
+// import NativeBannerAd from "@/app/components/NativeBannerAd";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -253,14 +253,28 @@ export default async function BlogDetail({
       <main className="max-w-4xl mx-auto p-6 bg-white shadow rounded mt-6">
         {/* Back to blogs */}
 
-        <div className="sticky top-0 z-20 bg-white pb-3">
+        <div className="sticky top-0 z-30 mb-8 flex items-center justify-between">
           <Link
             href="/blog"
-            className="flex items-center gap-2 text-purple-600 hover:text-purple-800 font-medium"
+            aria-label="Back to all blog articles"
+            className="group inline-flex items-center gap-3 rounded-full border border-purple-200/80 bg-white/90 py-2 pl-2 pr-5 text-sm font-semibold text-purple-950 shadow-[0_4px_20px_rgba(88,28,135,0.08)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-purple-400 hover:bg-purple-50 hover:shadow-[0_8px_28px_rgba(88,28,135,0.15)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-purple-200"
           >
-            <ArrowLeftIcon className="w-5 h-5" />
-            Back to blogs
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-linear-to-br from-purple-700 to-violet-500 text-white shadow-md transition-transform duration-300 group-hover:-translate-x-0.5">
+              <ArrowLeftIcon className="h-4 w-4" />
+            </span>
+
+            <span className="flex flex-col">
+              <span className="text-[13px] leading-5">Back to blogs</span>
+              <span className="text-[10px] font-medium leading-3 text-gray-400">
+                Explore more stories
+              </span>
+            </span>
           </Link>
+
+          <span className="hidden items-center gap-2 rounded-full border border-purple-100 bg-purple-50/80 px-3 py-2 text-xs font-semibold text-purple-700 sm:inline-flex">
+            <span className="h-1.5 w-1.5 rounded-full bg-purple-500" />
+            Tippified Journal
+          </span>
         </div>
 
         {/* Cover Image */}
@@ -282,7 +296,7 @@ export default async function BlogDetail({
 
         {/* Advertisement */}
 
-        <AdsterraBanner />
+        {/* <AdsterraBanner /> */}
 
         {/* Author + Date */}
 
@@ -297,7 +311,7 @@ export default async function BlogDetail({
 
         {/* Native Advertisement */}
 
-        <NativeBannerAd />
+        {/* <NativeBannerAd /> */}
 
         {/* Article */}
 
