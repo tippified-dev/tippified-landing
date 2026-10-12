@@ -7,6 +7,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+interface BlogCategory {
+  id: string;
+
+  name: string;
+
+  slug: string;
+
+  description: string;
+}
+
 interface BlogPost {
   id: string;
   title: string;
@@ -20,6 +30,7 @@ interface BlogPost {
   meta_title?: string;
   meta_description?: string;
   status?: "draft" | "published";
+  category?: BlogCategory | null;
 }
 
 const API_BASE_URL = "https://api.tippified.com";
@@ -44,6 +55,51 @@ async function getBlog(slug: string): Promise<BlogPost | null> {
   } catch (error) {
     console.error("Failed to fetch blog:", error);
     return null;
+  }
+}
+
+async function getRelatedBlogs(
+  categorySlug: string | undefined,
+  currentSlug: string,
+): Promise<BlogPost[]> {
+  if (!categorySlug) {
+    return [];
+  }
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/adminpanel/public/blogs/`, {
+      next: {
+        revalidate: 60,
+      },
+    });
+
+    if (!res.ok) {
+      return [];
+    }
+
+    const data: unknown = await res.json();
+
+    // Support both ordinary Django lists and paginated responses.
+    const posts: BlogPost[] = Array.isArray(data)
+      ? data
+      : data &&
+          typeof data === "object" &&
+          "results" in data &&
+          Array.isArray(data.results)
+        ? (data.results as BlogPost[])
+        : [];
+
+    return posts
+      .filter(
+        (post) =>
+          post.slug !== currentSlug &&
+          post.category?.slug === categorySlug &&
+          post.status !== "draft",
+      )
+      .slice(0, 3);
+  } catch (error) {
+    console.error("Failed to fetch related blogs:", error);
+    return [];
   }
 }
 
@@ -145,6 +201,8 @@ export default async function BlogDetail({
     notFound();
   }
 
+  const relatedBlogs = await getRelatedBlogs(blog.category?.slug, blog.slug);
+
   const articleUrl = `${SITE_URL}/blog/${blog.slug}`;
 
   const description =
@@ -195,7 +253,7 @@ export default async function BlogDetail({
       <main className="max-w-4xl mx-auto p-6 bg-white shadow rounded mt-6">
         {/* Back to blogs */}
 
-        <div className="sticky top-3 z-20 bg-white pb-3">
+        <div className="sticky top-0 z-20 bg-white pb-3">
           <Link
             href="/blog"
             className="flex items-center gap-2 text-purple-600 hover:text-purple-800 font-medium"
@@ -290,6 +348,78 @@ export default async function BlogDetail({
             __html: blog.content,
           }}
         />
+
+        {/* You Might Also Like */}
+        {relatedBlogs.length > 0 && (
+          <section
+            aria-labelledby="related-blogs-heading"
+            className="mt-16 border-t border-purple-100 pt-10"
+          >
+            <div className="mb-7">
+              <p className="text-sm font-semibold uppercase tracking-wider text-purple-600">
+                Continue Reading
+              </p>
+
+              <h2
+                id="related-blogs-heading"
+                className="mt-2 text-2xl font-bold text-purple-950 md:text-3xl"
+              >
+                You Might Also Like
+              </h2>
+
+              <p className="mt-2 text-gray-500">
+                More articles from {blog.category?.name}.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              {relatedBlogs.map((post) => (
+                <Link
+                  key={post.id}
+                  href={`/blog/${post.slug}`}
+                  className="group overflow-hidden rounded-2xl border border-purple-100 bg-white transition duration-300 hover:-translate-y-1 hover:border-purple-300 hover:shadow-lg"
+                >
+                  {post.cover_image ? (
+                    <Image
+                      src={post.cover_image}
+                      alt={post.title}
+                      width={600}
+                      height={340}
+                      className="h-48 w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+                    />
+                  ) : (
+                    <div className="flex h-48 items-center justify-center bg-purple-50 px-5 text-center">
+                      <span className="text-sm font-semibold text-purple-400">
+                        Tippified
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="p-5">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-purple-600">
+                      {post.category?.name}
+                    </span>
+
+                    <h3 className="mt-3 text-lg font-bold leading-snug text-gray-900 transition group-hover:text-purple-700">
+                      {post.title}
+                    </h3>
+
+                    {post.excerpt && (
+                      <p className="mt-3 line-clamp-3 text-sm leading-6 text-gray-500">
+                        {post.excerpt}
+                      </p>
+                    )}
+
+                    <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-purple-600">
+                      Read Article
+                      <span aria-hidden="true">&rarr;</span>
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
     </>
   );
