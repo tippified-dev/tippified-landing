@@ -93,25 +93,30 @@ export default async function BlogListPage() {
   let blogs: BlogPost[] = [];
   let categories: BlogCategory[] = [];
 
+  // Fetch published blogs independently.
   try {
-    const [blogResults, categoryResults] = await Promise.all([
-      fetchAllPages<BlogPost>("/api/adminpanel/public/blogs/"),
-      fetchAllPages<BlogCategory>("/api/adminpanel/blog-categories/"),
-    ]);
-
-    blogs = blogResults.filter(
-      (blog) => !blog.status || blog.status === "published",
-    );
-
-    categories = categoryResults;
+    blogs = (
+      await fetchAllPages<BlogPost>("/api/adminpanel/public/blogs/")
+    ).filter((blog) => !blog.status || blog.status === "published");
   } catch (error) {
-    console.error("Error fetching Tippified blog data:", error);
+    console.error("Error fetching Tippified blogs:", error);
   }
+
+  // Fetch categories independently.
+  try {
+    categories = await fetchAllPages<BlogCategory>(
+      "/api/adminpanel/public/blog-categories/",
+    );
+  } catch (error) {
+    console.error("Error fetching Tippified blog categories:", error);
+  }
+
+  console.log("BLOG COUNT:", blogs.length);
+  console.log("CATEGORY COUNT:", categories.length);
 
   return (
     <>
       <NavBar />
-
       <BlogExplorer blogs={blogs} categories={categories} />
     </>
   );
