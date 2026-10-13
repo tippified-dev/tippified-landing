@@ -39,6 +39,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/explore`, lastModified: new Date() },
     { url: `${baseUrl}/creator-monetization`, lastModified: new Date() },
     { url: `${baseUrl}/exclusive-content`, lastModified: new Date() },
+    { url: `${baseUrl}/buy-gem`, lastModified: new Date() },
     
     { url: `${baseUrl}/tip-page`, lastModified: new Date() },
     

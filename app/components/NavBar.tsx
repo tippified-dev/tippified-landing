@@ -10,7 +10,8 @@ import {
   FiHexagon,
   FiHome,
   FiInfo,
-  FiShield,
+  FiPackage,
+  FiRss,
   FiTarget,
   FiUsers,
 } from "react-icons/fi";
@@ -53,9 +54,9 @@ export default function NavBar({ onNavigate }: NavBarProps): ReactElement {
       icon: FiCompass,
     },
     {
-      label: "Privacy",
-      href: "/privacy-policy",
-      icon: FiShield,
+      label: "Blog",
+      href: "/blog",
+      icon: FiRss,
     },
     {
       label: "T&C",
@@ -82,11 +83,17 @@ export default function NavBar({ onNavigate }: NavBarProps): ReactElement {
     {
       label: "Gem Vault",
       href: "/gem-vault",
-      icon: FiShield,
+      icon: FiPackage,
     },
     {
       label: "T&C",
       href: "/terms-conditions",
+      icon: FiFileText,
+    },
+
+    {
+      label: "Policy",
+      href: "/privacy-policy",
       icon: FiFileText,
     },
     {
