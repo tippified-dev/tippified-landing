@@ -286,7 +286,7 @@ export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
                         {getExcerpt(featuredBlog)}
                       </p>
 
-                      <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500 sm:text-sm">
+                      <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-600 sm:text-sm">
                         <span className="font-semibold text-gray-800">
                           {featuredBlog.author_name || "Tippified Editorial"}
                         </span>
