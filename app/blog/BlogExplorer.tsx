@@ -424,6 +424,25 @@ export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
 
                           <span>{getReadingTime(blog.content)} min read</span>
 
+                          <span
+                            className="inline-flex items-center gap-1.5 rounded-full border border-purple-100 bg-purple-50 px-2.5 py-1 font-medium text-purple-700"
+                            aria-label={`${blog.view_count ?? 0} views`}
+                            title={`${(blog.view_count ?? 0).toLocaleString()} views`}
+                          >
+                            <svg
+                              aria-hidden="true"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.8"
+                              className="h-3.5 w-3.5"
+                            >
+                              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            {formatViewCount(blog.view_count)} views
+                          </span>
+
                           {blog.published_at && (
                             <time
                               dateTime={blog.published_at}
