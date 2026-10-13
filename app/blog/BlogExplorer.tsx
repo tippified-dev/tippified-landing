@@ -24,6 +24,7 @@ export interface BlogPost {
   meta_description?: string;
   status?: "draft" | "published";
   category?: string | BlogCategory | null;
+  view_count?: number;
 }
 
 interface BlogExplorerProps {
@@ -75,6 +76,13 @@ function formatDate(dateString: string): string {
     month: "short",
     year: "numeric",
   }).format(date);
+}
+
+function formatViewCount(count: number = 0): string {
+  return new Intl.NumberFormat("en", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(count);
 }
 
 export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
@@ -301,6 +309,30 @@ export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
                         />
                         <span>
                           {getReadingTime(featuredBlog.content)} min read
+                        </span>
+
+                        <span
+                          aria-hidden="true"
+                          className="h-1 w-1 rounded-full bg-gray-300"
+                        />
+
+                        <span
+                          className="inline-flex items-center gap-1.5 rounded-full border border-purple-100 bg-purple-50 px-2.5 py-1 font-medium text-purple-700"
+                          aria-label={`${featuredBlog.view_count ?? 0} views`}
+                          title={`${(featuredBlog.view_count ?? 0).toLocaleString()} views`}
+                        >
+                          <svg
+                            aria-hidden="true"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            className="h-3.5 w-3.5"
+                          >
+                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+                            <circle cx="12" cy="12" r="3" />
+                          </svg>
+                          {formatViewCount(featuredBlog.view_count)} views
                         </span>
                       </div>
 
