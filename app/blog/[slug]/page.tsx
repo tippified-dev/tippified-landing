@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import BlogShareButtons from "./BlogShareButtons";
 
 interface BlogCategory {
   id: string;
@@ -300,10 +301,57 @@ export default async function BlogDetail({
 
         {/* Author + Date */}
 
-        <p className="text-gray-400 mt-2 mb-6">
-          By {capitalizeWords(blog.author_name)} •{" "}
-          {new Date(blog.published_at).toLocaleDateString()}
-        </p>
+        <div className="mt-5 mb-7 flex flex-wrap items-center gap-3">
+          <div className="inline-flex items-center gap-3 rounded-2xl border border-purple-100 bg-purple-50/70 px-4 py-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-purple-700 to-violet-500 text-sm font-bold text-white shadow-sm">
+              {capitalizeWords(blog.author_name).charAt(0) || "T"}
+            </div>
+
+            <div>
+              <p className="text-[11px] font-medium uppercase tracking-wider text-gray-500">
+                Written by
+              </p>
+
+              <p className="mt-0.5 text-sm font-bold text-purple-950">
+                {capitalizeWords(blog.author_name)}
+              </p>
+            </div>
+          </div>
+
+          <div className="inline-flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-4 py-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-50 text-purple-600">
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                className="h-5 w-5"
+              >
+                <rect x="3" y="5" width="18" height="16" rx="2" />
+                <path d="M16 3v4M8 3v4M3 10h18" />
+              </svg>
+            </div>
+
+            <div>
+              <p className="text-[11px] font-medium uppercase tracking-wider text-gray-500">
+                Posted
+              </p>
+
+              <time
+                dateTime={blog.published_at}
+                className="mt-0.5 block text-sm font-semibold text-gray-800"
+              >
+                {new Date(blog.published_at).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                  timeZone: "UTC",
+                })}
+              </time>
+            </div>
+          </div>
+        </div>
 
         {/* Tippified Creator CTA */}
 
@@ -362,6 +410,8 @@ export default async function BlogDetail({
             __html: blog.content,
           }}
         />
+
+        <BlogShareButtons title={blog.title} url={articleUrl} />
 
         {/* You Might Also Like */}
         {relatedBlogs.length > 0 && (

@@ -332,7 +332,10 @@ export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
                             <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
                             <circle cx="12" cy="12" r="3" />
                           </svg>
-                          {formatViewCount(featuredBlog.view_count)} views
+                          {formatViewCount(featuredBlog.view_count)}{" "}
+                          {(featuredBlog.view_count ?? 0) === 1
+                            ? "view"
+                            : "views"}
                         </span>
                       </div>
 
@@ -440,7 +443,8 @@ export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
                               <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
                               <circle cx="12" cy="12" r="3" />
                             </svg>
-                            {formatViewCount(blog.view_count)} views
+                            {formatViewCount(blog.view_count)}{" "}
+                            {(blog.view_count ?? 0) === 1 ? "view" : "views"}
                           </span>
 
                           {blog.published_at && (

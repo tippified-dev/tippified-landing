@@ -667,13 +667,7 @@ export default function PrivacyPolicyClient() {
           </p>
         </div>
       </footer>
-      <a
-        href="/about"
-        className="fixed right-4 bottom-20 md:bottom-10 z-50 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-purple-600 text-white shadow-lg hover:bg-purple-700 transition"
-        aria-label="About Tippified"
-      >
-        <InformationCircleIcon className="w-7 h-7 md:w-8 md:h-8" />
-      </a>
+
       <CreatorTipBanner className="mt-3 mb-3" />
     </>
   );

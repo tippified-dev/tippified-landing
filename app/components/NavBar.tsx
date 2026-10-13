@@ -94,7 +94,7 @@ export default function NavBar({ onNavigate }: NavBarProps): ReactElement {
     {
       label: "Policy",
       href: "/privacy-policy",
-      icon: FiFileText,
+      icon: FiInfo,
     },
     {
       label: "Signup",
