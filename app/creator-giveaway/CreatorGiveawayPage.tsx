@@ -15,7 +15,7 @@ import {
 } from "react-icons/fi";
 import NavBar from "../components/NavBar";
 
-const SIGNUP_URL = "https://app.tippified.com/signup";
+const SIGNUP_URL = "/signup";
 
 const participationSteps = [
   {
@@ -140,10 +140,9 @@ export default function CreatorGiveawayPage() {
               </h1>
 
               <p className="mt-6 max-w-xl text-sm leading-7 text-purple-100/75 sm:text-base sm:leading-8">
-                We are giving away ₦50,000 to one eligible content creators who
-                sign up on tippified. Sign up on Tippified, discover another way
-                to earn from your audience, and take part in our creator
-                giveaway.
+                We are giving away ₦50,000 to each content creators who sign up
+                on tippified. Sign up on Tippified, discover another way to earn
+                from your audience, and take part in our creator giveaway.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
