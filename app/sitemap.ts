@@ -41,6 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/exclusive-content`, lastModified: new Date() },
     { url: `${baseUrl}/buy-gem`, lastModified: new Date() },
     { url: `${baseUrl}/send-gem`, lastModified: new Date() },
+    { url: `${baseUrl}/creator-giveaway`, lastModified: new Date() },
     
     { url: `${baseUrl}/tip-page`, lastModified: new Date() },
     
