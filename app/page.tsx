@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 import {
   FiArrowRight,
+  FiArrowUpRight,
   FiAtSign,
   FiCheckCircle,
   FiClock,
@@ -1063,28 +1064,70 @@ export default function HomePage(): ReactElement {
             </div>
 
             {/* NEW LINK: /creator-monetization */}
-            <div className="mt-8">
+            <div className="mt-8 grid gap-3">
               <a
                 href="/creator-monetization"
-                className="inline-flex items-center gap-2 text-sm text-violet-200/80 hover:text-white transition-colors group"
+                className="group flex items-center justify-between gap-4 rounded-2xl border border-white/8 bg-white/3 p-4 transition-all duration-300 hover:border-violet-300/30 hover:bg-white/[0.07]"
               >
-                <span className="border-b border-violet-300/30 group-hover:border-white/50 pb-0.5">
-                  Learn how creator monetization works
-                </span>
-                <span className="h-6 w-6 grid place-items-center rounded-full bg-white/10 group-hover:bg-white/15 transition-colors">
-                  →
-                </span>
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-violet-300/15 bg-violet-400/10 text-violet-200 transition-all duration-300 group-hover:border-violet-300/30 group-hover:bg-violet-400/20">
+                    <FiTrendingUp className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="block text-sm font-semibold text-white transition-colors group-hover:text-violet-200">
+                      Creator monetization
+                    </span>
+                    <span className="mt-1 block text-xs leading-relaxed text-violet-200/55">
+                      Turn your creativity into income
+                    </span>
+                  </div>
+                </div>
+                <FiArrowUpRight className="h-4 w-4 shrink-0 text-violet-200/50 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-white" />
               </a>
+
               <a
                 href="/exclusive-content"
-                className="inline-flex items-center gap-2 text-sm text-violet-200/80 hover:text-white transition-colors group"
+                className="group flex items-center justify-between gap-4 rounded-2xl border border-white/8 bg-white/3 p-4 transition-all duration-300 hover:border-violet-300/30 hover:bg-white/[0.07]"
               >
-                <span className="border-b border-violet-300/30 group-hover:border-white/50 pb-0.5">
-                  Learn how exclusive content works
-                </span>
-                <span className="h-6 w-6 grid place-items-center rounded-full bg-white/10 group-hover:bg-white/15 transition-colors">
-                  →
-                </span>
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-violet-300/15 bg-violet-400/10 text-violet-200 transition-all duration-300 group-hover:border-violet-300/30 group-hover:bg-violet-400/20">
+                    <FiLock className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="block text-sm font-semibold text-white transition-colors group-hover:text-violet-200">
+                      Exclusive content
+                    </span>
+                    <span className="mt-1 block text-xs leading-relaxed text-violet-200/55">
+                      Share premium content with your fans
+                    </span>
+                  </div>
+                </div>
+                <FiArrowUpRight className="h-4 w-4 shrink-0 text-violet-200/50 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-white" />
+              </a>
+
+              <a
+                href="/creator-giveaway"
+                className="group relative flex items-center justify-between gap-4 overflow-hidden rounded-2xl border border-amber-300/20 bg-linear-to-r from-amber-300/8 to-violet-400/6 p-4 transition-all duration-300 hover:border-amber-300/40 hover:from-amber-300/12 hover:to-violet-400/10"
+              >
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-amber-300/20 bg-amber-300/10 text-amber-200 transition-all duration-300 group-hover:scale-105 group-hover:bg-amber-300/15">
+                    <FiGift className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-sm font-semibold text-white transition-colors group-hover:text-amber-100">
+                        Creator giveaway
+                      </span>
+                      <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-200">
+                        ₦50,000
+                      </span>
+                    </div>
+                    <span className="mt-1 block text-xs leading-relaxed text-violet-100/55">
+                      Discover the giveaway and how to enter
+                    </span>
+                  </div>
+                </div>
+                <FiArrowUpRight className="h-4 w-4 shrink-0 text-amber-200/60 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-amber-100" />
               </a>
             </div>
           </motion.div>
