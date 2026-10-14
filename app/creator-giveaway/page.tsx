@@ -5,14 +5,14 @@ export const metadata: Metadata = {
   title: "₦50,000 Creator Giveaway in Nigeria | Tippified",
 
   description:
-    "Tippified is giving away ₦50,000 to an eligible content creator. Sign up, discover creator monetization in Nigeria, and participate in the giveaway. Terms and conditions apply.",
+    "Tippified is giving away ₦50,000 to content creators who signup on tippified. Sign up, discover creator monetization in Nigeria, and participate in the giveaway. Terms and conditions apply.",
 
   alternates: {
     canonical: "https://tippified.com/creator-giveaway",
   },
 
   openGraph: {
-    title: "Win ₦50,000 | Tippified Creator Giveaway",
+    title: "Get ₦50,000 | Tippified Creator Giveaway",
     description:
       "Are you a content creator in Nigeria? Join Tippified's ₦50,000 creator giveaway. Sign up and explore new ways to earn from your audience. Terms and conditions apply.",
     url: "https://tippified.com/creator-giveaway",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://tippified.com/creator-giveaway-banner.jpg",
+        url: "https://tippified.com/creator-giveaway-banner2.jpeg",
         width: 1200,
         height: 630,
         alt: "Tippified ₦50,000 Content Creator Giveaway",
