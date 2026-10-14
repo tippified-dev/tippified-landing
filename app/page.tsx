@@ -263,7 +263,7 @@ export default function HomePage(): ReactElement {
         </section>
         {/* <NativeBannerAd /> */}
 
-        {/* ALL BLOGS MODAL */}
+        {/* ALL BLOGS MODAL — PREMIUM EDITORIAL EXPERIENCE */}
         <AnimatePresence>
           {showAllBlogs && (
             <motion.div
@@ -271,39 +271,198 @@ export default function HomePage(): ReactElement {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
             >
-              <div
-                className="absolute inset-0 bg-[#0a0a0a]/40 backdrop-blur-sm"
+              {/* Backdrop */}
+              <motion.button
+                type="button"
+                aria-label="Close all blog posts"
+                className="absolute inset-0 cursor-default bg-[#10051F]/70 backdrop-blur-md"
                 onClick={() => setShowAllBlogs(false)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
               />
+
+              {/* Modal */}
               <motion.div
-                initial={{ y: 80, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 80, opacity: 0 }}
-                className="relative flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-4xl bg-white shadow-2xl sm:rounded-4xl"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="all-blogs-heading"
+                initial={{ y: 60, opacity: 0, scale: 0.98 }}
+                animate={{ y: 0, opacity: 1, scale: 1 }}
+                exit={{ y: 40, opacity: 0, scale: 0.98 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 30,
+                }}
+                className="relative flex max-h-[92dvh] w-full max-w-3xl flex-col overflow-hidden rounded-t4xl border border-white/60 bg-[#FCFAFF] shadow-[0_30px_120px_-25px_rgba(32,7,65,0.55)] sm:rounded-4xl"
               >
-                <div className="flex items-center justify-between border-b border-purple-50 px-5 py-4">
-                  <div>
-                    <p className="text-[14px] font-extrabold text-purple-900">
-                      All Blog Posts
-                    </p>
-                    <p className="text-[11px] text-purple-400">
-                      {blogs.length} articles
-                    </p>
+                {/* Premium editorial banner */}
+                <div className="relative isolate shrink-0 overflow-hidden bg-[#220B3D]">
+                  {/* Atmospheric gradients */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_90%_0%,rgba(192,132,252,0.36),transparent_42%),radial-gradient(ellipse_at_0%_100%,rgba(126,34,206,0.4),transparent_45%)]"
+                  />
+
+                  {/* Decorative editorial pattern */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute -right-12 -top-24 -z-10 h-64 w-64 rounded-full border border-white/8"
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute -right-2 -top-14 -z-10 h-44 w-44 rounded-full border border-white/8"
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute right-10 top-8 -z-10 h-24 w-24 rounded-full bg-purple-400/10 blur-2xl"
+                  />
+
+                  {/* Top navigation */}
+                  <div className="flex items-center justify-between px-5 pt-5 sm:px-8 sm:pt-7">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.07] px-3 py-1.5 backdrop-blur-xl">
+                      <span className="h-1.5 w-1.5 rounded-full bg-purple-300 shadow-[0_0_10px_rgba(216,180,254,0.8)]" />
+                      <span className="text-[9px] font-bold uppercase tracking-[0.22em] text-purple-100 sm:text-[10px]">
+                        Tippified Journal
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowAllBlogs(false)}
+                      aria-label="Close all blog posts"
+                      className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/8 text-white backdrop-blur-xl transition duration-300 hover:rotate-90 hover:border-white/30 hover:bg-white/15"
+                    >
+                      <FiX size={19} />
+                    </button>
                   </div>
-                  <button
-                    onClick={() => setShowAllBlogs(false)}
-                    className="flex h-9 w-9 items-center justify-center rounded-full bg-purple-50 text-purple-600"
-                  >
-                    <FiX size={18} />
-                  </button>
+
+                  {/* Banner content */}
+                  <div className="px-5 pb-7 pt-7 sm:px-8 sm:pb-9 sm:pt-9">
+                    <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-purple-300 sm:text-[11px]">
+                      Ideas worth your time
+                    </p>
+
+                    <h2
+                      id="all-blogs-heading"
+                      className="max-w-xl text-3xl font-black leading-[1.08] tracking-[-0.045em] text-white sm:text-5xl"
+                    >
+                      Stories that move
+                      <span className="block bg-linear-to-r from-purple-200 via-fuchsia-200 to-white bg-clip-text text-transparent">
+                        creators forward.
+                      </span>
+                    </h2>
+
+                    <p className="mt-4 max-w-md text-xs leading-6 text-purple-100/75 sm:text-sm">
+                      Discover fresh perspectives on content creation, audience
+                      growth, brand partnerships, and building a sustainable
+                      creator business.
+                    </p>
+
+                    {/* Editorial statistics */}
+                    <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-white/10 pt-5">
+                      <div>
+                        <p className="text-xl font-black tracking-tight text-white sm:text-2xl">
+                          {blogs.length.toLocaleString()}
+                        </p>
+                        <p className="mt-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-purple-200/65">
+                          Published articles
+                        </p>
+                      </div>
+
+                      <div className="h-9 w-px bg-white/15" />
+
+                      <div>
+                        <p className="text-xl font-black tracking-tight text-white sm:text-2xl">
+                          Discover
+                        </p>
+                        <p className="mt-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-purple-200/65">
+                          Your next big idea
+                        </p>
+                      </div>
+
+                      <div className="ml-auto hidden items-center gap-2 text-purple-200/70 sm:flex">
+                        <span className="text-[10px] font-medium">
+                          The creator reading room
+                        </span>
+                        <span className="text-lg">↗️</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom accent */}
+                  <div className="h-px bg-linear-to-r from-transparent via-purple-300/70 to-transparent" />
                 </div>
-                <div className="overflow-y-auto p-4">
-                  <div className="flex flex-col gap-4">
-                    {blogs.map((blog) => (
-                      <BlogCardHorizontal key={blog.id} blog={blog} />
-                    ))}
+
+                {/* Article collection header */}
+                <div className="flex shrink-0 items-center justify-between border-b border-purple-100/80 px-5 py-4 sm:px-8">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-purple-500">
+                      The collection
+                    </p>
+                    <h3 className="mt-1 text-sm font-extrabold tracking-tight text-[#251039] sm:text-base">
+                      Explore all stories
+                    </h3>
                   </div>
+
+                  <span className="rounded-full border border-purple-100 bg-white px-3 py-1.5 text-[10px] font-bold text-purple-700 shadow-sm">
+                    {blogs.length} {blogs.length === 1 ? "article" : "articles"}
+                  </span>
+                </div>
+
+                {/* Scrollable article collection */}
+                <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-8 sm:py-6">
+                  {blogs.length > 0 ? (
+                    <div className="flex flex-col gap-4">
+                      {blogs.map((blog, index) => (
+                        <motion.div
+                          key={blog.id}
+                          initial={{ opacity: 0, y: 14 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            duration: 0.3,
+                            delay: Math.min(index * 0.045, 0.35),
+                          }}
+                        >
+                          <BlogCardHorizontal blog={blog} />
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex min-h-52 flex-col items-center justify-center rounded-2xl border border-dashed border-purple-200 bg-white px-6 text-center">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-50 text-purple-600">
+                        <span className="text-2xl">✳️</span>
+                      </div>
+
+                      <h3 className="mt-4 text-base font-extrabold text-[#251039]">
+                        Your next read is on its way
+                      </h3>
+
+                      <p className="mt-2 max-w-xs text-xs leading-5 text-gray-500">
+                        New creator stories and insights will appear here as
+                        they become available.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Refined footer */}
+                <div className="flex shrink-0 items-center justify-between border-t border-purple-100/80 bg-white/90 px-5 py-3.5 sm:px-8">
+                  <p className="text-[10px] font-medium text-gray-400 sm:text-xs">
+                    Thoughtfully created for the creator economy.
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowAllBlogs(false)}
+                    className="inline-flex items-center gap-2 rounded-full bg-[#29113F] px-4 py-2.5 text-[10px] font-bold text-white shadow-md shadow-purple-950/10 transition hover:bg-purple-800 sm:text-xs"
+                  >
+                    Done
+                    <FiX size={13} />
+                  </button>
                 </div>
               </motion.div>
             </motion.div>
