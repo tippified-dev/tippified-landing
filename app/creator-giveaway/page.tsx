@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Win ₦50,000 | Tippified Creator Giveaway",
+    title: "Get ₦50,000 Signup bonus | Tippified Creator Giveaway",
     description:
       "Join Tippified's ₦50,000 content creator giveaway. Sign up and explore new ways to monetize your creativity. Terms and conditions apply.",
     images: ["https://tippified.com/creator-giveaway-banner2.jpeg"],
