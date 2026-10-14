@@ -10,6 +10,7 @@ import {
   FiHexagon,
   FiHome,
   FiInfo,
+  FiLock,
   FiPackage,
   FiRss,
   FiTarget,
@@ -94,7 +95,7 @@ export default function NavBar({ onNavigate }: NavBarProps): ReactElement {
     {
       label: "Policy",
       href: "/privacy-policy",
-      icon: FiInfo,
+      icon: FiLock,
     },
     {
       label: "Signup",

@@ -20,6 +20,7 @@ import {
   FiTag,
   FiUser,
 } from "react-icons/fi";
+import NavBar from "../components/NavBar";
 
 interface SignupForm {
   username: string;
@@ -401,6 +402,7 @@ export default function CreatorSignupForm() {
 
   return (
     <>
+      <NavBar />
       {/* Message */}
       <AnimatePresence>
         {message && (
