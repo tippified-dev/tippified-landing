@@ -32,6 +32,7 @@ interface BlogPost {
   meta_description?: string;
   status?: "draft" | "published";
   category?: BlogCategory | null;
+  view_count?: number;
 }
 
 const API_BASE_URL = "https://api.tippified.com";
@@ -301,25 +302,27 @@ export default async function BlogDetail({
 
         {/* Author + Date */}
 
-        <div className="mt-5 mb-7 flex flex-wrap items-center gap-3">
-          <div className="inline-flex items-center gap-3 rounded-2xl border border-purple-100 bg-purple-50/70 px-4 py-3">
+        <div className="mt-5 mb-7 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {/* Author */}
+          <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-purple-100 bg-purple-50/70 px-4 py-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-purple-700 to-violet-500 text-sm font-bold text-white shadow-sm">
               {capitalizeWords(blog.author_name).charAt(0) || "T"}
             </div>
 
-            <div>
-              <p className="text-[11px] font-medium uppercase tracking-wider text-gray-500">
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-purple-500">
                 Written by
               </p>
 
-              <p className="mt-0.5 text-sm font-bold text-purple-950">
+              <p className="mt-1 truncate text-sm font-bold text-purple-950">
                 {capitalizeWords(blog.author_name)}
               </p>
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-4 py-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-50 text-purple-600">
+          {/* Publication date */}
+          <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-gray-100 bg-white px-4 py-3 transition-colors duration-200 hover:border-purple-100">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-purple-100/80 bg-purple-50 text-purple-600">
               <svg
                 aria-hidden="true"
                 viewBox="0 0 24 24"
@@ -333,22 +336,60 @@ export default async function BlogDetail({
               </svg>
             </div>
 
-            <div>
-              <p className="text-[11px] font-medium uppercase tracking-wider text-gray-500">
-                Posted
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-gray-400">
+                Published
               </p>
 
               <time
                 dateTime={blog.published_at}
-                className="mt-0.5 block text-sm font-semibold text-gray-800"
+                className="mt-1 block truncate text-sm font-bold text-gray-800"
               >
                 {new Date(blog.published_at).toLocaleDateString("en-GB", {
                   day: "numeric",
-                  month: "long",
+                  month: "short",
                   year: "numeric",
                   timeZone: "UTC",
                 })}
               </time>
+            </div>
+          </div>
+
+          {/* View count */}
+          <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-purple-100/80 bg-linear-to-br from-white to-purple-50/60 px-4 py-3 transition-all duration-200 hover:border-purple-200 hover:shadow-[0_8px_24px_-18px_rgba(109,40,217,0.45)]">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-purple-100/80 bg-white text-purple-600 shadow-sm">
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                className="h-5 w-5"
+              >
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </div>
+
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-gray-400">
+                Readership
+              </p>
+
+              <p
+                className="mt-1 truncate text-sm font-extrabold tracking-tight text-purple-950"
+                title={`${(blog.view_count ?? 0).toLocaleString()} ${
+                  (blog.view_count ?? 0) === 1 ? "view" : "views"
+                }`}
+              >
+                {new Intl.NumberFormat("en", {
+                  notation: "compact",
+                  maximumFractionDigits: 1,
+                }).format(blog.view_count ?? 0)}{" "}
+                <span className="text-xs font-medium text-gray-500">
+                  {(blog.view_count ?? 0) === 1 ? "view" : "views"}
+                </span>
+              </p>
             </div>
           </div>
         </div>
