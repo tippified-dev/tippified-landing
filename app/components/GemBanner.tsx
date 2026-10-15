@@ -3,7 +3,12 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FiArrowUpRight, FiGift } from "react-icons/fi";
+import { FiArrowUpRight, FiHexagon } from "react-icons/fi";
+
+interface GemBannerProps {
+  creatorName: string;
+  referralCode: string;
+}
 
 const GEMS = [
   {
@@ -32,7 +37,10 @@ const GEMS = [
   },
 ];
 
-export default function GemBanner() {
+export default function GemBanner({
+  creatorName,
+  referralCode,
+}: GemBannerProps) {
   const [activeGemIndex, setActiveGemIndex] = useState(0);
   const prefersReducedMotion = useReducedMotion();
 
@@ -48,10 +56,14 @@ export default function GemBanner() {
 
   const activeGem = GEMS[activeGemIndex];
 
+  const tipPageUrl = `https://app.tippified.com/tip/${encodeURIComponent(
+    referralCode,
+  )}`;
+
   return (
     <Link
-      href="/send-gem"
-      aria-label={`Send a Gem to a creator. Current gem: ${activeGem.name}`}
+      href={tipPageUrl}
+      aria-label={`Send a Gem to ${creatorName}. Current gem: ${activeGem.name}`}
       className="group relative block w-full overflow-hidden rounded-[1.75rem] border border-purple-100/80 bg-white text-[#211536] shadow-[0_16px_45px_-28px_rgba(91,33,182,0.3)] outline-none transition-all duration-300 hover:-translate-y-0.5 hover:border-purple-200 hover:shadow-[0_22px_50px_-28px_rgba(91,33,182,0.4)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
     >
       {/* Subtle ambient background */}
@@ -67,11 +79,11 @@ export default function GemBanner() {
       />
 
       <div className="relative flex min-h-28 items-center justify-between gap-4 p-4 sm:p-5">
-        {/* Text content */}
+        {/* Creator-specific text */}
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <div className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-purple-700 text-white shadow-[0_5px_12px_-5px_rgba(109,40,217,0.7)]">
-              <FiGift size={15} />
+              <FiHexagon size={15} />
             </div>
 
             <span className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-purple-700/65">
@@ -80,7 +92,7 @@ export default function GemBanner() {
           </div>
 
           <h3 className="mt-3 text-[15px] font-extrabold tracking-tight text-purple-950 sm:text-base">
-            Send a Gem to a creator
+            Send a Gem to {creatorName}
           </h3>
 
           <div className="mt-1.5 flex min-h-5 items-center gap-1.5 text-xs text-zinc-500">

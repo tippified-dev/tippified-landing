@@ -531,7 +531,10 @@ export default async function CreatorPage({ params }: Props) {
               </div>
             )}
 
-            <GemBanner />
+            <GemBanner
+              creatorName={creator.username}
+              referralCode={creator.referral_code}
+            />
 
             {/* SEO - FULL TEXT RESTORED */}
             <div className="rounded-4xl border border-purple-100 bg-white p-6 sm:p-8">
