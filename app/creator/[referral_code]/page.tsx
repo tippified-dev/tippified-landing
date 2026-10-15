@@ -532,7 +532,7 @@ export default async function CreatorPage({ params }: Props) {
             )}
 
             <GemBanner
-              creatorName={creator.username}
+              creatorName={getFirstName(creator.username)}
               referralCode={creator.referral_code}
             />
 
