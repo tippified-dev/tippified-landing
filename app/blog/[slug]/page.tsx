@@ -29,7 +29,6 @@ interface BlogPost {
   updated_at?: string;
   author_name: string;
   meta_title?: string;
-  view_count?: number;
   meta_description?: string;
   status?: "draft" | "published";
   category?: BlogCategory | null;
@@ -318,41 +317,9 @@ export default async function BlogDetail({
               </p>
             </div>
           </div>
-        </div>
 
-        <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-3 rounded-2xl border border-purple-100/80 bg-white px-4 py-3.5 shadow-[0_4px_18px_-12px_rgba(88,28,135,0.18)] sm:flex-nowrap sm:gap-x-6">
-          {/* Author */}
-          <div className="flex min-w-0 items-center gap-2.5">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-purple-700">
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.7"
-                className="h-5 w-5"
-              >
-                <circle cx="12" cy="8" r="4" />
-                <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
-              </svg>
-            </div>
-
-            <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-purple-500">
-                Written by
-              </p>
-              <p className="mt-0.5 truncate text-[12px] font-bold text-[#29133D] sm:text-[13px]">
-                {blog.author_name || "Tippified Editorial"}
-              </p>
-            </div>
-          </div>
-
-          {/* Separator */}
-          <div className="hidden h-9 w-px shrink-0 bg-purple-100 sm:block" />
-
-          {/* Publication date */}
-          <div className="flex min-w-0 items-center gap-2.5">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-purple-700">
+          <div className="inline-flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-4 py-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-50 text-purple-600">
               <svg
                 aria-hidden="true"
                 viewBox="0 0 24 24"
@@ -366,57 +333,22 @@ export default async function BlogDetail({
               </svg>
             </div>
 
-            <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-purple-500">
-                Published
+            <div>
+              <p className="text-[11px] font-medium uppercase tracking-wider text-gray-500">
+                Posted
               </p>
 
               <time
                 dateTime={blog.published_at}
-                className="mt-0.5 block whitespace-nowrap text-[12px] font-bold text-[#29133D] sm:text-[13px]"
+                className="mt-0.5 block text-sm font-semibold text-gray-800"
               >
                 {new Date(blog.published_at).toLocaleDateString("en-GB", {
                   day: "numeric",
-                  month: "short",
+                  month: "long",
                   year: "numeric",
                   timeZone: "UTC",
                 })}
               </time>
-            </div>
-          </div>
-
-          {/* Separator */}
-          <div className="hidden h-9 w-px shrink-0 bg-purple-100 sm:block" />
-
-          {/* View count */}
-          <div className="flex shrink-0 items-center gap-2.5">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-purple-700">
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.7"
-                className="h-5 w-5"
-              >
-                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </div>
-
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-purple-500">
-                Views
-              </p>
-              <p className="mt-0.5 whitespace-nowrap text-[12px] font-bold text-[#29133D] sm:text-[13px]">
-                {new Intl.NumberFormat("en", {
-                  notation: "compact",
-                  maximumFractionDigits: 1,
-                }).format(blog.view_count ?? 0)}
-                <span className="ml-1 font-medium text-gray-400">
-                  {blog.view_count === 1 ? "view" : "views"}
-                </span>
-              </p>
             </div>
           </div>
         </div>
