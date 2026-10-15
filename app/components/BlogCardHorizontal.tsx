@@ -65,6 +65,43 @@ function formatPublishedDate(date: string): string {
   });
 }
 
+function formatRelativeTime(date: string): string {
+  const publishedDate = new Date(date);
+
+  if (Number.isNaN(publishedDate.getTime())) {
+    return "";
+  }
+
+  const seconds = Math.floor((Date.now() - publishedDate.getTime()) / 1000);
+
+  if (seconds < 0) return "Just now";
+  if (seconds < 5) return "Just now";
+  if (seconds < 60) return `${seconds} seconds ago`;
+
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) {
+    return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) {
+    return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
+  }
+
+  const days = Math.floor(hours / 24);
+  if (days < 30) {
+    return `${days} ${days === 1 ? "day" : "days"} ago`;
+  }
+
+  const months = Math.floor(days / 30);
+  if (months < 12) {
+    return `${months} ${months === 1 ? "month" : "months"} ago`;
+  }
+
+  const years = Math.floor(days / 365);
+  return `${years} ${years === 1 ? "year" : "years"} ago`;
+}
+
 export default function BlogCardHorizontal({ blog }: Props) {
   const author = capitalizeWords(blog.author_name || "Tippified Editorial");
   const category = getCategoryName(blog.category);
@@ -169,14 +206,33 @@ export default function BlogCardHorizontal({ blog }: Props) {
                 {author}
               </p>
 
-              <div className="mt-0.5 flex items-center gap-1.5">
+              <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1">
                 <span className="text-[8px] font-bold uppercase tracking-[0.16em] text-purple-500">
                   Author
                 </span>
-                <span className="h-0.5 w-0.5 rounded-full bg-gray-300" />
-                <span className="truncate text-[10px] text-gray-400">
+
+                <span className="h-0.5 w-0.5 shrink-0 rounded-full bg-gray-300" />
+
+                <time
+                  dateTime={blog.published_at}
+                  className="text-[10px] text-gray-400"
+                >
                   {formatPublishedDate(blog.published_at)}
-                </span>
+                </time>
+
+                {formatRelativeTime(blog.published_at) && (
+                  <>
+                    <span className="h-0.5 w-0.5 shrink-0 rounded-full bg-purple-300" />
+
+                    <span
+                      className="inline-flex items-center gap-1 text-[10px] font-semibold text-purple-600"
+                      title={formatPublishedDate(blog.published_at)}
+                    >
+                      <span className="h-1 w-1 rounded-full bg-purple-400" />
+                      {formatRelativeTime(blog.published_at)}
+                    </span>
+                  </>
+                )}
               </div>
             </div>
 

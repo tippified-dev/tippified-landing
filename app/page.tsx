@@ -886,27 +886,33 @@ export default function HomePage(): ReactElement {
 
             {/* Logos - no background box, premium grayscale to color */}
             <div className="mt-12 flex justify-center items-center gap-8 md:gap-14 flex-wrap">
-              {["visa", "mastercard", "verve", "paystack", "wema"].map(
-                (img, idx) => (
-                  <motion.div
-                    key={img}
-                    initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
-                    whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: idx * 0.08 }}
-                    whileHover={{ y: -2, scale: 1.05 }}
-                    className="group relative"
-                  >
-                    <Image
-                      src={`/${img}.png`}
-                      alt={img}
-                      width={110}
-                      height={42}
-                      className="object-contain h-8 md:h-9 w-auto grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
-                    />
-                  </motion.div>
-                ),
-              )}
+              {[
+                "visa",
+                "mastercard",
+                "verve",
+                "paystack",
+                "wema",
+                "paypal",
+                "stripe",
+              ].map((img, idx) => (
+                <motion.div
+                  key={img}
+                  initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
+                  whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.08 }}
+                  whileHover={{ y: -2, scale: 1.05 }}
+                  className="group relative"
+                >
+                  <Image
+                    src={`/${img}.png`}
+                    alt={img}
+                    width={110}
+                    height={42}
+                    className="object-contain h-8 md:h-9 w-auto grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                  />
+                </motion.div>
+              ))}
             </div>
 
             {/* trust row */}
