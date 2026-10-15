@@ -906,10 +906,14 @@ export default function HomePage(): ReactElement {
                 >
                   <Image
                     src={`/${img}.png`}
-                    alt={img}
-                    width={110}
-                    height={42}
-                    className="object-contain h-8 md:h-9 w-auto grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                    alt={`${img} payment logo`}
+                    width={img === "stripe" || img === "paypal" ? 150 : 110}
+                    height={img === "stripe" || img === "paypal" ? 55 : 42}
+                    className={`object-contain w-auto grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300 ${
+                      img === "stripe" || img === "paypal"
+                        ? "h-10 md:h-12"
+                        : "h-8 md:h-9"
+                    }`}
                   />
                 </motion.div>
               ))}
