@@ -1,4 +1,5 @@
 import AdBannerSlider from "@/app/components/AdBannerSlider";
+import GemBanner from "@/app/components/GemBanner";
 import ProfileImageViewer from "@/app/components/ProfileImageViewer";
 import VerifiedBadge from "@/app/components/VerifiedBadge";
 import { Metadata } from "next";
@@ -530,6 +531,8 @@ export default async function CreatorPage({ params }: Props) {
               </div>
             )}
 
+            <GemBanner />
+
             {/* SEO - FULL TEXT RESTORED */}
             <div className="rounded-4xl border border-purple-100 bg-white p-6 sm:p-8">
               <h2 className="text-2xl font-extrabold tracking-tight text-purple-950">
@@ -594,7 +597,7 @@ export default async function CreatorPage({ params }: Props) {
                     </p>
                     <Link
                       href={tippingUrl}
-                      className="mt-4 flex w-full items-center justify-center rounded-full bg-purple-950 py-3 text-xs font-bold text-white transition hover:bg-purple-800"
+                      className="mt-4 flex w-full items-center justify-center rounded-full bg-purple-400 py-3 text-xs font-bold text-white transition hover:bg-purple-800"
                     >
                       View Wishlist
                     </Link>
