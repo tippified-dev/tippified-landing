@@ -286,7 +286,7 @@ export default async function BlogDetail({
             src={blog.cover_image}
             alt={blog.title}
             width={1200}
-            height={600}
+            height={700}
             priority
             className="w-full h-64 object-cover rounded"
           />
