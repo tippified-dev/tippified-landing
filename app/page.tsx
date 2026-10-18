@@ -27,6 +27,7 @@ import {
   FiX,
   FiZap,
 } from "react-icons/fi";
+import CreatorSignupBanner from "./components/CreatorSignupBanner";
 import EarningsProof from "./components/EarningsProof";
 import PremiumHero from "./components/PremiumHero";
 import StickyGemBanner from "./components/StickyGemBanner";
@@ -205,6 +206,8 @@ export default function HomePage(): ReactElement {
         <section id="banner">
           <BannerSlider />
         </section>
+
+        <CreatorSignupBanner />
 
         <section id="discover">
           <ActivityTeaserSection />

@@ -1,6 +1,7 @@
 // import AdsterraBanner from "@/app/components/AdsterraBanner";
 // import CreatorTipBanner from "@/app/components/CreatorTipBanner";
 // import NativeBannerAd from "@/app/components/NativeBannerAd";
+import CreatorSignupBanner from "@/app/components/CreatorSignupBanner";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -393,6 +394,7 @@ export default async function BlogDetail({
             </div>
           </div>
         </div>
+        <CreatorSignupBanner />
 
         {/* Tippified Creator CTA */}
 

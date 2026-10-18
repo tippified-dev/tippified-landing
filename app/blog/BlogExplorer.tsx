@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import CreatorSignupBanner from "../components/CreatorSignupBanner";
 
 export interface BlogCategory {
   id: string;
@@ -167,6 +168,7 @@ export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
               </h2>
             </div>
           </div>
+          <CreatorSignupBanner />
 
           <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-3">
             <button
