@@ -207,7 +207,9 @@ export default function HomePage(): ReactElement {
           <BannerSlider />
         </section>
 
-        <CreatorSignupBanner />
+        <section>
+          <CreatorSignupBanner />
+        </section>
 
         <section id="discover">
           <ActivityTeaserSection />
