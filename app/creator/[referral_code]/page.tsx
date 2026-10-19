@@ -1,4 +1,5 @@
 import AdBannerSlider from "@/app/components/AdBannerSlider";
+import CreatorSignupBanner from "@/app/components/CreatorSignupBanner";
 import GemBanner from "@/app/components/GemBanner";
 import ProfileImageViewer from "@/app/components/ProfileImageViewer";
 import VerifiedBadge from "@/app/components/VerifiedBadge";
@@ -310,7 +311,7 @@ export default async function CreatorPage({ params }: Props) {
 
         {/* PREMIUM PROFILE */}
         <section className="mt-7 overflow-hidden rounded-[2.6rem] border border-purple-100 bg-white shadow-[0_28px_80px_-36px_rgba(124,58,237,0.35)]">
-          <div className="h-32 w-full bg-purple-700 sm:h-37" />
+          <div className="h-32 w-full bg-purple-400 sm:h-37" />
           <div className="px-5 pb-7 sm:px-8 lg:px-9">
             <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
               <div className="flex flex-col gap-5 sm:flex-row sm:items-end -mt-16 sm:-mt-14">
@@ -535,6 +536,7 @@ export default async function CreatorPage({ params }: Props) {
               creatorName={getFirstName(creator.username)}
               referralCode={creator.referral_code}
             />
+            <CreatorSignupBanner />
 
             {/* SEO - FULL TEXT RESTORED */}
             <div className="rounded-4xl border border-purple-100 bg-white p-6 sm:p-8">
