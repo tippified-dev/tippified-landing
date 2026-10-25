@@ -87,17 +87,24 @@ function getExcerpt(blog: BlogPost): string {
   return `Learn how Nigerian creators use Tippified to grow their audience, receive tips from fans, and turn support into steady income. In this article: ${blog.title}.`;
 }
 
-export default function HomePage({
-  initialBlogs = [],
-}: {
-  initialBlogs?: BlogPost[];
-}): ReactElement {
+export default function HomePage(): ReactElement {
   const aboutRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<(HTMLDivElement | null)[]>([]);
   const rememberScroll = useScrollRestoration("home-scroll");
-  // REMOVED showAllBlogs state - blog modal deleted, replaced with /blog link
-  const blogs = initialBlogs; // was useQuery, now server prop - same data, visible to crawler
+
+  const { data: blogs = [] } = useQuery<BlogPost[]>({
+    queryKey: ["blogs"],
+    queryFn: async (): Promise<BlogPost[]> => {
+      const res = await fetch(
+        "https://api.tippified.com/api/adminpanel/public/blogs/",
+      );
+      if (!res.ok) throw new Error("Failed to fetch blogs");
+      const data = await res.json();
+      const results = Array.isArray(data) ? data : (data.results ?? []);
+      return results.slice(0, 10);
+    },
+  });
 
   const { data: goals = [], isLoading: loadingGoals } = useQuery<PublicGoal[]>({
     queryKey: ["goals"],
