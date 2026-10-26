@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { FiBookOpen } from "react-icons/fi";
 
 interface BlogPost {
   id: string;
@@ -291,17 +292,7 @@ export default function BlogCardHorizontal({ blog }: Props) {
 
             {/* Read article link */}
             <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-purple-700 transition-all duration-300 group-hover:gap-2.5">
-              Read story
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                className="h-3.5 w-3.5"
-              >
-                <path d="M5 12h14m-6-6 6 6-6 6" />
-              </svg>
+              <FiBookOpen size={24} />
             </span>
           </div>
         </div>
