@@ -380,7 +380,7 @@ export default async function BlogDetail({
               <p
                 className="mt-1 truncate text-sm font-extrabold tracking-tight text-purple-950"
                 title={`${(blog.view_count ?? 0).toLocaleString()} ${
-                  (blog.view_count ?? 0) === 1 ? "view" : "views"
+                  (blog.view_count ?? 0) === 1 ? "read" : "reads"
                 }`}
               >
                 {new Intl.NumberFormat("en", {
@@ -388,7 +388,7 @@ export default async function BlogDetail({
                   maximumFractionDigits: 1,
                 }).format(blog.view_count ?? 0)}{" "}
                 <span className="text-xs font-medium text-gray-500">
-                  {(blog.view_count ?? 0) === 1 ? "view" : "views"}
+                  {(blog.view_count ?? 0) === 1 ? "read" : "reads"}
                 </span>
               </p>
             </div>

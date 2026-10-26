@@ -224,7 +224,7 @@ export default function HomePage(): ReactElement {
             {blogs.length > 0 ? (
               <>
                 <div className="flex flex-col gap-4">
-                  {blogs.slice(0, 6).map((blog: BlogPost) => (
+                  {blogs.slice(0, 8).map((blog: BlogPost) => (
                     <article
                       key={blog.id}
                       className="rounded-3xl bg-white border border-purple-100 p-4 shadow-sm"
@@ -260,7 +260,6 @@ export default function HomePage(): ReactElement {
           </div>
         </section>
 
-        {/* CREATOR GUIDE - STATIC CONTENT FOR ADSENSE, DOES NOT CHANGE DESIGN */}
         <section
           className="py-12 px-6 bg-white border-y border-[#F3E8FF]"
           id="creator-guide"
@@ -319,7 +318,7 @@ export default function HomePage(): ReactElement {
                 href="/blog"
                 className="rounded-full bg-[#15052E] text-white px-5 py-2.5 text-[13px] font-bold"
               >
-                Read creator guides
+                Read creator stories
               </Link>
               <Link
                 href="/creator-monetization"
@@ -331,7 +330,52 @@ export default function HomePage(): ReactElement {
           </div>
         </section>
 
-        {/* REST OF YOUR PAGE - UNCHANGED FROM HERE */}
+        <section
+          className="py-12 px-6 bg-white border-y border-[#F3E8FF]"
+          id="creator-blog"
+        >
+          <div className="max-w-3xl mx-auto">
+            <h2
+              className={`${fredoka.className} text-[28px] leading-tight tracking-tight text-[#15052E]`}
+            >
+              What is Tippified Blog all about?
+            </h2>
+            <p
+              className={`${bricolage.className} mt-4 text-[15px] leading-8 text-[#3F3F46] font-medium`}
+            >
+              Tippified Blog is a Nigerian digital publication covering content
+              creation, digital creators, user-generated content (UGC),
+              influencer marketing, creative careers and the business of making
+              content. From discovering Nigerian content creators to
+              understanding brand partnerships and creator monetisation, we
+              explore the people, ideas and opportunities shaping the creator
+              economy in Nigeria and across Africa.
+            </p>
+            <h3
+              className={`${fredoka.className} mt-8 text-[20px] text-[#15052E]`}
+            >
+              A Publication Dedicated to the Wordld of Content.
+            </h3>
+            <p
+              className={`${bricolage.className} mt-3 text-[15px] leading-8 text-[#3F3F46] font-medium`}
+            >
+              Content creation has grown beyond posting pictures and videos on
+              social media. It includes entertainment, education, storytelling,
+              digital publishing, product reviews, branded content and many
+              other forms of creative work.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-2">
+              <Link
+                href="/blog"
+                className="rounded-full border border-purple-200 bg-white px-5 py-2.5 text-[13px] font-bold text-purple-700"
+              >
+                Explore the blog
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <section id="users">
           <WhoUsesTippified />
         </section>
