@@ -265,10 +265,10 @@ export default function BlogCardHorizontal({ blog }: Props) {
             <span
               className="inline-flex items-center gap-1.5 text-[11px] font-medium text-gray-500"
               aria-label={`${viewCount.toLocaleString()} ${
-                viewCount === 1 ? "view" : "views"
+                viewCount === 1 ? "read" : "reads"
               }`}
               title={`${viewCount.toLocaleString()} ${
-                viewCount === 1 ? "view" : "views"
+                viewCount === 1 ? "read" : "reads"
               }`}
             >
               <svg
@@ -287,12 +287,12 @@ export default function BlogCardHorizontal({ blog }: Props) {
                 {formatViewCount(viewCount)}
               </span>
 
-              {viewCount === 1 ? "view" : "views"}
+              {viewCount === 1 ? "read" : "reads"}
             </span>
 
             {/* Read article link */}
             <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-purple-700 transition-all duration-300 group-hover:gap-2.5">
-              <FiBookOpen size={24} />
+              <FiBookOpen size={16} />
             </span>
           </div>
         </div>
