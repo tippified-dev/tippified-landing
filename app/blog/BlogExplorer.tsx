@@ -320,8 +320,8 @@ export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
 
                         <span
                           className="inline-flex items-center gap-1.5 rounded-full border border-purple-100 bg-purple-50 px-2.5 py-1 font-medium text-purple-700"
-                          aria-label={`${featuredBlog.view_count ?? 0} views`}
-                          title={`${(featuredBlog.view_count ?? 0).toLocaleString()} views`}
+                          aria-label={`${featuredBlog.view_count ?? 0} reads`}
+                          title={`${(featuredBlog.view_count ?? 0).toLocaleString()} reads`}
                         >
                           <svg
                             aria-hidden="true"
@@ -336,8 +336,8 @@ export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
                           </svg>
                           {formatViewCount(featuredBlog.view_count)}{" "}
                           {(featuredBlog.view_count ?? 0) === 1
-                            ? "view"
-                            : "views"}
+                            ? "read"
+                            : "reads"}
                         </span>
                       </div>
 
@@ -431,8 +431,8 @@ export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
 
                           <span
                             className="inline-flex items-center gap-1.5 rounded-full border border-purple-100 bg-purple-50 px-2.5 py-1 font-medium text-purple-700"
-                            aria-label={`${blog.view_count ?? 0} views`}
-                            title={`${(blog.view_count ?? 0).toLocaleString()} views`}
+                            aria-label={`${blog.view_count ?? 0} reads`}
+                            title={`${(blog.view_count ?? 0).toLocaleString()} reads`}
                           >
                             <svg
                               aria-hidden="true"
@@ -446,7 +446,7 @@ export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
                               <circle cx="12" cy="12" r="3" />
                             </svg>
                             {formatViewCount(blog.view_count)}{" "}
-                            {(blog.view_count ?? 0) === 1 ? "view" : "views"}
+                            {(blog.view_count ?? 0) === 1 ? "read" : "reads"}
                           </span>
 
                           {blog.published_at && (
