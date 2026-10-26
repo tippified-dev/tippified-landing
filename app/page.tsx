@@ -224,7 +224,7 @@ export default function HomePage(): ReactElement {
             {blogs.length > 0 ? (
               <>
                 <div className="flex flex-col gap-4">
-                  {blogs.slice(0, 8).map((blog: BlogPost) => (
+                  {blogs.slice(0, 6).map((blog: BlogPost) => (
                     <article
                       key={blog.id}
                       className="rounded-3xl bg-white border border-purple-100 p-4 shadow-sm"
@@ -354,7 +354,7 @@ export default function HomePage(): ReactElement {
             <h3
               className={`${fredoka.className} mt-8 text-[20px] text-[#15052E]`}
             >
-              A Publication Dedicated to the Wordld of Content.
+              A Publication Dedicated to the World of Content.
             </h3>
             <p
               className={`${bricolage.className} mt-3 text-[15px] leading-8 text-[#3F3F46] font-medium`}
