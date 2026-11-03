@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   FiArrowUpRight,
   FiCreditCard,
@@ -15,6 +16,11 @@ import {
 
 export default function PremiumHero() {
   const [showCrowdfundingMenu, setShowCrowdfundingMenu] = useState(false);
+
+  const [menuPosition, setMenuPosition] = useState({
+    top: 0,
+    left: 12,
+  });
 
   const [mouse, setMouse] = useState<{ x: number; y: number }>({
     x: 50,
@@ -36,30 +42,45 @@ export default function PremiumHero() {
   };
 
   const openCrowdfundingMenu = () => {
-    setShowCrowdfundingMenu((prev) => !prev);
+    if (showCrowdfundingMenu) {
+      setShowCrowdfundingMenu(false);
+      return;
+    }
+
+    const button = crowdfundingRef.current?.querySelector("button");
+
+    if (!button) return;
+
+    const rect = button.getBoundingClientRect();
+
+    const menuWidth = Math.min(320, window.innerWidth - 24);
+    const menuHeight = 390;
+
+    const left = Math.max(
+      12,
+      Math.min(rect.left, window.innerWidth - menuWidth - 12),
+    );
+
+    const top = Math.max(
+      12,
+      Math.min(rect.bottom + 14, window.innerHeight - menuHeight - 12),
+    );
+
+    setMenuPosition({ top, left });
+    setShowCrowdfundingMenu(true);
   };
 
+  // Close menu with Escape key
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        crowdfundingRef.current &&
-        !crowdfundingRef.current.contains(event.target as Node)
-      ) {
-        setShowCrowdfundingMenu(false);
-      }
-    };
-
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setShowCrowdfundingMenu(false);
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
@@ -213,12 +234,13 @@ export default function PremiumHero() {
                 Become a Creator
               </a>
 
-              {/* CROWDFUNDING BUTTON + POPOVER */}
+              {/* CROWDFUNDING BUTTON */}
               <div ref={crowdfundingRef} className="relative inline-block">
                 <button
+                  type="button"
                   onClick={openCrowdfundingMenu}
                   aria-expanded={showCrowdfundingMenu}
-                  aria-haspopup="true"
+                  aria-haspopup="dialog"
                   className={`group relative inline-flex items-center gap-2 px-6 py-3 rounded-full backdrop-blur-xl border text-white font-bold transition-all duration-300 ${
                     showCrowdfundingMenu
                       ? "bg-white/20 border-white/40 shadow-[0_0_35px_rgba(196,181,253,0.35)]"
@@ -229,108 +251,6 @@ export default function PremiumHero() {
                   Start Crowdfunding
                   <span className="ml-1 h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_8px_rgba(110,231,183,0.9)] animate-pulse" />
                 </button>
-
-                {/* FLOATING CROWDFUNDING MENU */}
-                {showCrowdfundingMenu && (
-                  <div
-                    className="crowdfunding-menu absolute left-0 top-[calc(100%+14px)] z-100 w-[320px] max-w-[calc(100vw-40px)]"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="relative overflow-hidden rounded-3xl bg-white border border-white/80 shadow-[0_25px_80px_-15px_rgba(0,0,0,0.35)]">
-                      {/* TOP ACCENT */}
-                      <div className="absolute top-0 inset-x-0 h-1 bg-linear-to-r from-[#A78BFA] via-[#7C3AED] to-[#4C1D95]" />
-
-                      <div className="p-5">
-                        {/* HEADER */}
-                        <div className="flex items-start justify-between mb-5">
-                          <div>
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="h-7 w-7 rounded-lg bg-[#F3EEFF] flex items-center justify-center">
-                                <FiTarget className="text-[#7C3AED] text-sm" />
-                              </span>
-
-                              <span className="text-[10px] uppercase tracking-[1.8px] font-extrabold text-[#7C3AED]">
-                                Tippified Crowdfunding
-                              </span>
-                            </div>
-
-                            <h3 className="text-[19px] font-extrabold tracking-tight text-[#190D2E]">
-                              Make something happen.
-                            </h3>
-
-                            <p className="text-[12px] leading-5 text-zinc-500 mt-1">
-                              Bring your community together and turn your ideas
-                              into reality.
-                            </p>
-                          </div>
-
-                          <button
-                            onClick={() => setShowCrowdfundingMenu(false)}
-                            className="h-8 w-8 shrink-0 rounded-full flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition"
-                            aria-label="Close crowdfunding menu"
-                          >
-                            <FiX size={16} />
-                          </button>
-                        </div>
-
-                        {/* LOGIN OPTION */}
-                        <a
-                          href="/login"
-                          className="group flex items-center gap-3 p-3.5 rounded-2xl border border-zinc-200 hover:border-[#C4B5FD] hover:bg-[#FAF8FF] transition-all duration-300 mb-3"
-                        >
-                          <div className="h-11 w-11 shrink-0 rounded-xl bg-[#F3EEFF] flex items-center justify-center text-[#7C3AED] group-hover:scale-105 transition-transform">
-                            <FiLogIn size={19} />
-                          </div>
-
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[13px] font-bold text-[#190D2E]">
-                              Log into your account
-                            </p>
-
-                            <p className="text-[11px] text-zinc-500 mt-0.5">
-                              Already have a Tippified account?
-                            </p>
-                          </div>
-
-                          <FiArrowUpRight className="text-zinc-400 group-hover:text-[#7C3AED] transition" />
-                        </a>
-
-                        {/* START CAMPAIGN OPTION */}
-                        <a
-                          href="/signup"
-                          className="group relative flex items-center gap-3 p-3.5 rounded-2xl bg-linear-to-br from-[#6D28D9] via-[#5B21B6] to-[#4C1D95] text-white overflow-hidden shadow-[0_8px_20px_-8px_rgba(109,40,217,0.55)] hover:shadow-[0_12px_28px_-8px_rgba(109,40,217,0.65)] hover:-translate-y-0.5 transition-all duration-300"
-                        >
-                          <div className="absolute inset-0 bg-linear-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                          <div className="relative h-11 w-11 shrink-0 rounded-xl bg-white/15 border border-white/15 flex items-center justify-center">
-                            <FiTarget size={19} />
-                          </div>
-
-                          <div className="relative flex-1 min-w-0">
-                            <p className="text-[13px] font-bold">
-                              Start a crowdfunding campaign
-                            </p>
-
-                            <p className="text-[11px] text-white/65 mt-0.5">
-                              Create your campaign on Tippified.
-                            </p>
-                          </div>
-
-                          <FiArrowUpRight className="relative text-white/70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                        </a>
-
-                        {/* FOOTER */}
-                        <div className="flex items-center justify-center gap-1.5 mt-4">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-
-                          <p className="text-[10px] font-medium text-zinc-400">
-                            Your community. Your campaign. Your impact.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* HOW IT WORKS */}
@@ -398,6 +318,123 @@ export default function PremiumHero() {
           </div>
         </div>
       </section>
+
+      {/* CROWDFUNDING MENU PORTAL */}
+      {showCrowdfundingMenu &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-10000"
+            onMouseDown={() => setShowCrowdfundingMenu(false)}
+          >
+            <div
+              role="dialog"
+              aria-modal="false"
+              aria-label="Tippified Crowdfunding options"
+              className="crowdfunding-menu fixed w-[320px] max-w-[calc(100vw-24px)]"
+              style={{
+                top: menuPosition.top,
+                left: menuPosition.left,
+              }}
+              onMouseDown={(e) => e.stopPropagation()}
+            >
+              <div className="relative overflow-hidden rounded-3xl bg-white border border-white/80 shadow-[0_25px_80px_-15px_rgba(0,0,0,0.35)]">
+                {/* TOP ACCENT */}
+                <div className="absolute top-0 inset-x-0 h-1 bg-linear-to-r from-[#A78BFA] via-[#7C3AED] to-[#4C1D95]" />
+
+                <div className="p-5">
+                  {/* HEADER */}
+                  <div className="flex items-start justify-between mb-5">
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="h-7 w-7 rounded-lg bg-[#F3EEFF] flex items-center justify-center">
+                          <FiTarget className="text-[#7C3AED] text-sm" />
+                        </span>
+
+                        <span className="text-[10px] uppercase tracking-[1.8px] font-extrabold text-[#7C3AED]">
+                          Tippified Crowdfunding
+                        </span>
+                      </div>
+
+                      <h3 className="text-[19px] font-extrabold tracking-tight text-[#190D2E]">
+                        Make something happen.
+                      </h3>
+
+                      <p className="text-[12px] leading-5 text-zinc-500 mt-1">
+                        Bring your community together and turn your ideas into
+                        reality.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowCrowdfundingMenu(false)}
+                      className="h-8 w-8 shrink-0 rounded-full flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition"
+                      aria-label="Close crowdfunding menu"
+                    >
+                      <FiX size={16} />
+                    </button>
+                  </div>
+
+                  {/* LOGIN OPTION */}
+                  <a
+                    href="/login"
+                    className="group flex items-center gap-3 p-3.5 rounded-2xl border border-zinc-200 hover:border-[#C4B5FD] hover:bg-[#FAF8FF] transition-all duration-300 mb-3"
+                  >
+                    <div className="h-11 w-11 shrink-0 rounded-xl bg-[#F3EEFF] flex items-center justify-center text-[#7C3AED] group-hover:scale-105 transition-transform">
+                      <FiLogIn size={19} />
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-bold text-[#190D2E]">
+                        Log into your account
+                      </p>
+
+                      <p className="text-[11px] text-zinc-500 mt-0.5">
+                        Already have a Tippified account?
+                      </p>
+                    </div>
+
+                    <FiArrowUpRight className="text-zinc-400 group-hover:text-[#7C3AED] transition" />
+                  </a>
+
+                  {/* START CAMPAIGN OPTION */}
+                  <a
+                    href="/signup"
+                    className="group relative flex items-center gap-3 p-3.5 rounded-2xl bg-linear-to-br from-[#6D28D9] via-[#5B21B6] to-[#4C1D95] text-white overflow-hidden shadow-[0_8px_20px_-8px_rgba(109,40,217,0.55)] hover:shadow-[0_12px_28px_-8px_rgba(109,40,217,0.65)] hover:-translate-y-0.5 transition-all duration-300"
+                  >
+                    <div className="absolute inset-0 bg-linear-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                    <div className="relative h-11 w-11 shrink-0 rounded-xl bg-white/15 border border-white/15 flex items-center justify-center">
+                      <FiTarget size={19} />
+                    </div>
+
+                    <div className="relative flex-1 min-w-0">
+                      <p className="text-[13px] font-bold">
+                        Start a crowdfunding campaign
+                      </p>
+
+                      <p className="text-[11px] text-white/65 mt-0.5">
+                        Create your campaign on Tippified.
+                      </p>
+                    </div>
+
+                    <FiArrowUpRight className="relative text-white/70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </a>
+
+                  {/* FOOTER */}
+                  <div className="flex items-center justify-center gap-1.5 mt-4">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+
+                    <p className="text-[10px] font-medium text-zinc-400">
+                      Your community. Your campaign. Your impact.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
