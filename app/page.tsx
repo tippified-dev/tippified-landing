@@ -383,9 +383,7 @@ export default function HomePage(): ReactElement {
               income. A YouTuber can have advertising revenue while also
               receiving tips. A musician can sell music while receiving gifts
               from supporters. A fitness creator can build a community while
-              receiving direct contributions toward a project. Tippified focuses
-              on one of the most direct forms of creator monetization: letting
-              fans support creators directly.
+              receiving direct contributions toward a project.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-2">
