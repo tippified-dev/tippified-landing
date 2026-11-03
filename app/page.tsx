@@ -365,12 +365,35 @@ export default function HomePage(): ReactElement {
               other forms of creative work.
             </p>
 
+            <h3
+              className={`${fredoka.className} mt-8 text-[20px] text-[#15052E]`}
+            >
+              Creator Monetization In Nigeria and Africa.
+            </h3>
+            <p
+              className={`${bricolage.className} mt-3 text-[15px] leading-8 text-[#3F3F46] font-medium`}
+            >
+              Creator monetization is how creators turn their audience, content,
+              skills and community into income. For some creators, monetization
+              comes from advertising or brand partnerships. For others, it comes
+              from subscriptions, digital products, paid communities,
+              memberships or direct financial support from fans. In Nigeria and
+              across Africa, the creator economy is becoming increasingly
+              diverse. A creator does not have to depend on one source of
+              income. A YouTuber can have advertising revenue while also
+              receiving tips. A musician can sell music while receiving gifts
+              from supporters. A fitness creator can build a community while
+              receiving direct contributions toward a project. Tippified focuses
+              on one of the most direct forms of creator monetization: letting
+              fans support creators directly.
+            </p>
+
             <div className="mt-8 flex flex-wrap gap-2">
               <Link
-                href="/blog"
+                href="/creator-monetization"
                 className="rounded-full border border-purple-200 bg-white px-5 py-2.5 text-[13px] font-bold text-purple-700"
               >
-                Explore the blog
+                Creator Monetization In Nigeria.
               </Link>
             </div>
           </div>
