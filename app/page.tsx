@@ -370,9 +370,7 @@ export default function HomePage(): ReactElement {
             >
               Creator Monetization In Nigeria and Africa.
             </h3>
-            <p
-              className={`${bricolage.className} mt-3 text-[15px] leading-8 text-[#3F3F46] font-medium`}
-            >
+            <p className="mt-3 text-[15px] leading-8 text-[#3F3F46] font-medium">
               Creator monetization is how creators turn their audience, content,
               skills and community into income. For some creators, monetization
               comes from advertising or brand partnerships. For others, it comes
@@ -383,7 +381,9 @@ export default function HomePage(): ReactElement {
               income. A YouTuber can have advertising revenue while also
               receiving tips. A musician can sell music while receiving gifts
               from supporters. A fitness creator can build a community while
-              receiving direct contributions toward a project.
+              receiving direct contributions toward a project. Tippified focuses
+              on one of the most direct forms of creator monetization: letting
+              fans support creators directly.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-2">
