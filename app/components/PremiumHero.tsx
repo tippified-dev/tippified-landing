@@ -367,6 +367,7 @@ export default function PremiumHero() {
                     </div>
 
                     <button
+                      disabled
                       onClick={() => setShowCrowdfundingMenu(false)}
                       className="h-8 w-8 shrink-0 rounded-full flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition"
                       aria-label="Close crowdfunding menu"
@@ -399,7 +400,9 @@ export default function PremiumHero() {
 
                   {/* START CAMPAIGN OPTION */}
                   <a
-                    href="/signup"
+                    aria-disabled="true"
+                    tabIndex={-1}
+                    onClick={(e) => e.preventDefault()}
                     className="group relative flex items-center gap-3 p-3.5 rounded-2xl bg-linear-to-br from-[#6D28D9] via-[#5B21B6] to-[#4C1D95] text-white overflow-hidden shadow-[0_8px_20px_-8px_rgba(109,40,217,0.55)] hover:shadow-[0_12px_28px_-8px_rgba(109,40,217,0.65)] hover:-translate-y-0.5 transition-all duration-300"
                   >
                     <div className="absolute inset-0 bg-linear-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
