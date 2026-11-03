@@ -343,6 +343,7 @@ export default function PremiumHero() {
 
                 <div className="p-5">
                   {/* HEADER */}
+                  {/* HEADER */}
                   <div className="flex items-start justify-between mb-5">
                     <div>
                       <div className="flex items-center gap-2 mb-2">
@@ -356,17 +357,16 @@ export default function PremiumHero() {
                       </div>
 
                       <h3 className="text-[19px] font-extrabold tracking-tight text-[#190D2E]">
-                        Make something happen.
+                        Every contribution counts.
                       </h3>
 
                       <p className="text-[12px] leading-5 text-zinc-500 mt-1">
-                        Bring your community together and turn your ideas into
-                        reality.
+                        Raise funds for a cause and bring the public along every
+                        step of the way.
                       </p>
                     </div>
 
                     <button
-                      type="button"
                       onClick={() => setShowCrowdfundingMenu(false)}
                       className="h-8 w-8 shrink-0 rounded-full flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition"
                       aria-label="Close crowdfunding menu"
@@ -410,11 +410,11 @@ export default function PremiumHero() {
 
                     <div className="relative flex-1 min-w-0">
                       <p className="text-[13px] font-bold">
-                        Start a crowdfunding campaign
+                        Create a crowdfunding campaign
                       </p>
 
                       <p className="text-[11px] text-white/65 mt-0.5">
-                        Create your campaign on Tippified.
+                        For yourself, someone else or an organisation.
                       </p>
                     </div>
 
@@ -426,7 +426,8 @@ export default function PremiumHero() {
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
 
                     <p className="text-[10px] font-medium text-zinc-400">
-                      Your community. Your campaign. Your impact.
+                      Transparent fundraising. Real-time progress. Public
+                      participation.
                     </p>
                   </div>
                 </div>
