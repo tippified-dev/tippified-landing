@@ -137,7 +137,7 @@ export default function CrowdfundingSignup() {
             </Link>
 
             <Link
-              href="/crowdfunding/signin"
+              href="/crowdfunding-signin"
               className="text-[13px] font-semibold text-zinc-600 hover:text-[#6D28D9] transition"
             >
               Already registered?
@@ -620,7 +620,7 @@ export default function CrowdfundingSignup() {
                   <p className="text-[12px] text-zinc-500">
                     Already have an account?{" "}
                     <Link
-                      href="/crowdfunding/signin"
+                      href="/crowdfunding-signin"
                       className="font-bold text-[#6D28D9] hover:text-[#4C1D95]"
                     >
                       Sign in

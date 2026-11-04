@@ -377,9 +377,7 @@ export default function PremiumHero() {
 
                   {/* LOGIN OPTION */}
                   <a
-                    aria-disabled="true"
-                    tabIndex={-1}
-                    onClick={(e) => e.preventDefault()}
+                    href="/crowdfunding-signin"
                     className="group flex items-center gap-3 p-3.5 rounded-2xl border border-zinc-200 hover:border-[#C4B5FD] hover:bg-[#FAF8FF] transition-all duration-300 mb-3"
                   >
                     <div className="h-11 w-11 shrink-0 rounded-xl bg-[#F3EEFF] flex items-center justify-center text-[#7C3AED] group-hover:scale-105 transition-transform">
