@@ -5,6 +5,7 @@ import { useState } from "react";
 import {
   FiArrowLeft,
   FiArrowRight,
+  FiBriefcase,
   FiCheck,
   FiEye,
   FiEyeOff,
@@ -14,7 +15,6 @@ import {
   FiMail,
   FiMapPin,
   FiShield,
-  FiThumbsUp,
   FiUser,
   FiUsers,
 } from "react-icons/fi";
@@ -114,7 +114,7 @@ export default function CrowdfundingSignup() {
   };
 
   const inputClass =
-    "w-full h-[52px] rounded-xl border border-zinc-200 bg-white px-4 text-[14px] text-[#190D2E] outline-none transition placeholder:text-zinc-400 focus:border-[#8B5CF6] focus:ring-4 focus:ring-purple-100";
+    "w-full h-[52px] rounded-xl border border-zinc-200 bg-white px-4 text-base text-[#190D2E] outline-none transition placeholder:text-zinc-400 focus:border-[#8B5CF6] focus:ring-4 focus:ring-purple-100";
 
   const labelClass = "block text-[12px] font-bold text-[#292039] mb-2";
 
@@ -323,7 +323,7 @@ export default function CrowdfundingSignup() {
                             : "bg-zinc-100 text-zinc-500"
                         }`}
                       >
-                        <FiThumbsUp size={19} />
+                        <FiBriefcase size={19} />
                       </div>
 
                       {accountType === "organization" && (
