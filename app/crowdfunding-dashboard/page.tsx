@@ -225,7 +225,7 @@ export default function CrowdfundingDashboard() {
         );
       }
 
-      const accountData = data.account || data.user || data;
+      const accountData = data.data || data.account || data.user || data;
 
       if (!accountData.email) {
         throw new Error("Your account information could not be retrieved.");
