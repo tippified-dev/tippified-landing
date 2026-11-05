@@ -197,6 +197,11 @@ export default function CrowdfundingDashboard() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const [logoutError, setLogoutError] = useState("");
 
   const fetchAccount = useCallback(async () => {
     setLoading(true);
@@ -250,6 +255,67 @@ export default function CrowdfundingDashboard() {
   const accountName = account ? getAccountName(account) : "Your account";
 
   const initials = getInitials(accountName) || "T";
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    setLogoutError("");
+
+    try {
+      // First, obtain the CSRF token required by Django.
+      const csrfResponse = await fetch(
+        `${API_BASE_URL}/api/crowdfunding/csrf/`,
+        {
+          method: "GET",
+          credentials: "include",
+          cache: "no-store",
+          headers: {
+            Accept: "application/json",
+          },
+        },
+      );
+
+      const csrfData = await csrfResponse.json().catch(() => ({}));
+
+      if (!csrfResponse.ok || !csrfData.csrfToken) {
+        throw new Error("Unable to verify your session. Please try again.");
+      }
+
+      // Now request logout from Django.
+      const response = await fetch(`${API_BASE_URL}/api/crowdfunding/logout/`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfData.csrfToken,
+        },
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          data.detail ||
+            data.message ||
+            "We couldn't sign you out. Please try again.",
+        );
+      }
+
+      // Close the modal and redirect after successful logout.
+      setLogoutModalOpen(false);
+
+      router.replace(CROWDFUNDING_ROUTES.signin);
+      router.refresh();
+    } catch (error) {
+      setLogoutError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again.",
+      );
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   const handleNavigation = (label: string) => {
     if (label !== "Overview") {
@@ -512,13 +578,18 @@ export default function CrowdfundingDashboard() {
                       Account settings
                     </button>
 
-                    <Link
-                      href={CROWDFUNDING_ROUTES.signin}
-                      className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-[11px] font-semibold text-red-500 hover:bg-red-50"
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setProfileOpen(false);
+                        setLogoutError("");
+                        setLogoutModalOpen(true);
+                      }}
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-[11px] font-semibold text-red-500 transition hover:bg-red-50"
                     >
                       <FiLogOut size={15} />
                       Sign out
-                    </Link>
+                    </button>
                   </div>
                 </div>
               )}
@@ -821,6 +892,109 @@ export default function CrowdfundingDashboard() {
           </footer>
         </div>
       </div>
+      {/* SIGN OUT CONFIRMATION MODAL */}
+      {logoutModalOpen && (
+        <div
+          className="fixed inset-0 z-100 flex items-center justify-center bg-[#190D2E]/40 px-5 backdrop-blur-sm"
+          onClick={() => {
+            if (!isLoggingOut) {
+              setLogoutModalOpen(false);
+              setLogoutError("");
+            }
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="logout-modal-title"
+            className="w-full max-w-105 overflow-hidden rounded-[28px] border border-white/70 bg-white shadow-[0_30px_100px_-25px_rgba(25,13,46,0.35)] animate-in fade-in zoom-in-95 duration-200"
+            onClick={(event) => event.stopPropagation()}
+          >
+            {/* MODAL HEADER */}
+            <div className="relative flex justify-center px-7 pt-8">
+              <button
+                type="button"
+                onClick={() => {
+                  if (!isLoggingOut) {
+                    setLogoutModalOpen(false);
+                    setLogoutError("");
+                  }
+                }}
+                disabled={isLoggingOut}
+                className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700 disabled:opacity-40"
+                aria-label="Close confirmation"
+              >
+                <FiX size={18} />
+              </button>
+
+              <div className="flex h-17 w-17 items-center justify-center rounded-[22px] bg-red-50 text-red-500 ring-8 ring-red-50/50">
+                <FiLogOut size={27} />
+              </div>
+            </div>
+
+            {/* MODAL CONTENT */}
+            <div className="px-7 pb-8 pt-6 text-center">
+              <h3
+                id="logout-modal-title"
+                className="text-[20px] font-black tracking-tight text-[#190D2E]"
+              >
+                Sign out of Tippified?
+              </h3>
+
+              <p className="mx-auto mt-3 max-w-75 text-[12px] leading-6 text-zinc-500">
+                Are you sure you want to sign out of your crowdfunding account?
+                You will need to sign in again to access your dashboard.
+              </p>
+
+              {logoutError && (
+                <div className="mt-5 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-left">
+                  <p className="text-[11px] leading-5 text-red-600">
+                    {logoutError}
+                  </p>
+                </div>
+              )}
+
+              {/* ACTION BUTTONS */}
+              <div className="mt-8 grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLogoutModalOpen(false);
+                    setLogoutError("");
+                  }}
+                  disabled={isLoggingOut}
+                  className="flex h-12.25 items-center justify-center rounded-xl border border-zinc-200 bg-white text-[12px] font-bold text-zinc-600 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="flex h-12.25 items-center justify-center gap-2 rounded-xl bg-[#6D28D9] text-[12px] font-bold text-white shadow-[0_10px_20px_-10px_rgba(109,40,217,0.7)] transition hover:bg-[#5B21B6] disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {isLoggingOut ? (
+                    <>
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      Signing out...
+                    </>
+                  ) : (
+                    <>
+                      <FiLogOut size={15} />
+                      Yes, sign out
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <p className="mt-6 text-[9px] font-medium uppercase tracking-[1.5px] text-zinc-300">
+                Tippified · Secure crowdfunding
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
