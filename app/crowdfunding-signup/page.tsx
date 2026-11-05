@@ -20,12 +20,21 @@ import {
 } from "react-icons/fi";
 
 type AccountType = "individual" | "organization";
+const API_BASE_URL = "https://api.tippified.com";
+
+type SignupStep = "signup" | "otp" | "verified";
 
 export default function CrowdfundingSignup() {
   const [accountType, setAccountType] = useState<AccountType>("individual");
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [step, setStep] = useState<SignupStep>("signup");
+  const [otp, setOtp] = useState("");
+  const [registeredEmail, setRegisteredEmail] = useState("");
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -59,7 +68,7 @@ export default function CrowdfundingSignup() {
     setNotice("");
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setError("");
@@ -70,9 +79,11 @@ export default function CrowdfundingSignup() {
       return;
     }
 
+    const email = formData.email.trim().toLowerCase();
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRegex.test(formData.email)) {
+    if (!emailRegex.test(email)) {
       setError("Please enter a valid email address.");
       return;
     }
@@ -84,6 +95,9 @@ export default function CrowdfundingSignup() {
       }
     }
 
+    let city = "";
+    let country = "";
+
     if (accountType === "organization") {
       if (
         !formData.organizationName.trim() ||
@@ -93,6 +107,16 @@ export default function CrowdfundingSignup() {
         !formData.aboutOrganization.trim()
       ) {
         setError("Please complete all required organisation details.");
+        return;
+      }
+
+      const locationParts = formData.location.split(",");
+
+      city = locationParts[0]?.trim() || "";
+      country = locationParts.slice(1).join(",").trim();
+
+      if (!city || !country) {
+        setError("Please enter your location as City, Country.");
         return;
       }
     }
@@ -107,10 +131,129 @@ export default function CrowdfundingSignup() {
       return;
     }
 
-    // Authentication and email verification will be connected later.
-    setNotice(
-      "Your signup form is ready. Account registration and email verification will be connected when we implement the authentication backend.",
-    );
+    const payload = {
+      account_type:
+        accountType === "organization" ? "organisation" : "individual",
+
+      first_name: formData.firstName.trim(),
+      last_name: formData.lastName.trim(),
+
+      organisation_name: formData.organizationName.trim(),
+      cac_number: formData.cacNumber.trim(),
+
+      representative_name: formData.contactPerson.trim(),
+      representative_position: formData.position.trim(),
+
+      city,
+      country,
+
+      about: formData.aboutOrganization.trim(),
+
+      email,
+      password: formData.password,
+      confirm_password: formData.confirmPassword,
+    };
+
+    try {
+      setIsSubmitting(true);
+
+      const response = await fetch(`${API_BASE_URL}/api/crowdfunding/signup/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const messages = Object.values(data)
+          .flat()
+          .filter((value): value is string => typeof value === "string");
+
+        throw new Error(
+          messages[0] ||
+            data.detail ||
+            "Unable to create your account. Please try again.",
+        );
+      }
+
+      setRegisteredEmail(email);
+      setStep("otp");
+      setOtp("");
+
+      setNotice(
+        data.message ||
+          `We have sent a verification code to ${email}. Please check your inbox.`,
+      );
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleVerifyOTP = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setError("");
+    setNotice("");
+
+    if (!/^\d{6}$/.test(otp)) {
+      setError("Please enter the complete six-digit verification code.");
+      return;
+    }
+
+    try {
+      setIsVerifying(true);
+
+      const response = await fetch(
+        `${API_BASE_URL}/api/crowdfunding/verify-signup-otp/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            email: registeredEmail,
+            otp,
+          }),
+        },
+      );
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const messages = Object.values(data)
+          .flat()
+          .filter((value): value is string => typeof value === "string");
+
+        throw new Error(
+          messages[0] ||
+            data.detail ||
+            "Verification failed. Please check your code and try again.",
+        );
+      }
+
+      setStep("verified");
+
+      setNotice(data.message || "Your email has been successfully verified.");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Unable to verify your email. Please try again.",
+      );
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const inputClass =
@@ -254,16 +397,28 @@ export default function CrowdfundingSignup() {
                   </p>
 
                   <h2 className="text-[25px] md:text-[30px] font-black tracking-tight">
-                    Let&apos;s get you started.
+                    {step === "signup"
+                      ? "Let's get you started."
+                      : step === "otp"
+                        ? "Verify your email."
+                        : "Account verified."}
                   </h2>
 
                   <p className="text-[13px] text-zinc-500 mt-2">
-                    First, tell us what type of account you want to create.
+                    {step === "signup"
+                      ? "First, tell us what type of account you want to create."
+                      : step === "otp"
+                        ? `Enter the six-digit verification code sent to ${registeredEmail}.`
+                        : "Your crowdfunding account is ready. You can now sign in."}
                   </p>
                 </div>
 
                 {/* ACCOUNT TYPE SELECTOR */}
-                <div className="grid grid-cols-2 gap-3 mb-8">
+                <div
+                  className={`grid grid-cols-2 gap-3 mb-8 ${
+                    step !== "signup" ? "hidden" : ""
+                  }`}
+                >
                   <button
                     type="button"
                     onClick={() => {
@@ -341,7 +496,10 @@ export default function CrowdfundingSignup() {
                   </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form
+                  onSubmit={handleSubmit}
+                  className={step === "signup" ? "space-y-5" : "hidden"}
+                >
                   {/* INDIVIDUAL FIELDS */}
                   {accountType === "individual" && (
                     <div className="space-y-5">
@@ -602,10 +760,16 @@ export default function CrowdfundingSignup() {
                   {/* SUBMIT */}
                   <button
                     type="submit"
-                    className="group w-full h-13.5 flex items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] text-white text-[14px] font-bold shadow-[0_12px_25px_-12px_rgba(109,40,217,0.7)] hover:shadow-[0_16px_30px_-12px_rgba(109,40,217,0.8)] hover:-translate-y-0.5 transition-all"
+                    disabled={isSubmitting}
+                    className="group w-full h-13.5 flex items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] text-white text-[14px] font-bold shadow-[0_12px_25px_-12px_rgba(109,40,217,0.7)] hover:shadow-[0_16px_30px_-12px_rgba(109,40,217,0.8)] hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                   >
-                    Create my account
-                    <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                    {isSubmitting
+                      ? "Creating your account..."
+                      : "Create my account"}
+
+                    {!isSubmitting && (
+                      <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                    )}
                   </button>
 
                   {/* TERMS */}
@@ -614,6 +778,94 @@ export default function CrowdfundingSignup() {
                     of Service and Privacy Policy.
                   </p>
                 </form>
+
+                {step === "otp" && (
+                  <form onSubmit={handleVerifyOTP} className="space-y-6">
+                    <div className="text-center py-4">
+                      <div className="mx-auto h-16 w-16 rounded-2xl bg-purple-100 flex items-center justify-center text-[#7C3AED] mb-5">
+                        <FiMail size={28} />
+                      </div>
+
+                      <h3 className="text-[18px] font-extrabold mb-2">
+                        Check your inbox
+                      </h3>
+
+                      <p className="text-[12px] leading-6 text-zinc-500">
+                        We sent a six-digit verification code to:
+                        <span className="block font-bold text-[#6D28D9] mt-1">
+                          {registeredEmail}
+                        </span>
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className={labelClass}>Verification code</label>
+
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        autoComplete="one-time-code"
+                        placeholder="000000"
+                        value={otp}
+                        onChange={(e) =>
+                          setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
+                        }
+                        maxLength={6}
+                        required
+                        className={`${inputClass} text-center text-base font-black tracking-[12px]`}
+                      />
+
+                      <p className="text-[10px] text-zinc-400 mt-2">
+                        Your verification code expires after five minutes.
+                      </p>
+                    </div>
+
+                    {error && (
+                      <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-[12px] text-red-600">
+                        {error}
+                      </div>
+                    )}
+
+                    {notice && (
+                      <div className="rounded-xl border border-purple-100 bg-purple-50 px-4 py-3 text-[12px] leading-5 text-[#6D28D9]">
+                        {notice}
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={isVerifying || otp.length !== 6}
+                      className="w-full h-13.5 flex items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] text-white text-[14px] font-bold shadow-[0_12px_25px_-12px_rgba(109,40,217,0.7)] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {isVerifying ? "Verifying..." : "Verify email"}
+                    </button>
+                  </form>
+                )}
+
+                {step === "verified" && (
+                  <div className="text-center py-8">
+                    <div className="mx-auto h-16 w-16 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-5">
+                      <FiCheck size={30} />
+                    </div>
+
+                    <h3 className="text-[20px] font-black mb-2">
+                      Email successfully verified!
+                    </h3>
+
+                    <p className="text-[13px] leading-6 text-zinc-500 mb-7">
+                      Your crowdfunding account has been created successfully.
+                      You can now sign in using your email and password.
+                    </p>
+
+                    <Link
+                      href="/crowdfunding-signin"
+                      className="w-full h-13.5 flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] text-white text-[14px] font-bold"
+                    >
+                      Continue to sign in
+                      <FiArrowRight />
+                    </Link>
+                  </div>
+                )}
 
                 {/* SIGN IN */}
                 <div className="mt-8 pt-6 border-t border-zinc-100 text-center">
