@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   FiArrowLeft,
@@ -15,6 +16,7 @@ import {
   FiTarget,
   FiUsers,
 } from "react-icons/fi";
+import { CROWDFUNDING_ROUTES } from "../config/crowdfunding";
 
 type SigninStep = "credentials" | "verification";
 
@@ -31,6 +33,12 @@ export default function CrowdfundingSignin() {
 
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  const API_BASE_URL = "https://api.tippified.com";
+
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -51,20 +59,23 @@ export default function CrowdfundingSignin() {
     setNotice("");
   };
 
-  const handleCredentialsSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCredentialsSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ) => {
     e.preventDefault();
 
     setError("");
     setNotice("");
 
+    const email = formData.email.trim().toLowerCase();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!formData.email.trim()) {
+    if (!email) {
       setError("Please enter your email address.");
       return;
     }
 
-    if (!emailRegex.test(formData.email)) {
+    if (!emailRegex.test(email)) {
       setError("Please enter a valid email address.");
       return;
     }
@@ -79,16 +90,66 @@ export default function CrowdfundingSignin() {
       return;
     }
 
-    // Frontend preview only.
-    // Actual authentication and OTP delivery will be connected later.
-    setStep("verification");
+    setIsSubmitting(true);
 
-    setNotice(
-      "The email verification screen is ready. Actual OTP delivery will be activated when the authentication backend is connected.",
-    );
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/crowdfunding/login/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const apiError =
+          data.detail ||
+          data.message ||
+          (typeof data === "object"
+            ? Object.values(data)
+                .flat()
+                .find((value) => typeof value === "string")
+            : null);
+
+        throw new Error(
+          typeof apiError === "string"
+            ? apiError
+            : "Unable to sign in. Please check your details and try again.",
+        );
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        email,
+        otp: "",
+      }));
+
+      setStep("verification");
+
+      setNotice(
+        data.message ||
+          "A six-digit verification code has been sent to your email address.",
+      );
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleVerificationSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleVerificationSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ) => {
     e.preventDefault();
 
     setError("");
@@ -99,10 +160,57 @@ export default function CrowdfundingSignin() {
       return;
     }
 
-    // Actual OTP verification and login will be connected later.
-    setNotice(
-      "OTP verification and account sign-in will be activated when the authentication backend is connected.",
-    );
+    setIsVerifying(true);
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/crowdfunding/verify-login-otp/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            email: formData.email.trim().toLowerCase(),
+            otp: formData.otp,
+          }),
+        },
+      );
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const apiError =
+          data.detail ||
+          data.message ||
+          (typeof data === "object"
+            ? Object.values(data)
+                .flat()
+                .find((value) => typeof value === "string")
+            : null);
+
+        throw new Error(
+          typeof apiError === "string"
+            ? apiError
+            : "Verification failed. Please check your code and try again.",
+        );
+      }
+
+      // The backend has now established the crowdfunding session.
+      // The session token is stored in an HttpOnly cookie, not localStorage.
+
+      router.replace(CROWDFUNDING_ROUTES.dashboard);
+      router.refresh();
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again.",
+      );
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const inputClass =
@@ -365,10 +473,16 @@ export default function CrowdfundingSignin() {
                     {/* SUBMIT */}
                     <button
                       type="submit"
-                      className="group w-full h-13.5 flex items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] text-white text-[14px] font-bold shadow-[0_12px_25px_-12px_rgba(109,40,217,0.7)] hover:shadow-[0_16px_30px_-12px_rgba(109,40,217,0.8)] hover:-translate-y-0.5 transition-all"
+                      disabled={isSubmitting}
+                      className="group w-full h-13.5 flex items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] text-white text-[14px] font-bold shadow-[0_12px_25px_-12px_rgba(109,40,217,0.7)] hover:shadow-[0_16px_30px_-12px_rgba(109,40,217,0.8)] hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                     >
-                      Continue
-                      <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                      {isSubmitting
+                        ? "Sending verification code..."
+                        : "Continue"}
+
+                      {!isSubmitting && (
+                        <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                      )}
                     </button>
                   </form>
                 )}
@@ -411,7 +525,7 @@ export default function CrowdfundingSignin() {
                         value={formData.otp}
                         onChange={handleChange}
                         maxLength={6}
-                        className={`${inputClass} text-center text-[25px] tracking-[12px] font-bold`}
+                        className={`${inputClass} text-center text-base tracking-[12px] font-bold`}
                         required
                       />
 
@@ -437,10 +551,14 @@ export default function CrowdfundingSignin() {
                     {/* VERIFY */}
                     <button
                       type="submit"
-                      className="group w-full h-13.5 flex items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] text-white text-[14px] font-bold shadow-[0_12px_25px_-12px_rgba(109,40,217,0.7)] hover:shadow-[0_16px_30px_-12px_rgba(109,40,217,0.8)] hover:-translate-y-0.5 transition-all"
+                      disabled={isVerifying}
+                      className="group w-full h-13.5 flex items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] text-white text-[14px] font-bold shadow-[0_12px_25px_-12px_rgba(109,40,217,0.7)] hover:shadow-[0_16px_30px_-12px_rgba(109,40,217,0.8)] hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                     >
-                      Verify and sign in
-                      <FiCheck className="group-hover:scale-110 transition-transform" />
+                      {isVerifying ? "Verifying..." : "Verify and sign in"}
+
+                      {!isVerifying && (
+                        <FiCheck className="group-hover:scale-110 transition-transform" />
+                      )}
                     </button>
 
                     <button
