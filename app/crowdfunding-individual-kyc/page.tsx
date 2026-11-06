@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const inputClass =
-  "mt-2 w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-[#190D2E] outline-none transition placeholder:text-zinc-400 focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100";
+  "mt-2 w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-base text-[#190D2E] outline-none transition placeholder:text-zinc-400 focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100";
 
 const labelClass = "text-xs font-semibold text-[#190D2E]";
 const API_BASE_URL = "https://api.tippified.com";
