@@ -644,32 +644,32 @@ export default function CrowdfundingDashboard() {
             </div>
           </section>
 
-          {/* ACCOUNT VERIFICATION NOTICE */}
-          {!account.is_email_verified && (
-            <section className="mb-8 flex flex-col gap-4 rounded-2xl border border-amber-100 bg-amber-50/70 p-5 md:flex-row md:items-center md:justify-between">
+          {/* INDIVIDUAL KYC NOTICE */}
+          {account.account_type === "individual" && (
+            <section className="mb-8 flex flex-col gap-4 rounded-2xl border border-purple-100 bg-purple-50/70 p-5 md:flex-row md:items-center md:justify-between">
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-amber-600">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#6D28D9]">
                   <FiShield size={18} />
                 </div>
 
                 <div>
-                  <h3 className="text-[12px] font-bold text-amber-900">
-                    Complete your account verification
+                  <h3 className="text-[12px] font-bold text-[#190D2E]">
+                    Complete your personal verification
                   </h3>
 
-                  <p className="mt-1 text-[11px] leading-5 text-amber-800/70">
-                    Verify your account to help establish trust with your
-                    supporters.
+                  <p className="mt-1 text-[11px] leading-5 text-zinc-500">
+                    Complete your KYC information to establish your identity and
+                    build trust with your supporters.
                   </p>
                 </div>
               </div>
 
               <button
                 type="button"
-                onClick={() => handleNavigation("Verification")}
-                className="flex items-center gap-2 text-[11px] font-bold text-amber-800"
+                onClick={() => router.push("/crowdfunding-individual-kyc")}
+                className="flex items-center gap-2 rounded-xl bg-[#6D28D9] px-5 py-3 text-[11px] font-bold text-white transition hover:bg-[#5B21B6]"
               >
-                Continue verification
+                Complete KYC
                 <FiArrowRight size={14} />
               </button>
             </section>
