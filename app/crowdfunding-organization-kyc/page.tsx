@@ -337,9 +337,15 @@ export default function OrganizationKYCPage() {
 
       const uploadURLResult: unknown = await uploadURLResponse.json();
 
+      // First check whether the backend request succeeded.
+      if (!uploadURLResponse.ok) {
+        throw new Error(getErrorMessage(uploadURLResult));
+      }
+
+      // Only validate the upload URL structure after a successful response.
       if (!isUploadURLResponse(uploadURLResult)) {
         throw new Error(
-          "Invalid upload URL response received from the server.",
+          "The server returned an unexpected upload URL response.",
         );
       }
 
