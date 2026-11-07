@@ -318,16 +318,24 @@ export default function CrowdfundingDashboard() {
   };
 
   const handleNavigation = (label: string) => {
-    if (label !== "Overview") {
-      setSidebarOpen(false);
+    setSidebarOpen(false);
 
-      // These dashboard sections will be connected
-      // as their respective features are implemented.
+    if (label === "Verification") {
+      if (account?.account_type === "organisation") {
+        router.push("/crowdfunding-organization-kyc");
+      } else {
+        router.push("/crowdfunding-individual-kyc");
+      }
 
       return;
     }
 
-    setSidebarOpen(false);
+    if (label === "Overview") {
+      return;
+    }
+
+    // Other dashboard sections will be connected
+    // as their respective features are implemented.
   };
 
   if (loading) {
@@ -670,6 +678,38 @@ export default function CrowdfundingDashboard() {
                 className="flex items-center gap-2 rounded-xl bg-[#6D28D9] px-5 py-3 text-[11px] font-bold text-white transition hover:bg-[#5B21B6]"
               >
                 Complete KYC
+                <FiArrowRight size={14} />
+              </button>
+            </section>
+          )}
+
+          {/* ORGANISATION KYC NOTICE */}
+          {account.account_type === "organisation" && (
+            <section className="mb-8 flex flex-col gap-4 rounded-2xl border border-purple-100 bg-purple-50/70 p-5 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#6D28D9]">
+                  <FiShield size={18} />
+                </div>
+
+                <div>
+                  <h3 className="text-[12px] font-bold text-[#190D2E]">
+                    Complete your organisation verification
+                  </h3>
+
+                  <p className="mt-1 text-[11px] leading-5 text-zinc-500">
+                    Upload your organisation&apos;s CAC certificate to verify
+                    your crowdfunding account and establish trust with your
+                    supporters.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => router.push("/crowdfunding-organization-kyc")}
+                className="flex items-center gap-2 rounded-xl bg-[#6D28D9] px-5 py-3 text-[11px] font-bold text-white transition hover:bg-[#5B21B6]"
+              >
+                Complete Organisation KYC
                 <FiArrowRight size={14} />
               </button>
             </section>
