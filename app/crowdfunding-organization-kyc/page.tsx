@@ -180,8 +180,6 @@ export default function OrganizationKYCPage() {
       const accountData: unknown = await accountResponse.json();
       const kycData: unknown = await kycResponse.json();
 
-      console.log("Crowdfunding /me response", accountData);
-
       if (!accountResponse.ok) {
         throw new Error(getErrorMessage(accountData));
       }
