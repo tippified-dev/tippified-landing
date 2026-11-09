@@ -1181,7 +1181,7 @@ export default function OrganizationCrowdfundingCampaignPage() {
                 }
                 className="flex items-center justify-center gap-2 rounded-xl bg-[#6D28D9] px-7 py-3.5 text-sm font-bold text-white transition hover:bg-[#5B21B6] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {submitting ? "Please wait..." : "Create campaign"}
+                {submitting ? "Wait..." : "Create campaign"}
                 {!submitting && <FiArrowRight size={16} />}
               </button>
             </div>
