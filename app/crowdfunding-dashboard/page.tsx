@@ -202,6 +202,23 @@ export default function CrowdfundingDashboard() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const [logoutError, setLogoutError] = useState("");
+  type OrganizationVerificationStatus =
+    | "incomplete"
+    | "pending"
+    | "approved"
+    | "rejected";
+
+  const [organizationKYCStatus, setOrganizationKYCStatus] =
+    useState<OrganizationVerificationStatus>("incomplete");
+
+  const [organizationKYCModalOpen, setOrganizationKYCModalOpen] =
+    useState(false);
+
+  const [checkingOrganizationKYC, setCheckingOrganizationKYC] = useState(false);
+
+  const [organizationKYCError, setOrganizationKYCError] = useState("");
+  const [organizationKYCRejectionReason, setOrganizationKYCRejectionReason] =
+    useState("");
 
   const fetchAccount = useCallback(async () => {
     setLoading(true);
@@ -251,6 +268,68 @@ export default function CrowdfundingDashboard() {
   useEffect(() => {
     fetchAccount();
   }, [fetchAccount]);
+
+  const handleStartCampaign = async () => {
+    if (account?.account_type !== "organisation") {
+      return;
+    }
+
+    setCheckingOrganizationKYC(true);
+    setOrganizationKYCError("");
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/crowdfunding/organization-kyc/`,
+        {
+          method: "GET",
+          credentials: "include",
+          cache: "no-store",
+          headers: {
+            Accept: "application/json",
+          },
+        },
+      );
+
+      const data: {
+        verification_status?: OrganizationVerificationStatus;
+        rejection_reason?: string;
+        detail?: string;
+      } = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.detail || "Unable to check your organisation verification.",
+        );
+      }
+
+      const validStatuses: OrganizationVerificationStatus[] = [
+        "incomplete",
+        "pending",
+        "approved",
+        "rejected",
+      ];
+
+      const status = validStatuses.includes(
+        data.verification_status as OrganizationVerificationStatus,
+      )
+        ? (data.verification_status as OrganizationVerificationStatus)
+        : "incomplete";
+
+      setOrganizationKYCStatus(status);
+      setOrganizationKYCRejectionReason(data.rejection_reason || "");
+      setOrganizationKYCModalOpen(true);
+    } catch (error) {
+      setOrganizationKYCError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again.",
+      );
+
+      setOrganizationKYCModalOpen(true);
+    } finally {
+      setCheckingOrganizationKYC(false);
+    }
+  };
 
   const accountName = account ? getAccountName(account) : "Your account";
 
@@ -637,13 +716,19 @@ export default function CrowdfundingDashboard() {
               <button
                 type="button"
                 onClick={() => {
-                  // Campaign creation will be connected in the next stage.
-                  alert("Campaign creation is coming next.");
+                  if (account.account_type === "organisation") {
+                    handleStartCampaign();
+                  } else {
+                    alert("Individual campaign creation is coming next.");
+                  }
                 }}
+                disabled={checkingOrganizationKYC}
                 className="group flex h-12 items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] px-6 text-[12px] font-bold text-white shadow-[0_12px_25px_-12px_rgba(109,40,217,0.65)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_30px_-12px_rgba(109,40,217,0.8)]"
               >
                 <FiPlus size={17} />
-                Create a campaign
+                {checkingOrganizationKYC
+                  ? "Checking verification..."
+                  : "Create a campaign"}
                 <FiArrowRight
                   size={14}
                   className="transition-transform group-hover:translate-x-1"
@@ -787,8 +872,13 @@ export default function CrowdfundingDashboard() {
                 <button
                   type="button"
                   onClick={() => {
-                    alert("Campaign creation is coming next.");
+                    if (account.account_type === "organisation") {
+                      handleStartCampaign();
+                    } else {
+                      alert("Individual campaign creation is coming next.");
+                    }
                   }}
+                  disabled={checkingOrganizationKYC}
                   className="mt-5 inline-flex items-center gap-2 text-[11px] font-bold text-[#6D28D9] hover:text-[#4C1D95]"
                 >
                   Start your first campaign
@@ -932,6 +1022,121 @@ export default function CrowdfundingDashboard() {
           </footer>
         </div>
       </div>
+      {/* ORGANISATION KYC MODAL */}
+      {organizationKYCModalOpen && (
+        <div
+          className="fixed inset-0 z-100 flex items-center justify-center bg-[#190D2E]/45 px-5 backdrop-blur-sm"
+          onClick={() => setOrganizationKYCModalOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="organization-kyc-modal-title"
+            className="w-full max-w-md overflow-hidden rounded-[28px] border border-white/70 bg-white shadow-[0_30px_100px_-25px_rgba(25,13,46,0.35)]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="relative flex justify-center px-7 pt-9">
+              <button
+                type="button"
+                onClick={() => setOrganizationKYCModalOpen(false)}
+                className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700"
+                aria-label="Close modal"
+              >
+                <FiX size={18} />
+              </button>
+
+              <div
+                className={`flex h-17 w-17 items-center justify-center rounded-[22px] ${
+                  organizationKYCError || organizationKYCStatus === "rejected"
+                    ? "bg-red-50 text-red-500"
+                    : organizationKYCStatus === "approved"
+                      ? "bg-emerald-50 text-emerald-600"
+                      : "bg-purple-50 text-[#6D28D9]"
+                }`}
+              >
+                {organizationKYCStatus === "approved" ? (
+                  <FiCheckCircle size={28} />
+                ) : (
+                  <FiShield size={28} />
+                )}
+              </div>
+            </div>
+
+            <div className="px-7 pb-8 pt-6 text-center">
+              <h3
+                id="organization-kyc-modal-title"
+                className="text-[20px] font-black tracking-tight text-[#190D2E]"
+              >
+                {organizationKYCError
+                  ? "Unable to verify your account"
+                  : organizationKYCStatus === "approved"
+                    ? "Organisation verified"
+                    : organizationKYCStatus === "pending"
+                      ? "Verification in progress"
+                      : organizationKYCStatus === "rejected"
+                        ? "Verification needs attention"
+                        : "Complete your organisation verification"}
+              </h3>
+
+              <p className="mx-auto mt-3 max-w-sm text-[12px] leading-6 text-zinc-500">
+                {organizationKYCError
+                  ? organizationKYCError
+                  : organizationKYCStatus === "approved"
+                    ? "Your organisation has successfully passed verification. You are eligible to start a crowdfunding campaign."
+                    : organizationKYCStatus === "pending"
+                      ? "Your CAC certificate has been submitted and is currently being reviewed. You can start a campaign once your organisation receives approval."
+                      : organizationKYCStatus === "rejected"
+                        ? "Your organisation verification was not approved. Please review the reason below and update your verification information."
+                        : "Before you can start a crowdfunding campaign, your organisation must complete KYC verification and receive approval from Tippified."}
+              </p>
+
+              {organizationKYCStatus === "rejected" &&
+                organizationKYCRejectionReason && (
+                  <div className="mt-5 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-left">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-red-500">
+                      Reason for rejection
+                    </p>
+
+                    <p className="mt-2 text-[11px] leading-5 text-red-700">
+                      {organizationKYCRejectionReason}
+                    </p>
+                  </div>
+                )}
+
+              <div className="mt-8 space-y-3">
+                {!organizationKYCError &&
+                  organizationKYCStatus !== "approved" && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOrganizationKYCModalOpen(false);
+                        router.push("/crowdfunding-organization-kyc");
+                      }}
+                      className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#6D28D9] text-[12px] font-bold text-white transition hover:bg-[#5B21B6]"
+                    >
+                      {organizationKYCStatus === "pending"
+                        ? "View verification status"
+                        : organizationKYCStatus === "rejected"
+                          ? "Review and resubmit KYC"
+                          : "Complete organisation KYC"}
+
+                      <FiArrowRight size={15} />
+                    </button>
+                  )}
+
+                <button
+                  type="button"
+                  onClick={() => setOrganizationKYCModalOpen(false)}
+                  className="flex h-12 w-full items-center justify-center rounded-xl border border-zinc-200 bg-white text-[12px] font-bold text-zinc-600 transition hover:bg-zinc-50"
+                >
+                  {organizationKYCStatus === "approved" ? "Continue" : "Close"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* SIGN OUT CONFIRMATION MODAL */}
       {logoutModalOpen && (
         <div
