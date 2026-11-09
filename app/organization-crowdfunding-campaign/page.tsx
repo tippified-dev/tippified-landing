@@ -291,6 +291,8 @@ export default function OrganizationCrowdfundingCampaignPage() {
         );
 
         const result: unknown = await response.json();
+        console.log("CATEGORY RESPONSE", result);
+        console.log("EXTRACTED CATEGORIES", extractCategories(response));
 
         if (!response.ok) {
           throw new Error(getErrorMessage(result));
