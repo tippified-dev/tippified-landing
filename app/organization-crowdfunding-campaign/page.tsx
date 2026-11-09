@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type FormEvent,
@@ -13,9 +14,13 @@ import {
   FiArrowRight,
   FiCheckCircle,
   FiChevronDown,
+  FiCreditCard,
+  FiLock,
   FiPlus,
   FiSearch,
+  FiShield,
   FiTrash2,
+  FiUpload,
 } from "react-icons/fi";
 
 const API_BASE_URL = "https://api.tippified.com";
@@ -100,54 +105,53 @@ const DISBURSEMENT_OPTIONS: {
   },
 ];
 
+// ---------- Original palette only: #F8F7FC, #190D2E, #6D28D9 / #5B21B6, zinc, purple-50/100, green, red, amber ----------
+// All inputs are text-base (16px) — this is what stops iOS Safari auto-zoom.
+const INPUT_CLASS =
+  "w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-base text-zinc-900 placeholder:text-zinc-400 shadow-sm outline-none transition placeholder:font-normal focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100 disabled:cursor-not-allowed disabled:bg-zinc-50 disabled:text-zinc-400";
+
+const TEXTAREA_CLASS =
+  "w-full resize-y rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-base leading-7 text-zinc-900 placeholder:text-zinc-400 shadow-sm outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100";
+
+const SELECT_CLASS =
+  "w-full appearance-none rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-base text-zinc-900 shadow-sm outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100";
+
+const DROPDOWN_BUTTON_CLASS =
+  "flex w-full items-center justify-between gap-3 rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-left text-base text-zinc-900 shadow-sm outline-none transition hover:border-[#6D28D9] focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100 disabled:cursor-not-allowed disabled:bg-zinc-50";
+
+const LABEL_CLASS =
+  "mb-2 flex items-center justify-between text-sm font-semibold text-zinc-700";
+
 function getErrorMessage(payload: unknown): string {
   if (typeof payload !== "object" || payload === null) {
     return "Something went wrong. Please try again.";
   }
-
   const data = payload as Record<string, unknown>;
-
   for (const key of ["detail", "error", "message"]) {
     const value = data[key];
-
-    if (typeof value === "string") {
-      return value;
-    }
-
-    if (Array.isArray(value)) {
-      return value.join(" ");
-    }
+    if (typeof value === "string") return value;
+    if (Array.isArray(value)) return value.join(" ");
   }
-
   const fieldErrors = Object.entries(data)
     .filter(([, value]) => Array.isArray(value))
     .map(([field, value]) => {
       const messages = (value as unknown[]).filter(
         (item): item is string => typeof item === "string",
       );
-
       return `${field}: ${messages.join(" ")}`;
     });
-
-  if (fieldErrors.length > 0) {
-    return fieldErrors.join(" ");
-  }
-
+  if (fieldErrors.length > 0) return fieldErrors.join(" ");
   return "Something went wrong. Please check your information and try again.";
 }
 
 function formatAmount(value: string): string {
   const cleaned = value.replace(/[^\d.]/g, "");
   const decimalIndex = cleaned.indexOf(".");
-
   const integerPart =
     decimalIndex === -1 ? cleaned : cleaned.slice(0, decimalIndex);
-
   const decimalPart =
     decimalIndex === -1 ? "" : cleaned.slice(decimalIndex + 1);
-
   const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
   return decimalIndex === -1
     ? formattedInteger
     : `${formattedInteger}.${decimalPart.slice(0, 2)}`;
@@ -174,23 +178,13 @@ function createBeneficiary(): BeneficiaryAccount {
 }
 
 function extractCategories(result: unknown): CampaignCategory[] {
-  if (Array.isArray(result)) {
-    return result as CampaignCategory[];
-  }
-
-  if (typeof result !== "object" || result === null) {
-    return [];
-  }
-
+  if (Array.isArray(result)) return result as CampaignCategory[];
+  if (typeof result !== "object" || result === null) return [];
   const data = result as Record<string, unknown>;
   const possibleLists = [data.data, data.results, data.categories];
-
   for (const list of possibleLists) {
-    if (Array.isArray(list)) {
-      return list as CampaignCategory[];
-    }
+    if (Array.isArray(list)) return list as CampaignCategory[];
   }
-
   return [];
 }
 
@@ -212,11 +206,9 @@ export default function OrganizationCrowdfundingCampaignPage() {
   const [activeDropdown, setActiveDropdown] = useState<
     "category" | "disbursement" | null
   >(null);
-
   const [activeBankDropdown, setActiveBankDropdown] = useState<string | null>(
     null,
   );
-
   const [bankSearch, setBankSearch] = useState("");
 
   const [name, setName] = useState("");
@@ -244,7 +236,6 @@ export default function OrganizationCrowdfundingCampaignPage() {
   const selectedCategory = categories.find(
     (item) => String(item.id) === category,
   );
-
   const selectedDisbursement = DISBURSEMENT_OPTIONS.find(
     (item) => item.value === disbursementMode,
   );
@@ -269,40 +260,37 @@ export default function OrganizationCrowdfundingCampaignPage() {
     ) &&
     Math.abs(totalAllocation - 100) < 0.001;
 
+  const bannerPreview = useMemo(() => {
+    if (!banner) return null;
+    return URL.createObjectURL(banner);
+  }, [banner]);
+
+  useEffect(() => {
+    return () => {
+      if (bannerPreview) URL.revokeObjectURL(bannerPreview);
+    };
+  }, [bannerPreview]);
+
   // Load campaign categories.
   useEffect(() => {
     let cancelled = false;
-
     async function loadCategories() {
       try {
         setLoadingCategories(true);
         setCategoryError("");
-
         const response = await fetch(
           `${API_BASE_URL}/api/crowdfunding/categories/`,
           {
             method: "GET",
             credentials: "include",
-            headers: {
-              Accept: "application/json",
-            },
+            headers: { Accept: "application/json" },
             cache: "no-store",
           },
         );
-
         const result: unknown = await response.json();
-        console.log("CATEGORY RESPONSE", result);
-        console.log("EXTRACTED CATEGORIES", extractCategories(response));
-
-        if (!response.ok) {
-          throw new Error(getErrorMessage(result));
-        }
-
+        if (!response.ok) throw new Error(getErrorMessage(result));
         const categoryList = extractCategories(result);
-
-        if (!cancelled) {
-          setCategories(categoryList);
-        }
+        if (!cancelled) setCategories(categoryList);
       } catch (err) {
         if (!cancelled) {
           setCategoryError(
@@ -312,14 +300,10 @@ export default function OrganizationCrowdfundingCampaignPage() {
           );
         }
       } finally {
-        if (!cancelled) {
-          setLoadingCategories(false);
-        }
+        if (!cancelled) setLoadingCategories(false);
       }
     }
-
     void loadCategories();
-
     return () => {
       cancelled = true;
     };
@@ -328,30 +312,21 @@ export default function OrganizationCrowdfundingCampaignPage() {
   // Load Nigerian banks from Paystack through the backend.
   useEffect(() => {
     let cancelled = false;
-
     async function loadBanks() {
       try {
         setLoadingBanks(true);
         setBankError("");
-
         const response = await fetch(
           `${API_BASE_URL}/api/crowdfunding/banks/`,
           {
             method: "GET",
             credentials: "include",
-            headers: {
-              Accept: "application/json",
-            },
+            headers: { Accept: "application/json" },
             cache: "no-store",
           },
         );
-
         const result: unknown = await response.json();
-
-        if (!response.ok) {
-          throw new Error(getErrorMessage(result));
-        }
-
+        if (!response.ok) throw new Error(getErrorMessage(result));
         if (
           typeof result !== "object" ||
           result === null ||
@@ -360,7 +335,6 @@ export default function OrganizationCrowdfundingCampaignPage() {
         ) {
           throw new Error("The server returned an invalid bank list.");
         }
-
         const bankList: CampaignBank[] = result.banks
           .filter(
             (bank): bank is Record<string, unknown> =>
@@ -375,10 +349,8 @@ export default function OrganizationCrowdfundingCampaignPage() {
                 : "",
           }))
           .filter((bank) => bank.name !== "" && bank.code !== "");
-
         if (!cancelled) {
           setBanks(bankList);
-
           if (bankList.length === 0) {
             setBankError("No Nigerian banks are currently available.");
           }
@@ -392,14 +364,10 @@ export default function OrganizationCrowdfundingCampaignPage() {
           );
         }
       } finally {
-        if (!cancelled) {
-          setLoadingBanks(false);
-        }
+        if (!cancelled) setLoadingBanks(false);
       }
     }
-
     void loadBanks();
-
     return () => {
       cancelled = true;
     };
@@ -409,7 +377,6 @@ export default function OrganizationCrowdfundingCampaignPage() {
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
       const target = event.target as Node;
-
       if (
         categoryDropdownRef.current &&
         !categoryDropdownRef.current.contains(target)
@@ -418,7 +385,6 @@ export default function OrganizationCrowdfundingCampaignPage() {
           current === "category" ? null : current,
         );
       }
-
       if (
         disbursementDropdownRef.current &&
         !disbursementDropdownRef.current.contains(target)
@@ -427,7 +393,6 @@ export default function OrganizationCrowdfundingCampaignPage() {
           current === "disbursement" ? null : current,
         );
       }
-
       if (
         bankDropdownRef.current &&
         !bankDropdownRef.current.contains(target)
@@ -436,9 +401,7 @@ export default function OrganizationCrowdfundingCampaignPage() {
         setBankSearch("");
       }
     }
-
     document.addEventListener("mousedown", handleOutsideClick);
-
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
@@ -448,34 +411,30 @@ export default function OrganizationCrowdfundingCampaignPage() {
   const resolveBeneficiaryAccount = useCallback(
     async (beneficiaryId: string, accountNumber: string, bankCode: string) => {
       setBeneficiaries((current) =>
-        current.map((beneficiary) =>
-          beneficiary.id === beneficiaryId
-            ? {
-                ...beneficiary,
-                account_name: "",
-                resolved_account_name: "",
-                resolution_status: "resolving",
-                resolution_message: "Checking account details...",
-              }
-            : beneficiary,
+        current.map(
+          (beneficiary): BeneficiaryAccount =>
+            beneficiary.id === beneficiaryId
+              ? {
+                  ...beneficiary,
+                  account_name: "",
+                  resolved_account_name: "",
+                  resolution_status: "resolving",
+                  resolution_message: "Checking account details...",
+                }
+              : beneficiary,
         ),
       );
-
       try {
         const csrfResponse = await fetch(
           `${API_BASE_URL}/api/crowdfunding/csrf/`,
           {
             method: "GET",
             credentials: "include",
-            headers: {
-              Accept: "application/json",
-            },
+            headers: { Accept: "application/json" },
             cache: "no-store",
           },
         );
-
         const csrfResult: unknown = await csrfResponse.json();
-
         if (
           !csrfResponse.ok ||
           typeof csrfResult !== "object" ||
@@ -485,7 +444,6 @@ export default function OrganizationCrowdfundingCampaignPage() {
         ) {
           throw new Error("Unable to verify your session. Please try again.");
         }
-
         const response = await fetch(
           `${API_BASE_URL}/api/crowdfunding/resolve-bank-account/`,
           {
@@ -502,13 +460,8 @@ export default function OrganizationCrowdfundingCampaignPage() {
             }),
           },
         );
-
         const result: unknown = await response.json();
-
-        if (!response.ok) {
-          throw new Error(getErrorMessage(result));
-        }
-
+        if (!response.ok) throw new Error(getErrorMessage(result));
         if (
           typeof result !== "object" ||
           result === null ||
@@ -518,41 +471,41 @@ export default function OrganizationCrowdfundingCampaignPage() {
         ) {
           throw new Error("Paystack could not resolve this account.");
         }
-
         const resolvedName = result.account_name.trim();
-
         setBeneficiaries((current) =>
-          current.map((beneficiary) =>
-            beneficiary.id === beneficiaryId &&
-            beneficiary.account_number === accountNumber &&
-            beneficiary.bank_code === bankCode
-              ? {
-                  ...beneficiary,
-                  resolved_account_name: resolvedName,
-                  resolution_status: "resolved",
-                  resolution_message:
-                    "We found an account name. Please confirm it below.",
-                }
-              : beneficiary,
+          current.map(
+            (beneficiary): BeneficiaryAccount =>
+              beneficiary.id === beneficiaryId &&
+              beneficiary.account_number === accountNumber &&
+              beneficiary.bank_code === bankCode
+                ? {
+                    ...beneficiary,
+                    resolved_account_name: resolvedName,
+                    resolution_status: "resolved",
+                    resolution_message:
+                      "We found an account name. Please confirm it below.",
+                  }
+                : beneficiary,
           ),
         );
       } catch (err) {
         setBeneficiaries((current) =>
-          current.map((beneficiary) =>
-            beneficiary.id === beneficiaryId &&
-            beneficiary.account_number === accountNumber &&
-            beneficiary.bank_code === bankCode
-              ? {
-                  ...beneficiary,
-                  account_name: "",
-                  resolved_account_name: "",
-                  resolution_status: "error",
-                  resolution_message:
-                    err instanceof Error
-                      ? err.message
-                      : "Unable to verify this account.",
-                }
-              : beneficiary,
+          current.map(
+            (beneficiary): BeneficiaryAccount =>
+              beneficiary.id === beneficiaryId &&
+              beneficiary.account_number === accountNumber &&
+              beneficiary.bank_code === bankCode
+                ? {
+                    ...beneficiary,
+                    account_name: "",
+                    resolved_account_name: "",
+                    resolution_status: "error",
+                    resolution_message:
+                      err instanceof Error
+                        ? err.message
+                        : "Unable to verify this account.",
+                  }
+                : beneficiary,
           ),
         );
       }
@@ -563,7 +516,6 @@ export default function OrganizationCrowdfundingCampaignPage() {
   // Automatically resolve after the user enters a complete account number.
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
-
     beneficiaries.forEach((beneficiary) => {
       if (
         !beneficiary.bank_code ||
@@ -572,7 +524,6 @@ export default function OrganizationCrowdfundingCampaignPage() {
       ) {
         return;
       }
-
       const timer = setTimeout(() => {
         void resolveBeneficiaryAccount(
           beneficiary.id,
@@ -580,10 +531,8 @@ export default function OrganizationCrowdfundingCampaignPage() {
           beneficiary.bank_code,
         );
       }, 600);
-
       timers.push(timer);
     });
-
     return () => {
       timers.forEach(clearTimeout);
     };
@@ -594,15 +543,15 @@ export default function OrganizationCrowdfundingCampaignPage() {
     field: keyof Omit<BeneficiaryAccount, "id">,
     value: string,
   ) {
+    // Account name is NEVER manually editable — it comes only from Paystack.
+    if (field === "account_name" || field === "resolved_account_name") return;
+
     setBeneficiaries((current) =>
-      current.map((beneficiary) => {
-        if (beneficiary.id !== id) {
-          return beneficiary;
-        }
+      current.map((beneficiary): BeneficiaryAccount => {
+        if (beneficiary.id !== id) return beneficiary;
 
         if (field === "bank_code") {
           const selectedBank = banks.find((bank) => bank.code === value);
-
           return {
             ...beneficiary,
             bank_code: value,
@@ -613,7 +562,6 @@ export default function OrganizationCrowdfundingCampaignPage() {
             resolution_message: "",
           };
         }
-
         if (field === "account_number") {
           return {
             ...beneficiary,
@@ -624,11 +572,24 @@ export default function OrganizationCrowdfundingCampaignPage() {
             resolution_message: "",
           };
         }
-
+        if (field === "beneficiary_type") {
+          return {
+            ...beneficiary,
+            beneficiary_type: value as BeneficiaryType,
+          };
+        }
+        if (field === "resolution_status") {
+          return {
+            ...beneficiary,
+            resolution_status: value as AccountResolutionStatus,
+          };
+        }
+        // Remaining fields are all plain strings:
+        // beneficiary_name, bank_name, allocation_percentage, resolution_message
         return {
           ...beneficiary,
           [field]: value,
-        };
+        } as BeneficiaryAccount;
       }),
     );
   }
@@ -641,16 +602,17 @@ export default function OrganizationCrowdfundingCampaignPage() {
 
   function confirmResolvedAccount(beneficiaryId: string) {
     setBeneficiaries((current) =>
-      current.map((beneficiary) =>
-        beneficiary.id === beneficiaryId &&
-        beneficiary.resolution_status === "resolved"
-          ? {
-              ...beneficiary,
-              account_name: beneficiary.resolved_account_name,
-              resolution_status: "verified",
-              resolution_message: "Account name confirmed.",
-            }
-          : beneficiary,
+      current.map(
+        (beneficiary): BeneficiaryAccount =>
+          beneficiary.id === beneficiaryId &&
+          beneficiary.resolution_status === "resolved"
+            ? {
+                ...beneficiary,
+                account_name: beneficiary.resolved_account_name,
+                resolution_status: "verified",
+                resolution_message: "Account name confirmed.",
+              }
+            : beneficiary,
       ),
     );
   }
@@ -667,80 +629,60 @@ export default function OrganizationCrowdfundingCampaignPage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     setError("");
-
     if (!banner) {
       setError("Please select a campaign banner image.");
       return;
     }
-
     if (!category) {
       setError("Please select a campaign category.");
       return;
     }
-
     if (getNumericAmount(targetAmount) <= 0) {
       setError("Your fundraising target must be greater than zero.");
       return;
     }
-
     if (!allocationsAreValid) {
       setError(
         "Please complete every beneficiary account, confirm each resolved account name and ensure allocations total exactly 100%.",
       );
       return;
     }
-
     const allowedImageTypes: Record<string, string> = {
       "image/jpeg": "jpg",
       "image/png": "png",
       "image/webp": "webp",
     };
-
     const extension = allowedImageTypes[banner.type];
-
     if (!extension) {
       setError("Please select a JPG, PNG or WEBP image.");
       return;
     }
-
     if (banner.size > MAX_BANNER_SIZE) {
       setError("Your campaign banner cannot exceed 10 MB.");
       return;
     }
-
     try {
       setSubmitting(true);
-
-      // Step 1: Obtain CSRF token.
       setSubmitStatus("Verifying your session...");
-
       const csrfResponse = await fetch(
         `${API_BASE_URL}/api/crowdfunding/csrf/`,
         {
           method: "GET",
           credentials: "include",
-          headers: {
-            Accept: "application/json",
-          },
+          headers: { Accept: "application/json" },
           cache: "no-store",
         },
       );
-
       const csrfResult: ApiErrorResponse = await csrfResponse.json();
-
       if (!csrfResponse.ok || !csrfResult.csrfToken) {
         throw new Error(
           "Unable to verify your session. Please refresh and try again.",
         );
       }
-
       const csrfToken = csrfResult.csrfToken;
 
-      // Step 2: Request secure R2 upload URL.
       setSubmitStatus("Preparing your campaign image...");
-
       const uploadUrlResponse = await fetch(
         `${API_BASE_URL}/api/crowdfunding/organization-campaigns/upload-image/`,
         {
@@ -758,15 +700,10 @@ export default function OrganizationCrowdfundingCampaignPage() {
           }),
         },
       );
-
       const uploadUrlResult: unknown = await uploadUrlResponse.json();
-
-      if (!uploadUrlResponse.ok) {
+      if (!uploadUrlResponse.ok)
         throw new Error(getErrorMessage(uploadUrlResult));
-      }
-
       const uploadDetails = uploadUrlResult as CampaignImageUploadResponse;
-
       if (
         !uploadDetails.upload_url ||
         !uploadDetails.object_key ||
@@ -777,24 +714,19 @@ export default function OrganizationCrowdfundingCampaignPage() {
         );
       }
 
-      // Step 3: Upload directly to Cloudflare R2.
       setSubmitStatus("Uploading your campaign image...");
-
       const imageUploadResponse = await fetch(uploadDetails.upload_url, {
         method: "PUT",
         headers: uploadDetails.required_headers,
         body: banner,
       });
-
       if (!imageUploadResponse.ok) {
         throw new Error(
           "Your campaign image could not be uploaded. Please try again.",
         );
       }
 
-      // Step 4: Confirm R2 upload.
       setSubmitStatus("Verifying your campaign image...");
-
       const completeUploadResponse = await fetch(
         `${API_BASE_URL}/api/crowdfunding/organization-campaigns/complete-image-upload/`,
         {
@@ -805,28 +737,20 @@ export default function OrganizationCrowdfundingCampaignPage() {
             "Content-Type": "application/json",
             "X-CSRFToken": csrfToken,
           },
-          body: JSON.stringify({
-            object_key: uploadDetails.object_key,
-          }),
+          body: JSON.stringify({ object_key: uploadDetails.object_key }),
         },
       );
-
       const completeUploadResult: unknown = await completeUploadResponse.json();
-
       if (!completeUploadResponse.ok) {
         throw new Error(getErrorMessage(completeUploadResult));
       }
-
       const completedImage =
         completeUploadResult as CampaignImageCompleteResponse;
-
       if (!completedImage.object_key) {
         throw new Error("The server could not confirm your campaign image.");
       }
 
-      // Step 5: Create campaign.
       setSubmitStatus("Creating your campaign...");
-
       const campaignResponse = await fetch(
         `${API_BASE_URL}/api/crowdfunding/organization-campaigns/create/`,
         {
@@ -862,13 +786,9 @@ export default function OrganizationCrowdfundingCampaignPage() {
           }),
         },
       );
-
       const campaignResult: unknown = await campaignResponse.json();
-
-      if (!campaignResponse.ok) {
+      if (!campaignResponse.ok)
         throw new Error(getErrorMessage(campaignResult));
-      }
-
       setCampaignCreated(true);
     } catch (err) {
       setError(
@@ -885,151 +805,155 @@ export default function OrganizationCrowdfundingCampaignPage() {
   if (campaignCreated) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#F8F7FC] px-5 py-12">
-        <div className="w-full max-w-lg rounded-3xl border border-zinc-100 bg-white p-8 text-center shadow-sm md:p-12">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-50 text-green-600">
-            <FiCheckCircle size={34} />
+        <div className="w-full max-w-lg overflow-hidden rounded-3xl border border-zinc-100 bg-white text-center shadow-sm">
+          <div className="bg-[#190D2E] px-8 pb-8 pt-10">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20">
+              <FiCheckCircle size={32} className="text-green-300" />
+            </div>
+            <h1 className="mt-5 text-2xl font-black tracking-tight text-white">
+              Campaign created
+            </h1>
+            <p className="mt-2 text-base leading-7 text-white/70">
+              Your campaign has been saved as a draft. Continue the remaining
+              setup from your dashboard.
+            </p>
           </div>
-
-          <h1 className="mt-6 text-2xl font-black text-[#190D2E]">
-            Campaign created successfully!
-          </h1>
-
-          <p className="mt-3 text-sm leading-7 text-zinc-500">
-            Your campaign has been saved as a draft. You can continue with the
-            remaining campaign setup from your dashboard.
-          </p>
-
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="mt-8 w-full rounded-xl bg-[#6D28D9] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#5B21B6]"
-          >
-            Return to dashboard
-          </button>
+          <div className="p-6 md:p-8">
+            <button
+              type="button"
+              onClick={() => router.back()}
+              className="w-full rounded-xl bg-[#6D28D9] px-6 py-3.5 text-base font-bold text-white transition hover:bg-[#5B21B6] active:scale-[0.99]"
+            >
+              Return to dashboard
+            </button>
+          </div>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#F8F7FC] px-5 py-8 md:px-10">
-      <div className="mx-auto max-w-5xl">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="mb-8 flex items-center gap-2 text-sm font-semibold text-zinc-500 transition hover:text-[#6D28D9]"
-        >
-          <FiArrowLeft size={17} />
-          Back to dashboard
-        </button>
-
-        <div className="mb-8">
-          <span className="text-xs font-bold uppercase tracking-[0.18em] text-[#6D28D9]">
-            Tippified Crowdfunding
+    <main className="min-h-screen bg-[#F8F7FC] px-4 py-6 antialiased sm:px-6 md:px-10 md:py-10">
+      <div className="mx-auto max-w-220">
+        {/* Top bar */}
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-500 shadow-sm transition hover:border-zinc-300 hover:text-[#6D28D9]"
+          >
+            <FiArrowLeft size={16} />
+            Back to dashboard
+          </button>
+          <span className="hidden rounded-full bg-white px-4 py-2 text-xs font-bold text-[#6D28D9] shadow-sm ring-1 ring-purple-100 sm:block">
+            Organisation campaign
           </span>
-
-          <h1 className="mt-3 text-3xl font-black tracking-tight text-[#190D2E] md:text-4xl">
-            Create your campaign
-          </h1>
-
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-zinc-500">
-            Tell people about your organisation, what you are raising funds for,
-            and how their contributions will make a difference.
-          </p>
         </div>
 
-        <div className="rounded-3xl border border-zinc-100 bg-white p-6 shadow-sm md:p-10">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="text-sm font-bold text-[#190D2E]">
-                Campaign information
-              </p>
-              <p className="mt-1 text-xs text-zinc-400">Step 1 of 4</p>
-            </div>
-
-            <span className="rounded-full bg-purple-50 px-4 py-2 text-xs font-bold text-[#6D28D9]">
-              Organisation campaign
+        {/* Hero — original dark text color as background */}
+        <div className="relative overflow-hidden rounded-3xl bg-[#190D2E] p-6 text-white shadow-sm md:p-8">
+          <div className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-[#6D28D9]/50 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 left-1/3 h-56 w-56 rounded-full bg-[#6D28D9]/30 blur-3xl" />
+          <div className="relative">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-white/90 ring-1 ring-white/15">
+              <FiShield size={13} />
+              Tippified Crowdfunding
             </span>
+            <h1 className="mt-4 text-[32px] font-black leading-[1.1] tracking-tight md:text-[40px]">
+              Create your campaign
+            </h1>
+            <p className="mt-3 max-w-xl text-base leading-7 text-white/70">
+              Tell people about your organisation, what you are raising funds
+              for, and how their contributions will make a difference.
+            </p>
+            <div className="mt-6 flex items-center gap-3">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/15">
+                <div className="h-full w-1/4 rounded-full bg-white" />
+              </div>
+              <span className="text-xs font-bold text-white/70">
+                Step 1 of 4
+              </span>
+            </div>
           </div>
+        </div>
 
-          <div className="mt-6 h-1.5 overflow-hidden rounded-full bg-zinc-100">
-            <div className="h-full w-1/4 rounded-full bg-[#6D28D9]" />
-          </div>
-
-          <form onSubmit={handleSubmit} className="mt-10 space-y-8">
+        {/* Form card */}
+        <div className="mt-6 rounded-3xl border border-zinc-100 bg-white p-5 shadow-sm sm:p-7 md:p-9">
+          <form onSubmit={handleSubmit} className="space-y-10">
             {/* BASIC INFORMATION */}
-
             <section>
-              <h2 className="text-lg font-bold text-[#190D2E]">
-                Basic information
-              </h2>
-
-              <p className="mt-1 text-sm text-zinc-500">
-                Give your campaign a clear identity.
-              </p>
+              <div className="flex items-start gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#6D28D9] text-sm font-bold text-white">
+                  1
+                </span>
+                <div>
+                  <h2 className="text-lg font-bold text-[#190D2E]">
+                    Basic information
+                  </h2>
+                  <p className="mt-0.5 text-sm leading-6 text-zinc-500">
+                    Give your campaign a clear identity.
+                  </p>
+                </div>
+              </div>
 
               <div className="mt-6 space-y-5">
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                    Campaign name *
+                  <label htmlFor="campaign-name" className={LABEL_CLASS}>
+                    <span>Campaign name *</span>
+                    <span className="text-xs font-medium text-zinc-400">
+                      {name.length}/255
+                    </span>
                   </label>
-
                   <input
+                    id="campaign-name"
                     type="text"
+                    autoComplete="organization"
                     required
                     maxLength={255}
                     value={name}
-                    onChange={(event) => setName(event.target.value)}
+                    onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your campaign name"
-                    className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100"
+                    className={INPUT_CLASS}
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                    Campaign story *
+                  <label htmlFor="campaign-story" className={LABEL_CLASS}>
+                    <span>Campaign story *</span>
                   </label>
-
                   <textarea
+                    id="campaign-story"
                     required
-                    rows={7}
+                    rows={6}
                     value={about}
-                    onChange={(event) => setAbout(event.target.value)}
+                    onChange={(e) => setAbout(e.target.value)}
                     placeholder="Explain what you are raising funds for, why it matters, and how the money will be used."
-                    className="w-full resize-y rounded-xl border border-zinc-200 px-4 py-3 text-sm leading-6 outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100"
+                    className={TEXTAREA_CLASS}
                   />
-
-                  <p className="mt-2 text-xs text-zinc-400">
+                  <p className="mt-2 text-xs leading-5 text-zinc-400">
                     Make your story clear, informative and easy for supporters
                     to understand.
                   </p>
                 </div>
 
-                {/* CATEGORY DROPDOWN */}
-
+                {/* CATEGORY */}
                 <div ref={categoryDropdownRef} className="relative">
-                  <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                    Campaign category *
+                  <label className={LABEL_CLASS}>
+                    <span>Campaign category *</span>
                   </label>
-
                   <button
                     type="button"
-                    disabled={false}
-                    onClick={() => {
-                      console.log("CATEGORY BUTTON CLICKED");
-                      console.log("Loading:", loadingCategories);
-                      console.log("Categories:", categories.length);
-
-                      setActiveDropdown((current) =>
-                        current === "category" ? null : "category",
-                      );
-                    }}
-                    className="flex w-full items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-3 text-left text-sm outline-none transition hover:border-[#6D28D9] focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100 disabled:cursor-not-allowed disabled:bg-zinc-50"
+                    onClick={() =>
+                      setActiveDropdown((c) =>
+                        c === "category" ? null : "category",
+                      )
+                    }
+                    className={DROPDOWN_BUTTON_CLASS}
                   >
                     <span
                       className={
                         selectedCategory
-                          ? "font-medium text-zinc-800"
+                          ? "font-semibold text-zinc-800"
                           : "text-zinc-400"
                       }
                     >
@@ -1037,51 +961,56 @@ export default function OrganizationCrowdfundingCampaignPage() {
                         ? "Loading categories..."
                         : (selectedCategory?.name ?? "Select a category")}
                     </span>
-
                     <FiChevronDown
                       size={18}
-                      className={`text-zinc-400 transition ${
+                      className={`shrink-0 text-zinc-400 transition ${
                         activeDropdown === "category" ? "rotate-180" : ""
                       }`}
                     />
                   </button>
-
                   {activeDropdown === "category" && (
-                    <div className="absolute left-0 right-0 top-full z-40 mt-2 max-h-64 overflow-y-auto rounded-xl border border-zinc-100 bg-white p-2 shadow-xl">
-                      {categories.map((item) => (
-                        <button
-                          type="button"
-                          key={item.id}
-                          onClick={() => {
-                            setCategory(String(item.id));
-                            setActiveDropdown(null);
-                          }}
-                          className={`w-full rounded-lg px-4 py-3 text-left text-sm transition hover:bg-purple-50 hover:text-[#6D28D9] ${
-                            category === String(item.id)
-                              ? "bg-purple-50 font-bold text-[#6D28D9]"
-                              : "text-zinc-700"
-                          }`}
-                        >
-                          <span className="block">{item.name}</span>
-
-                          {item.description && (
-                            <span className="mt-1 block text-xs font-normal text-zinc-400">
-                              {item.description}
+                    <div className="absolute left-0 right-0 top-full z-40 mt-2 max-h-72 overflow-y-auto rounded-xl border border-zinc-100 bg-white p-2 shadow-xl">
+                      {categories.length === 0 ? (
+                        <p className="px-3 py-5 text-center text-base text-zinc-400">
+                          {loadingCategories
+                            ? "Loading..."
+                            : "No categories available."}
+                        </p>
+                      ) : (
+                        categories.map((item) => (
+                          <button
+                            type="button"
+                            key={item.id}
+                            onClick={() => {
+                              setCategory(String(item.id));
+                              setActiveDropdown(null);
+                            }}
+                            className={`w-full rounded-lg px-4 py-3.5 text-left text-base transition hover:bg-purple-50 hover:text-[#6D28D9] ${
+                              category === String(item.id)
+                                ? "bg-purple-50 font-bold text-[#6D28D9]"
+                                : "text-zinc-700"
+                            }`}
+                          >
+                            <span className="block font-semibold">
+                              {item.name}
                             </span>
-                          )}
-                        </button>
-                      ))}
+                            {item.description && (
+                              <span className="mt-0.5 block text-sm font-normal leading-5 text-zinc-400">
+                                {item.description}
+                              </span>
+                            )}
+                          </button>
+                        ))
+                      )}
                     </div>
                   )}
-
                   {categoryError && (
-                    <div className="mt-2">
-                      <p className="text-xs text-red-600">{categoryError}</p>
-
+                    <div className="mt-2 flex items-center gap-2">
+                      <p className="text-sm text-red-600">{categoryError}</p>
                       <button
                         type="button"
                         onClick={() => window.location.reload()}
-                        className="mt-1 text-xs font-bold text-[#6D28D9]"
+                        className="text-sm font-bold text-[#6D28D9]"
                       >
                         Try again
                       </button>
@@ -1090,67 +1019,70 @@ export default function OrganizationCrowdfundingCampaignPage() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                    Campaign location
+                  <label htmlFor="campaign-location" className={LABEL_CLASS}>
+                    <span>Campaign location</span>
                   </label>
-
                   <input
+                    id="campaign-location"
                     type="text"
+                    autoComplete="address-level2"
                     value={location}
-                    onChange={(event) => setLocation(event.target.value)}
+                    onChange={(e) => setLocation(e.target.value)}
                     placeholder="City, state or country"
-                    className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100"
+                    className={INPUT_CLASS}
                   />
                 </div>
               </div>
             </section>
 
-            {/* FUNDRAISING TARGET */}
-
+            {/* TARGET */}
             <section className="border-t border-zinc-100 pt-8">
-              <h2 className="text-lg font-bold text-[#190D2E]">
-                Fundraising target
-              </h2>
-
-              <p className="mt-1 text-sm text-zinc-500">
-                Set the amount your organisation wants to raise.
-              </p>
+              <div className="flex items-start gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#6D28D9] text-sm font-bold text-white">
+                  2
+                </span>
+                <div>
+                  <h2 className="text-lg font-bold text-[#190D2E]">
+                    Fundraising target
+                  </h2>
+                  <p className="mt-0.5 text-sm leading-6 text-zinc-500">
+                    Set the amount your organisation wants to raise.
+                  </p>
+                </div>
+              </div>
 
               <div className="mt-6 grid gap-5 md:grid-cols-2">
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                    Target amount *
+                  <label htmlFor="target-amount" className={LABEL_CLASS}>
+                    <span>Target amount *</span>
                   </label>
-
-                  <div className="flex overflow-hidden rounded-xl border border-zinc-200 transition focus-within:border-[#6D28D9] focus-within:ring-2 focus-within:ring-purple-100">
-                    <span className="flex items-center border-r border-zinc-200 bg-zinc-50 px-4 text-sm font-bold text-zinc-500">
+                  <div className="flex overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition focus-within:border-[#6D28D9] focus-within:ring-2 focus-within:ring-purple-100">
+                    <span className="flex items-center border-r border-zinc-200 bg-zinc-50 px-4 text-base font-bold text-zinc-500">
                       ₦
                     </span>
-
                     <input
+                      id="target-amount"
                       type="text"
                       inputMode="decimal"
+                      autoComplete="off"
                       required
                       value={targetAmount}
-                      onChange={(event) =>
-                        setTargetAmount(formatAmount(event.target.value))
+                      onChange={(e) =>
+                        setTargetAmount(formatAmount(e.target.value))
                       }
                       placeholder="5,000,000"
-                      className="min-w-0 flex-1 px-4 py-3 text-sm outline-none"
+                      className="min-w-0 flex-1 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400"
                     />
                   </div>
                 </div>
-
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                    Currency *
-                  </label>
-
-                  <div className="flex w-full items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm">
+                  <span className={LABEL_CLASS}>
+                    <span>Currency *</span>
+                  </span>
+                  <div className="flex w-full items-center justify-between rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3.5 text-base">
                     <span className="font-semibold text-zinc-800">
                       NGN — Nigerian Naira
                     </span>
-
                     <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-700">
                       Fixed
                     </span>
@@ -1159,45 +1091,47 @@ export default function OrganizationCrowdfundingCampaignPage() {
               </div>
             </section>
 
-            {/* DISBURSEMENT DROPDOWN */}
-
+            {/* DISBURSEMENT */}
             <section className="border-t border-zinc-100 pt-8">
-              <h2 className="text-lg font-bold text-[#190D2E]">
-                Disbursement arrangement
-              </h2>
-
-              <p className="mt-1 text-sm leading-6 text-zinc-500">
-                Choose how contributions to this campaign will be settled. This
-                selection will be locked once the campaign is created.
-              </p>
+              <div className="flex items-start gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#6D28D9] text-sm font-bold text-white">
+                  3
+                </span>
+                <div>
+                  <h2 className="text-lg font-bold text-[#190D2E]">
+                    Disbursement arrangement
+                  </h2>
+                  <p className="mt-0.5 text-sm leading-6 text-zinc-500">
+                    Choose how contributions will be settled. This will be
+                    locked once the campaign is created.
+                  </p>
+                </div>
+              </div>
 
               <div ref={disbursementDropdownRef} className="relative mt-6">
-                <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                  Disbursement method *
+                <label className={LABEL_CLASS}>
+                  <span>Disbursement method *</span>
                 </label>
-
                 <button
                   type="button"
                   onClick={() => {
                     setActiveBankDropdown(null);
-                    setActiveDropdown((current) =>
-                      current === "disbursement" ? null : "disbursement",
+                    setActiveDropdown((c) =>
+                      c === "disbursement" ? null : "disbursement",
                     );
                   }}
-                  className="flex w-full items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-3 text-left text-sm transition hover:border-[#6D28D9] focus:border-[#6D28D9] focus:outline-none focus:ring-2 focus:ring-purple-100"
+                  className={DROPDOWN_BUTTON_CLASS}
                 >
                   <span className="font-semibold text-zinc-800">
                     {selectedDisbursement?.label}
                   </span>
-
                   <FiChevronDown
                     size={18}
-                    className={`text-zinc-400 transition ${
+                    className={`shrink-0 text-zinc-400 transition ${
                       activeDropdown === "disbursement" ? "rotate-180" : ""
                     }`}
                   />
                 </button>
-
                 {activeDropdown === "disbursement" && (
                   <div className="absolute left-0 right-0 top-full z-40 mt-2 rounded-xl border border-zinc-100 bg-white p-2 shadow-xl">
                     {DISBURSEMENT_OPTIONS.map((option) => (
@@ -1214,11 +1148,10 @@ export default function OrganizationCrowdfundingCampaignPage() {
                             : ""
                         }`}
                       >
-                        <span className="block text-sm font-bold text-[#190D2E]">
+                        <span className="block text-base font-bold text-[#190D2E]">
                           {option.label}
                         </span>
-
-                        <span className="mt-1 block text-xs leading-5 text-zinc-500">
+                        <span className="mt-1 block text-sm leading-6 text-zinc-500">
                           {option.description}
                         </span>
                       </button>
@@ -1227,36 +1160,43 @@ export default function OrganizationCrowdfundingCampaignPage() {
                 )}
               </div>
 
-              <div className="mt-4 rounded-xl border border-purple-100 bg-purple-50/70 p-4">
-                <p className="text-sm font-bold text-[#6D28D9]">
-                  {selectedDisbursement?.label}
-                </p>
-
-                <p className="mt-1 text-xs leading-6 text-zinc-600">
-                  {selectedDisbursement?.description}
-                </p>
+              <div className="mt-4 flex gap-3 rounded-xl border border-purple-100 bg-purple-50/70 p-4">
+                <FiShield
+                  className="mt-0.5 shrink-0 text-[#6D28D9]"
+                  size={18}
+                />
+                <div>
+                  <p className="text-base font-bold text-[#6D28D9]">
+                    {selectedDisbursement?.label}
+                  </p>
+                  <p className="mt-1 text-sm leading-6 text-zinc-600">
+                    {selectedDisbursement?.description}
+                  </p>
+                </div>
               </div>
             </section>
 
-            {/* BENEFICIARY BANK ACCOUNTS */}
-
+            {/* BENEFICIARIES */}
             <section className="border-t border-zinc-100 pt-8">
               <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-lg font-bold text-[#190D2E]">
-                    Beneficiary bank accounts
-                  </h2>
-
-                  <p className="mt-1 max-w-xl text-sm leading-6 text-zinc-500">
-                    Select a bank, enter the account number and confirm the
-                    account name returned by Paystack.
-                  </p>
+                <div className="flex items-start gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#6D28D9] text-sm font-bold text-white">
+                    4
+                  </span>
+                  <div>
+                    <h2 className="text-lg font-bold text-[#190D2E]">
+                      Beneficiary bank accounts
+                    </h2>
+                    <p className="mt-0.5 max-w-xl text-sm leading-6 text-zinc-500">
+                      Select a bank, enter the account number — we fetch the
+                      account name for you.
+                    </p>
+                  </div>
                 </div>
-
                 <button
                   type="button"
                   onClick={addBeneficiary}
-                  className="flex items-center gap-2 rounded-xl border border-purple-200 px-4 py-2.5 text-xs font-bold text-[#6D28D9] transition hover:bg-purple-50"
+                  className="flex items-center gap-2 rounded-xl border border-purple-200 bg-white px-4 py-2.5 text-sm font-bold text-[#6D28D9] shadow-sm transition hover:bg-purple-50"
                 >
                   <FiPlus size={15} />
                   Add beneficiary
@@ -1265,12 +1205,11 @@ export default function OrganizationCrowdfundingCampaignPage() {
 
               {bankError && (
                 <div className="mt-5 rounded-xl border border-red-100 bg-red-50 p-4">
-                  <p className="text-sm text-red-700">{bankError}</p>
-
+                  <p className="text-base text-red-700">{bankError}</p>
                   <button
                     type="button"
                     onClick={() => window.location.reload()}
-                    className="mt-2 text-xs font-bold text-[#6D28D9]"
+                    className="mt-2 text-sm font-bold text-[#6D28D9]"
                   >
                     Try again
                   </button>
@@ -1284,355 +1223,444 @@ export default function OrganizationCrowdfundingCampaignPage() {
                       .toLowerCase()
                       .includes(bankSearch.trim().toLowerCase()),
                   );
+                  const displayAccountName =
+                    beneficiary.account_name ||
+                    beneficiary.resolved_account_name;
+                  const isVerified =
+                    beneficiary.resolution_status === "verified";
 
                   return (
                     <div
                       key={beneficiary.id}
-                      className="rounded-2xl border border-zinc-200 p-5 md:p-6"
+                      className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm"
                     >
-                      <div className="mb-5 flex items-center justify-between gap-3">
-                        <div>
-                          <h3 className="text-sm font-bold text-[#190D2E]">
-                            Beneficiary {index + 1}
-                          </h3>
-
-                          <p className="mt-1 text-xs text-zinc-400">
-                            Provide the beneficiary&apos;s bank details.
-                          </p>
+                      <div className="flex items-center justify-between gap-3 border-b border-zinc-100 bg-[#F8F7FC] px-5 py-4 md:px-6">
+                        <div className="flex items-center gap-3">
+                          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#190D2E] text-sm font-bold text-white">
+                            {index + 1}
+                          </span>
+                          <div>
+                            <h3 className="text-base font-bold text-[#190D2E]">
+                              Beneficiary {index + 1}
+                            </h3>
+                            <p className="text-xs text-zinc-400">
+                              Provide the beneficiary&apos;s bank details.
+                            </p>
+                          </div>
                         </div>
-
-                        {beneficiaries.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeBeneficiary(beneficiary.id)}
-                            className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold text-red-500 transition hover:bg-red-50"
-                          >
-                            <FiTrash2 size={14} />
-                            Remove
-                          </button>
-                        )}
-                      </div>
-
-                      <div className="grid gap-5 md:grid-cols-2">
-                        <div>
-                          <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                            Beneficiary type *
-                          </label>
-
-                          <select
-                            required
-                            value={beneficiary.beneficiary_type}
-                            onChange={(event) =>
-                              updateBeneficiary(
-                                beneficiary.id,
-                                "beneficiary_type",
-                                event.target.value,
-                              )
-                            }
-                            className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100"
-                          >
-                            <option value="owner">Account Owner</option>
-                            <option value="individual">
-                              Represented Individual
-                            </option>
-                            <option value="organization">Organization</option>
-                            <option value="other">Other Beneficiary</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                            Beneficiary name *
-                          </label>
-
-                          <input
-                            type="text"
-                            required
-                            maxLength={255}
-                            value={beneficiary.beneficiary_name}
-                            onChange={(event) =>
-                              updateBeneficiary(
-                                beneficiary.id,
-                                "beneficiary_name",
-                                event.target.value,
-                              )
-                            }
-                            placeholder="Name of the beneficiary"
-                            className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100"
-                          />
-                        </div>
-
-                        {/* CUSTOM BANK SELECT */}
-
-                        <div
-                          ref={
-                            activeBankDropdown === beneficiary.id
-                              ? bankDropdownRef
-                              : null
-                          }
-                          className="relative"
-                        >
-                          <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                            Select bank *
-                          </label>
-
-                          <button
-                            type="button"
-                            disabled={loadingBanks || banks.length === 0}
-                            onClick={() => {
-                              setActiveDropdown(null);
-                              setBankSearch("");
-                              setActiveBankDropdown((current) =>
-                                current === beneficiary.id
-                                  ? null
-                                  : beneficiary.id,
-                              );
-                            }}
-                            className="flex w-full items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-3 text-left text-sm outline-none transition hover:border-[#6D28D9] focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100 disabled:cursor-not-allowed disabled:bg-zinc-50"
-                          >
-                            <span
-                              className={
-                                beneficiary.bank_name
-                                  ? "font-medium text-zinc-800"
-                                  : "text-zinc-400"
-                              }
-                            >
-                              {loadingBanks
-                                ? "Loading banks..."
-                                : beneficiary.bank_name || "Choose a bank"}
+                        <div className="flex items-center gap-2">
+                          {isVerified ? (
+                            <span className="rounded-full bg-green-50 px-3 py-1.5 text-xs font-bold text-green-700">
+                              ✓ Verified
                             </span>
-
-                            <FiChevronDown
-                              size={18}
-                              className={`text-zinc-400 transition ${
-                                activeBankDropdown === beneficiary.id
-                                  ? "rotate-180"
-                                  : ""
-                              }`}
-                            />
-                          </button>
-
-                          {activeBankDropdown === beneficiary.id && (
-                            <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-zinc-100 bg-white shadow-2xl">
-                              <div className="border-b border-zinc-100 p-3">
-                                <div className="flex items-center gap-2 rounded-lg border border-zinc-200 px-3">
-                                  <FiSearch
-                                    size={16}
-                                    className="shrink-0 text-zinc-400"
-                                  />
-
-                                  <input
-                                    type="text"
-                                    autoComplete="off"
-                                    value={bankSearch}
-                                    onChange={(event) =>
-                                      setBankSearch(event.target.value)
-                                    }
-                                    placeholder="Search for a bank..."
-                                    className="w-full border-0 py-3 text-sm outline-none focus:ring-0"
-                                  />
-                                </div>
-                              </div>
-
-                              <div className="max-h-64 overflow-y-auto p-2">
-                                {filteredBanks.length > 0 ? (
-                                  filteredBanks.map((bank) => (
-                                    <button
-                                      type="button"
-                                      key={`${bank.code}-${bank.id}`}
-                                      onClick={() =>
-                                        selectBeneficiaryBank(
-                                          beneficiary.id,
-                                          bank,
-                                        )
-                                      }
-                                      className={`w-full rounded-lg px-3 py-3 text-left text-sm transition hover:bg-purple-50 hover:text-[#6D28D9] ${
-                                        beneficiary.bank_code === bank.code
-                                          ? "bg-purple-50 font-bold text-[#6D28D9]"
-                                          : "text-zinc-700"
-                                      }`}
-                                    >
-                                      {bank.name}
-                                    </button>
-                                  ))
-                                ) : (
-                                  <p className="px-3 py-6 text-center text-sm text-zinc-400">
-                                    No matching bank found.
-                                  </p>
-                                )}
-                              </div>
-                            </div>
+                          ) : (
+                            <span className="rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-700">
+                              Pending verification
+                            </span>
+                          )}
+                          {beneficiaries.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => removeBeneficiary(beneficiary.id)}
+                              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold text-red-500 transition hover:bg-red-50"
+                            >
+                              <FiTrash2 size={14} />
+                              Remove
+                            </button>
                           )}
                         </div>
-
-                        {/* ACCOUNT NUMBER */}
-
-                        <div>
-                          <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                            Account number *
-                          </label>
-
-                          <input
-                            type="text"
-                            inputMode="numeric"
-                            required
-                            maxLength={10}
-                            value={beneficiary.account_number}
-                            onChange={(event) =>
-                              updateBeneficiary(
-                                beneficiary.id,
-                                "account_number",
-                                event.target.value
-                                  .replace(/\D/g, "")
-                                  .slice(0, 10),
-                              )
-                            }
-                            placeholder="Enter 10-digit account number"
-                            className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100"
-                          />
-
-                          {beneficiary.account_number.length > 0 &&
-                            beneficiary.account_number.length < 10 && (
-                              <p className="mt-2 text-xs text-zinc-400">
-                                Enter all 10 digits to verify the account.
-                              </p>
-                            )}
-                        </div>
                       </div>
 
-                      {/* PAYSTACK ACCOUNT RESOLUTION */}
-
-                      {beneficiary.resolution_status === "resolving" && (
-                        <div className="mt-5 flex items-center gap-3 rounded-xl border border-purple-100 bg-purple-50 p-4">
-                          <div className="h-5 w-5 animate-spin rounded-full border-2 border-purple-200 border-t-[#6D28D9]" />
-
-                          <p className="text-sm font-medium text-[#6D28D9]">
-                            Checking account details with Paystack...
-                          </p>
-                        </div>
-                      )}
-
-                      {beneficiary.resolution_status === "resolved" && (
-                        <div className="mt-5 rounded-xl border border-green-100 bg-green-50 p-4">
-                          <p className="text-xs font-bold uppercase tracking-wide text-green-700">
-                            Account name found
-                          </p>
-
-                          <p className="mt-2 text-base font-bold text-zinc-900">
-                            {beneficiary.resolved_account_name}
-                          </p>
-
-                          <p className="mt-1 text-xs leading-5 text-zinc-500">
-                            Does this match the intended beneficiary&apos;s bank
-                            account?
-                          </p>
-
-                          <button
-                            type="button"
-                            onClick={() =>
-                              confirmResolvedAccount(beneficiary.id)
-                            }
-                            className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-green-700 sm:w-auto"
-                          >
-                            <FiCheckCircle size={16} />
-                            Confirm this account name
-                          </button>
-                        </div>
-                      )}
-
-                      {beneficiary.resolution_status === "verified" && (
-                        <div className="mt-5 rounded-xl border border-green-100 bg-green-50 p-4">
-                          <div className="flex items-center gap-2 text-green-700">
-                            <FiCheckCircle size={17} />
-
-                            <span className="text-xs font-bold uppercase tracking-wide">
-                              Account name confirmed
-                            </span>
+                      <div className="p-5 md:p-6">
+                        <div className="grid gap-5 md:grid-cols-2">
+                          <div>
+                            <label className={LABEL_CLASS}>
+                              <span>Beneficiary type *</span>
+                            </label>
+                            <div className="relative">
+                              <select
+                                required
+                                value={beneficiary.beneficiary_type}
+                                onChange={(e) =>
+                                  updateBeneficiary(
+                                    beneficiary.id,
+                                    "beneficiary_type",
+                                    e.target.value,
+                                  )
+                                }
+                                className={`${SELECT_CLASS} pr-10`}
+                              >
+                                <option value="owner">Account Owner</option>
+                                <option value="individual">
+                                  Represented Individual
+                                </option>
+                                <option value="organization">
+                                  Organization
+                                </option>
+                                <option value="other">Other Beneficiary</option>
+                              </select>
+                              <FiChevronDown
+                                size={18}
+                                className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400"
+                              />
+                            </div>
                           </div>
 
-                          <p className="mt-2 text-base font-bold text-zinc-900">
-                            {beneficiary.account_name}
-                          </p>
+                          <div>
+                            <label className={LABEL_CLASS}>
+                              <span>Beneficiary name *</span>
+                            </label>
+                            <input
+                              type="text"
+                              autoComplete="name"
+                              required
+                              maxLength={255}
+                              value={beneficiary.beneficiary_name}
+                              onChange={(e) =>
+                                updateBeneficiary(
+                                  beneficiary.id,
+                                  "beneficiary_name",
+                                  e.target.value,
+                                )
+                              }
+                              placeholder="Name of the beneficiary"
+                              className={INPUT_CLASS}
+                            />
+                          </div>
 
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setBeneficiaries((current) =>
-                                current.map((item) =>
-                                  item.id === beneficiary.id
-                                    ? {
-                                        ...item,
-                                        account_name: "",
-                                        resolved_account_name: "",
-                                        resolution_status: "idle",
-                                        resolution_message: "",
-                                      }
-                                    : item,
-                                ),
-                              );
-                            }}
-                            className="mt-2 text-xs font-semibold text-[#6D28D9] underline"
-                          >
-                            Change account
-                          </button>
-                        </div>
-                      )}
-
-                      {beneficiary.resolution_status === "error" && (
-                        <div className="mt-5 rounded-xl border border-red-100 bg-red-50 p-4">
-                          <p className="text-sm font-semibold text-red-700">
-                            {beneficiary.resolution_message}
-                          </p>
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setBeneficiaries((current) =>
-                                current.map((item) =>
-                                  item.id === beneficiary.id
-                                    ? {
-                                        ...item,
-                                        resolution_status: "idle",
-                                        resolution_message: "",
-                                      }
-                                    : item,
-                                ),
-                              );
-                            }}
-                            className="mt-2 text-xs font-bold text-[#6D28D9]"
-                          >
-                            Try again
-                          </button>
-                        </div>
-                      )}
-
-                      <div className="mt-5 max-w-sm">
-                        <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                          Allocation percentage *
-                        </label>
-
-                        <div className="flex overflow-hidden rounded-xl border border-zinc-200 transition focus-within:border-[#6D28D9] focus-within:ring-2 focus-within:ring-purple-100">
-                          <input
-                            type="number"
-                            required
-                            min="0.01"
-                            max="100"
-                            step="0.01"
-                            value={beneficiary.allocation_percentage}
-                            onChange={(event) =>
-                              updateBeneficiary(
-                                beneficiary.id,
-                                "allocation_percentage",
-                                event.target.value,
-                              )
+                          {/* BANK */}
+                          <div
+                            ref={
+                              activeBankDropdown === beneficiary.id
+                                ? bankDropdownRef
+                                : null
                             }
-                            placeholder="e.g. 60"
-                            className="min-w-0 flex-1 px-4 py-3 text-sm outline-none"
-                          />
+                            className="relative"
+                          >
+                            <label className={LABEL_CLASS}>
+                              <span>Select bank *</span>
+                            </label>
+                            <button
+                              type="button"
+                              disabled={loadingBanks || banks.length === 0}
+                              onClick={() => {
+                                setActiveDropdown(null);
+                                setBankSearch("");
+                                setActiveBankDropdown((current) =>
+                                  current === beneficiary.id
+                                    ? null
+                                    : beneficiary.id,
+                                );
+                              }}
+                              className={DROPDOWN_BUTTON_CLASS}
+                            >
+                              <span
+                                className={
+                                  beneficiary.bank_name
+                                    ? "font-semibold text-zinc-800"
+                                    : "text-zinc-400"
+                                }
+                              >
+                                {loadingBanks
+                                  ? "Loading banks..."
+                                  : beneficiary.bank_name || "Choose a bank"}
+                              </span>
+                              <FiChevronDown
+                                size={18}
+                                className={`shrink-0 text-zinc-400 transition ${
+                                  activeBankDropdown === beneficiary.id
+                                    ? "rotate-180"
+                                    : ""
+                                }`}
+                              />
+                            </button>
+                            {activeBankDropdown === beneficiary.id && (
+                              <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-zinc-100 bg-white shadow-xl">
+                                <div className="border-b border-zinc-100 p-3">
+                                  <div className="flex items-center gap-2 rounded-lg border border-zinc-200 px-3">
+                                    <FiSearch
+                                      size={16}
+                                      className="shrink-0 text-zinc-400"
+                                    />
+                                    <input
+                                      type="text"
+                                      inputMode="search"
+                                      autoComplete="off"
+                                      value={bankSearch}
+                                      onChange={(e) =>
+                                        setBankSearch(e.target.value)
+                                      }
+                                      placeholder="Search for a bank..."
+                                      className="w-full border-0 py-3.5 text-base outline-none placeholder:text-zinc-400 focus:ring-0"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="max-h-64 overflow-y-auto p-2">
+                                  {filteredBanks.length > 0 ? (
+                                    filteredBanks.map((bank) => (
+                                      <button
+                                        type="button"
+                                        key={`${bank.code}-${bank.id}`}
+                                        onClick={() =>
+                                          selectBeneficiaryBank(
+                                            beneficiary.id,
+                                            bank,
+                                          )
+                                        }
+                                        className={`w-full rounded-lg px-3 py-3.5 text-left text-base transition hover:bg-purple-50 hover:text-[#6D28D9] ${
+                                          beneficiary.bank_code === bank.code
+                                            ? "bg-purple-50 font-bold text-[#6D28D9]"
+                                            : "text-zinc-700"
+                                        }`}
+                                      >
+                                        {bank.name}
+                                      </button>
+                                    ))
+                                  ) : (
+                                    <p className="px-3 py-6 text-center text-base text-zinc-400">
+                                      No matching bank found.
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
 
-                          <span className="flex items-center border-l border-zinc-200 bg-zinc-50 px-4 text-sm font-bold text-zinc-500">
-                            %
-                          </span>
+                          {/* ACCOUNT NUMBER */}
+                          <div>
+                            <label className={LABEL_CLASS}>
+                              <span>Account number *</span>
+                              <span className="text-xs font-medium text-zinc-400">
+                                {beneficiary.account_number.length}/10
+                              </span>
+                            </label>
+                            <input
+                              type="text"
+                              inputMode="numeric"
+                              autoComplete="off"
+                              required
+                              maxLength={10}
+                              value={beneficiary.account_number}
+                              onChange={(e) =>
+                                updateBeneficiary(
+                                  beneficiary.id,
+                                  "account_number",
+                                  e.target.value
+                                    .replace(/\D/g, "")
+                                    .slice(0, 10),
+                                )
+                              }
+                              placeholder="Enter 10-digit account number"
+                              className={INPUT_CLASS}
+                            />
+                            {beneficiary.account_number.length > 0 &&
+                              beneficiary.account_number.length < 10 && (
+                                <p className="mt-2 text-xs text-zinc-400">
+                                  Enter all 10 digits to verify the account.
+                                </p>
+                              )}
+                          </div>
+
+                          {/* ACCOUNT NAME — LOCKED / AUTO-FILLED */}
+                          <div className="md:col-span-2">
+                            <label className={LABEL_CLASS}>
+                              <span>Account name *</span>
+                              <span className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-2.5 py-1 text-[11px] font-bold text-zinc-600">
+                                <FiLock size={11} />
+                                Auto-filled • Not editable
+                              </span>
+                            </label>
+                            {/* Read-only display — NOT an input */}
+                            <div
+                              aria-live="polite"
+                              className={`flex items-center gap-3 rounded-2xl border px-4 py-3.5 text-base ${
+                                isVerified
+                                  ? "border-green-100 bg-green-50 text-zinc-900"
+                                  : displayAccountName
+                                    ? "border-zinc-200 bg-zinc-50 text-zinc-900"
+                                    : "border-zinc-200 bg-[#F8F7FC] text-zinc-400"
+                              }`}
+                            >
+                              <FiCreditCard
+                                size={18}
+                                className={`shrink-0 ${
+                                  isVerified
+                                    ? "text-green-600"
+                                    : "text-zinc-400"
+                                }`}
+                              />
+                              <span className="flex-1 truncate font-semibold">
+                                {displayAccountName ||
+                                  "Will appear automatically after verification"}
+                              </span>
+                              {isVerified && (
+                                <span className="flex shrink-0 items-center gap-1 rounded-full bg-green-600 px-2.5 py-1 text-xs font-bold text-white">
+                                  <FiCheckCircle size={13} />
+                                  Confirmed
+                                </span>
+                              )}
+                              {!isVerified && displayAccountName && (
+                                <span className="shrink-0 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700">
+                                  Awaiting confirmation
+                                </span>
+                              )}
+                            </div>
+                            <p className="mt-2 text-xs leading-5 text-zinc-400">
+                              This name is fetched from your bank once you enter
+                              a valid bank + account number. It cannot be typed
+                              manually.
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* RESOLUTION STATES */}
+                        {beneficiary.resolution_status === "resolving" && (
+                          <div className="mt-5 flex items-center gap-3 rounded-xl border border-purple-100 bg-purple-50 p-4">
+                            <div className="h-5 w-5 shrink-0 animate-spin rounded-full border-2 border-purple-200 border-t-[#6D28D9]" />
+                            <p className="text-base font-medium text-[#6D28D9]">
+                              Checking account details with Paystack...
+                            </p>
+                          </div>
+                        )}
+
+                        {beneficiary.resolution_status === "resolved" && (
+                          <div className="mt-5 rounded-xl border border-green-100 bg-green-50 p-4 md:p-5">
+                            <p className="text-xs font-bold uppercase tracking-wide text-green-700">
+                              Account name found
+                            </p>
+                            <p className="mt-2 text-base font-bold text-zinc-900">
+                              {beneficiary.resolved_account_name}
+                            </p>
+                            <p className="mt-1 text-sm leading-6 text-zinc-500">
+                              Does this match the intended beneficiary&apos;s
+                              bank account?
+                            </p>
+                            <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  confirmResolvedAccount(beneficiary.id)
+                                }
+                                className="flex items-center justify-center gap-2 rounded-lg bg-green-600 px-5 py-3.5 text-base font-bold text-white transition hover:bg-green-700"
+                              >
+                                <FiCheckCircle size={16} />
+                                Confirm this account name
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setBeneficiaries((current) =>
+                                    current.map(
+                                      (item): BeneficiaryAccount =>
+                                        item.id === beneficiary.id
+                                          ? {
+                                              ...item,
+                                              resolved_account_name: "",
+                                              resolution_status: "idle",
+                                              resolution_message: "",
+                                            }
+                                          : item,
+                                    ),
+                                  );
+                                }}
+                                className="rounded-lg border border-zinc-200 bg-white px-5 py-3.5 text-base font-semibold text-zinc-700 transition hover:bg-zinc-50"
+                              >
+                                Not correct — edit details
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {beneficiary.resolution_status === "verified" && (
+                          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-green-100 bg-green-50 p-4">
+                            <div className="flex items-center gap-2 text-green-700">
+                              <FiCheckCircle size={17} />
+                              <span className="text-sm font-bold">
+                                Account name confirmed — locked
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setBeneficiaries((current) =>
+                                  current.map(
+                                    (item): BeneficiaryAccount =>
+                                      item.id === beneficiary.id
+                                        ? {
+                                            ...item,
+                                            account_name: "",
+                                            resolved_account_name: "",
+                                            resolution_status: "idle",
+                                            resolution_message: "",
+                                          }
+                                        : item,
+                                  ),
+                                );
+                              }}
+                              className="text-sm font-semibold text-[#6D28D9] underline underline-offset-2"
+                            >
+                              Change account
+                            </button>
+                          </div>
+                        )}
+
+                        {beneficiary.resolution_status === "error" && (
+                          <div className="mt-5 rounded-xl border border-red-100 bg-red-50 p-4">
+                            <p className="text-base font-semibold text-red-700">
+                              {beneficiary.resolution_message}
+                            </p>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setBeneficiaries((current) =>
+                                  current.map(
+                                    (item): BeneficiaryAccount =>
+                                      item.id === beneficiary.id
+                                        ? {
+                                            ...item,
+                                            resolution_status: "idle",
+                                            resolution_message: "",
+                                          }
+                                        : item,
+                                  ),
+                                );
+                              }}
+                              className="mt-2 text-sm font-bold text-[#6D28D9]"
+                            >
+                              Try again
+                            </button>
+                          </div>
+                        )}
+
+                        {/* ALLOCATION */}
+                        <div className="mt-5 max-w-sm">
+                          <label className={LABEL_CLASS}>
+                            <span>Allocation percentage *</span>
+                          </label>
+                          <div className="flex overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition focus-within:border-[#6D28D9] focus-within:ring-2 focus-within:ring-purple-100">
+                            <input
+                              type="text"
+                              inputMode="decimal"
+                              autoComplete="off"
+                              required
+                              value={beneficiary.allocation_percentage}
+                              onChange={(e) => {
+                                const v = e.target.value
+                                  .replace(/[^0-9.]/g, "")
+                                  .replace(/(\..*)\./g, "$1");
+                                updateBeneficiary(
+                                  beneficiary.id,
+                                  "allocation_percentage",
+                                  v,
+                                );
+                              }}
+                              placeholder="e.g. 60"
+                              className="min-w-0 flex-1 px-4 py-3.5 text-base text-zinc-900 outline-none placeholder:text-zinc-400"
+                            />
+                            <span className="flex items-center border-l border-zinc-200 bg-zinc-50 px-4 text-base font-bold text-zinc-500">
+                              %
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1640,139 +1668,168 @@ export default function OrganizationCrowdfundingCampaignPage() {
                 })}
               </div>
 
-              <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-zinc-50 p-4">
-                <div>
-                  <p className="text-sm font-bold text-[#190D2E]">
-                    Total allocation
-                  </p>
-
-                  <p className="mt-1 text-xs text-zinc-500">
-                    All beneficiary allocations must add up to 100%.
-                  </p>
+              {/* Total allocation */}
+              <div className="mt-5 rounded-xl bg-zinc-50 p-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-base font-bold text-[#190D2E]">
+                      Total allocation
+                    </p>
+                    <p className="mt-0.5 text-sm text-zinc-500">
+                      All beneficiary allocations must add up to 100%.
+                    </p>
+                  </div>
+                  <span
+                    className={`rounded-full px-4 py-2 text-base font-bold ${
+                      Math.abs(totalAllocation - 100) < 0.001
+                        ? "bg-green-50 text-green-700"
+                        : "bg-amber-50 text-amber-700"
+                    }`}
+                  >
+                    {totalAllocation.toFixed(2)}%
+                  </span>
                 </div>
-
-                <span
-                  className={`rounded-full px-4 py-2 text-sm font-black ${
-                    Math.abs(totalAllocation - 100) < 0.001
-                      ? "bg-green-50 text-green-700"
-                      : "bg-amber-50 text-amber-700"
-                  }`}
-                >
-                  {totalAllocation.toFixed(2)}%
-                </span>
+                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-zinc-100">
+                  <div
+                    className={`h-full rounded-full transition-all duration-300 ${
+                      Math.abs(totalAllocation - 100) < 0.001
+                        ? "bg-green-500"
+                        : "bg-[#6D28D9]"
+                    }`}
+                    style={{ width: `${Math.min(totalAllocation, 100)}%` }}
+                  />
+                </div>
               </div>
-
               {Math.abs(totalAllocation - 100) >= 0.001 && (
-                <p className="mt-2 text-xs text-amber-700">
+                <p className="mt-2 text-sm text-amber-700">
                   Your allocations must total exactly 100% before you can create
                   this campaign.
                 </p>
               )}
             </section>
 
-            {/* CAMPAIGN BANNER */}
-
+            {/* BANNER */}
             <section className="border-t border-zinc-100 pt-8">
               <h2 className="text-lg font-bold text-[#190D2E]">
                 Campaign banner
               </h2>
-
               <p className="mt-1 text-sm text-zinc-500">
                 Choose an image that represents your fundraising campaign.
               </p>
-
               <div className="mt-6">
-                <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                  Upload banner image *
+                <label
+                  htmlFor="banner-upload"
+                  className="group block cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed border-zinc-200 bg-[#F8F7FC] transition hover:border-[#6D28D9]/50 hover:bg-purple-50/40"
+                >
+                  {bannerPreview ? (
+                    <div className="relative">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={bannerPreview}
+                        alt="Campaign banner preview"
+                        className="h-56 w-full object-cover sm:h-64"
+                      />
+                      <span className="absolute bottom-3 right-3 rounded-full bg-[#190D2E]/80 px-3.5 py-2 text-xs font-bold text-white">
+                        Change image
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center px-6 py-10 text-center">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#6D28D9] shadow-sm ring-1 ring-zinc-100">
+                        <FiUpload size={20} />
+                      </span>
+                      <span className="mt-4 text-base font-bold text-zinc-800">
+                        Upload banner image *
+                      </span>
+                      <span className="mt-1 text-sm text-zinc-500">
+                        JPG, PNG or WEBP. Maximum 10 MB.
+                      </span>
+                      <span className="mt-4 rounded-full bg-[#6D28D9] px-4 py-2 text-sm font-bold text-white">
+                        Choose file
+                      </span>
+                    </div>
+                  )}
+                  <input
+                    id="banner-upload"
+                    type="file"
+                    required
+                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                    onChange={(e) => setBanner(e.target.files?.[0] ?? null)}
+                    className="sr-only"
+                  />
                 </label>
-
-                <input
-                  type="file"
-                  required
-                  accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-                  onChange={(event) =>
-                    setBanner(event.target.files?.[0] ?? null)
-                  }
-                  className="block w-full cursor-pointer rounded-xl border border-zinc-200 text-sm text-zinc-600 file:mr-4 file:cursor-pointer file:border-0 file:bg-purple-50 file:px-5 file:py-3 file:text-sm file:font-bold file:text-[#6D28D9] hover:file:bg-purple-100"
-                />
-
                 {banner && (
-                  <p className="mt-2 text-xs text-green-600">
+                  <p className="mt-3 text-sm text-green-600">
                     Selected: {banner.name} (
                     {(banner.size / (1024 * 1024)).toFixed(2)} MB)
                   </p>
                 )}
-
-                <p className="mt-2 text-xs text-zinc-400">
-                  JPG, PNG or WEBP. Maximum file size: 10 MB.
-                </p>
               </div>
             </section>
 
-            {/* CONTACT INFORMATION */}
-
+            {/* CONTACT */}
             <section className="border-t border-zinc-100 pt-8">
               <h2 className="text-lg font-bold text-[#190D2E]">
                 Contact information
               </h2>
-
               <p className="mt-1 text-sm text-zinc-500">
                 Provide contact details for this campaign.
               </p>
-
               <div className="mt-6 space-y-5">
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                    Contact phone *
+                  <label htmlFor="contact-phone" className={LABEL_CLASS}>
+                    <span>Contact phone *</span>
                   </label>
-
                   <input
+                    id="contact-phone"
                     type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
                     required
                     maxLength={30}
                     value={contactPhone}
-                    onChange={(event) => setContactPhone(event.target.value)}
+                    onChange={(e) => setContactPhone(e.target.value)}
                     placeholder="Enter a contact phone number"
-                    className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100"
+                    className={INPUT_CLASS}
                   />
                 </div>
-
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                    Contact address *
+                  <label htmlFor="contact-address" className={LABEL_CLASS}>
+                    <span>Contact address *</span>
                   </label>
-
                   <textarea
+                    id="contact-address"
                     required
                     rows={3}
                     value={contactAddress}
-                    onChange={(event) => setContactAddress(event.target.value)}
+                    onChange={(e) => setContactAddress(e.target.value)}
                     placeholder="Enter your organisation's contact address"
-                    className="w-full resize-y rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100"
+                    className={TEXTAREA_CLASS}
                   />
                 </div>
               </div>
             </section>
 
-            {/* FORM FEEDBACK */}
-
+            {/* FEEDBACK */}
             {error && (
-              <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm leading-6 text-red-700">
+              <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3.5 text-base leading-6 text-red-700">
                 {error}
               </div>
             )}
-
             {submitting && submitStatus && (
-              <p role="status" className="text-sm font-semibold text-[#6D28D9]">
+              <p
+                role="status"
+                className="flex items-center gap-2 text-base font-semibold text-[#6D28D9]"
+              >
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-purple-200 border-t-[#6D28D9]" />
                 {submitStatus}
               </p>
             )}
 
             <div className="flex flex-col-reverse justify-between gap-4 border-t border-zinc-100 pt-6 sm:flex-row sm:items-center">
-              <p className="text-xs leading-5 text-zinc-400">
+              <p className="text-sm leading-6 text-zinc-400">
                 Your campaign will initially be saved as a draft.
               </p>
-
               <button
                 type="submit"
                 disabled={
@@ -1782,15 +1839,18 @@ export default function OrganizationCrowdfundingCampaignPage() {
                   loadingBanks ||
                   !allocationsAreValid
                 }
-                className="flex items-center justify-center gap-2 rounded-xl bg-[#6D28D9] px-7 py-3.5 text-sm font-bold text-white transition hover:bg-[#5B21B6] disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex items-center justify-center gap-2 rounded-xl bg-[#6D28D9] px-7 py-3.5 text-base font-bold text-white transition hover:bg-[#5B21B6] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {submitting ? "Please wait..." : "Create campaign"}
-
                 {!submitting && <FiArrowRight size={16} />}
               </button>
             </div>
           </form>
         </div>
+
+        <p className="mt-5 text-center text-xs text-zinc-400">
+          Secured by Tippified • Account names are verified via Paystack
+        </p>
       </div>
     </main>
   );
