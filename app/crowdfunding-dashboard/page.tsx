@@ -317,6 +317,14 @@ export default function CrowdfundingDashboard() {
 
       setOrganizationKYCStatus(status);
       setOrganizationKYCRejectionReason(data.rejection_reason || "");
+
+      // Approved organisations can proceed directly to campaign creation.
+      if (status === "approved") {
+        router.push("/organization-crowdfunding-campaign");
+        return;
+      }
+
+      // Other verification statuses display the appropriate modal.
       setOrganizationKYCModalOpen(true);
     } catch (error) {
       setOrganizationKYCError(
