@@ -1012,9 +1012,12 @@ export default function OrganizationCrowdfundingCampaignPage() {
 
                   <button
                     type="button"
-                    disabled={loadingCategories || categories.length === 0}
+                    disabled={false}
                     onClick={() => {
-                      setActiveBankDropdown(null);
+                      console.log("CATEGORY BUTTON CLICKED");
+                      console.log("Loading:", loadingCategories);
+                      console.log("Categories:", categories.length);
+
                       setActiveDropdown((current) =>
                         current === "category" ? null : "category",
                       );
