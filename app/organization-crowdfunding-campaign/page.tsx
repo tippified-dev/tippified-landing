@@ -1,13 +1,20 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 import {
   FiArrowLeft,
   FiArrowRight,
   FiCheckCircle,
   FiChevronDown,
   FiPlus,
+  FiSearch,
   FiTrash2,
 } from "react-icons/fi";
 
@@ -20,6 +27,12 @@ interface CampaignCategory {
   slug: string;
   description: string;
   icon: string;
+}
+
+interface CampaignBank {
+  id: number | null;
+  name: string;
+  code: string;
 }
 
 interface ApiErrorResponse {
@@ -43,12 +56,27 @@ interface CampaignImageCompleteResponse {
   content_type: string;
 }
 
+type BeneficiaryType = "owner" | "individual" | "organization" | "other";
+
+type AccountResolutionStatus =
+  | "idle"
+  | "resolving"
+  | "resolved"
+  | "verified"
+  | "error";
+
 interface BeneficiaryAccount {
   id: string;
+  beneficiary_type: BeneficiaryType;
+  beneficiary_name: string;
   account_name: string;
+  resolved_account_name: string;
   bank_name: string;
+  bank_code: string;
   account_number: string;
   allocation_percentage: string;
+  resolution_status: AccountResolutionStatus;
+  resolution_message: string;
 }
 
 type DisbursementMode = "direct" | "after_campaign";
@@ -132,10 +160,16 @@ function getNumericAmount(value: string): number {
 function createBeneficiary(): BeneficiaryAccount {
   return {
     id: crypto.randomUUID(),
+    beneficiary_type: "organization",
+    beneficiary_name: "",
     account_name: "",
+    resolved_account_name: "",
     bank_name: "",
+    bank_code: "",
     account_number: "",
     allocation_percentage: "",
+    resolution_status: "idle",
+    resolution_message: "",
   };
 }
 
@@ -149,7 +183,6 @@ function extractCategories(result: unknown): CampaignCategory[] {
   }
 
   const data = result as Record<string, unknown>;
-
   const possibleLists = [data.data, data.results, data.categories];
 
   for (const list of possibleLists) {
@@ -164,21 +197,34 @@ function extractCategories(result: unknown): CampaignCategory[] {
 export default function OrganizationCrowdfundingCampaignPage() {
   const router = useRouter();
 
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const categoryDropdownRef = useRef<HTMLDivElement | null>(null);
+  const disbursementDropdownRef = useRef<HTMLDivElement | null>(null);
+  const bankDropdownRef = useRef<HTMLDivElement | null>(null);
 
   const [categories, setCategories] = useState<CampaignCategory[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [categoryError, setCategoryError] = useState("");
 
+  const [banks, setBanks] = useState<CampaignBank[]>([]);
+  const [loadingBanks, setLoadingBanks] = useState(true);
+  const [bankError, setBankError] = useState("");
+
   const [activeDropdown, setActiveDropdown] = useState<
     "category" | "disbursement" | null
   >(null);
+
+  const [activeBankDropdown, setActiveBankDropdown] = useState<string | null>(
+    null,
+  );
+
+  const [bankSearch, setBankSearch] = useState("");
 
   const [name, setName] = useState("");
   const [about, setAbout] = useState("");
   const [category, setCategory] = useState("");
   const [location, setLocation] = useState("");
   const [targetAmount, setTargetAmount] = useState("");
+
   const [disbursementMode, setDisbursementMode] =
     useState<DisbursementMode>("after_campaign");
 
@@ -213,13 +259,17 @@ export default function OrganizationCrowdfundingCampaignPage() {
     beneficiaries.length > 0 &&
     beneficiaries.every(
       (beneficiary) =>
+        beneficiary.beneficiary_name.trim() !== "" &&
         beneficiary.account_name.trim() !== "" &&
         beneficiary.bank_name.trim() !== "" &&
+        beneficiary.bank_code.trim() !== "" &&
         /^\d{10}$/.test(beneficiary.account_number) &&
+        beneficiary.resolution_status === "verified" &&
         Number(beneficiary.allocation_percentage) > 0,
     ) &&
     Math.abs(totalAllocation - 100) < 0.001;
 
+  // Load campaign categories.
   useEffect(() => {
     let cancelled = false;
 
@@ -266,20 +316,122 @@ export default function OrganizationCrowdfundingCampaignPage() {
       }
     }
 
-    loadCategories();
+    void loadCategories();
 
     return () => {
       cancelled = true;
     };
   }, []);
 
+  // Load Nigerian banks from Paystack through the backend.
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadBanks() {
+      try {
+        setLoadingBanks(true);
+        setBankError("");
+
+        const response = await fetch(
+          `${API_BASE_URL}/api/crowdfunding/banks/`,
+          {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              Accept: "application/json",
+            },
+            cache: "no-store",
+          },
+        );
+
+        const result: unknown = await response.json();
+
+        if (!response.ok) {
+          throw new Error(getErrorMessage(result));
+        }
+
+        if (
+          typeof result !== "object" ||
+          result === null ||
+          !("banks" in result) ||
+          !Array.isArray(result.banks)
+        ) {
+          throw new Error("The server returned an invalid bank list.");
+        }
+
+        const bankList: CampaignBank[] = result.banks
+          .filter(
+            (bank): bank is Record<string, unknown> =>
+              typeof bank === "object" && bank !== null,
+          )
+          .map((bank) => ({
+            id: typeof bank.id === "number" ? bank.id : null,
+            name: typeof bank.name === "string" ? bank.name : "",
+            code:
+              typeof bank.code === "string" || typeof bank.code === "number"
+                ? String(bank.code)
+                : "",
+          }))
+          .filter((bank) => bank.name !== "" && bank.code !== "");
+
+        if (!cancelled) {
+          setBanks(bankList);
+
+          if (bankList.length === 0) {
+            setBankError("No Nigerian banks are currently available.");
+          }
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setBankError(
+            err instanceof Error
+              ? err.message
+              : "Unable to load Nigerian banks.",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingBanks(false);
+        }
+      }
+    }
+
+    void loadBanks();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Handle outside clicks without interfering with other dropdowns.
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
+      const target = event.target as Node;
+
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        categoryDropdownRef.current &&
+        !categoryDropdownRef.current.contains(target)
       ) {
-        setActiveDropdown(null);
+        setActiveDropdown((current) =>
+          current === "category" ? null : current,
+        );
+      }
+
+      if (
+        disbursementDropdownRef.current &&
+        !disbursementDropdownRef.current.contains(target)
+      ) {
+        setActiveDropdown((current) =>
+          current === "disbursement" ? null : current,
+        );
+      }
+
+      if (
+        bankDropdownRef.current &&
+        !bankDropdownRef.current.contains(target)
+      ) {
+        setActiveBankDropdown(null);
+        setBankSearch("");
       }
     }
 
@@ -290,15 +442,212 @@ export default function OrganizationCrowdfundingCampaignPage() {
     };
   }, []);
 
+  // Resolve a bank account through the backend.
+  const resolveBeneficiaryAccount = useCallback(
+    async (beneficiaryId: string, accountNumber: string, bankCode: string) => {
+      setBeneficiaries((current) =>
+        current.map((beneficiary) =>
+          beneficiary.id === beneficiaryId
+            ? {
+                ...beneficiary,
+                account_name: "",
+                resolved_account_name: "",
+                resolution_status: "resolving",
+                resolution_message: "Checking account details...",
+              }
+            : beneficiary,
+        ),
+      );
+
+      try {
+        const csrfResponse = await fetch(
+          `${API_BASE_URL}/api/crowdfunding/csrf/`,
+          {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              Accept: "application/json",
+            },
+            cache: "no-store",
+          },
+        );
+
+        const csrfResult: unknown = await csrfResponse.json();
+
+        if (
+          !csrfResponse.ok ||
+          typeof csrfResult !== "object" ||
+          csrfResult === null ||
+          !("csrfToken" in csrfResult) ||
+          typeof csrfResult.csrfToken !== "string"
+        ) {
+          throw new Error("Unable to verify your session. Please try again.");
+        }
+
+        const response = await fetch(
+          `${API_BASE_URL}/api/crowdfunding/resolve-bank-account/`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrfResult.csrfToken,
+            },
+            body: JSON.stringify({
+              account_number: accountNumber,
+              bank_code: bankCode,
+            }),
+          },
+        );
+
+        const result: unknown = await response.json();
+
+        if (!response.ok) {
+          throw new Error(getErrorMessage(result));
+        }
+
+        if (
+          typeof result !== "object" ||
+          result === null ||
+          !("account_name" in result) ||
+          typeof result.account_name !== "string" ||
+          !result.account_name.trim()
+        ) {
+          throw new Error("Paystack could not resolve this account.");
+        }
+
+        const resolvedName = result.account_name.trim();
+
+        setBeneficiaries((current) =>
+          current.map((beneficiary) =>
+            beneficiary.id === beneficiaryId &&
+            beneficiary.account_number === accountNumber &&
+            beneficiary.bank_code === bankCode
+              ? {
+                  ...beneficiary,
+                  resolved_account_name: resolvedName,
+                  resolution_status: "resolved",
+                  resolution_message:
+                    "We found an account name. Please confirm it below.",
+                }
+              : beneficiary,
+          ),
+        );
+      } catch (err) {
+        setBeneficiaries((current) =>
+          current.map((beneficiary) =>
+            beneficiary.id === beneficiaryId &&
+            beneficiary.account_number === accountNumber &&
+            beneficiary.bank_code === bankCode
+              ? {
+                  ...beneficiary,
+                  account_name: "",
+                  resolved_account_name: "",
+                  resolution_status: "error",
+                  resolution_message:
+                    err instanceof Error
+                      ? err.message
+                      : "Unable to verify this account.",
+                }
+              : beneficiary,
+          ),
+        );
+      }
+    },
+    [],
+  );
+
+  // Automatically resolve after the user enters a complete account number.
+  useEffect(() => {
+    const timers: ReturnType<typeof setTimeout>[] = [];
+
+    beneficiaries.forEach((beneficiary) => {
+      if (
+        !beneficiary.bank_code ||
+        !/^\d{10}$/.test(beneficiary.account_number) ||
+        beneficiary.resolution_status !== "idle"
+      ) {
+        return;
+      }
+
+      const timer = setTimeout(() => {
+        void resolveBeneficiaryAccount(
+          beneficiary.id,
+          beneficiary.account_number,
+          beneficiary.bank_code,
+        );
+      }, 600);
+
+      timers.push(timer);
+    });
+
+    return () => {
+      timers.forEach(clearTimeout);
+    };
+  }, [beneficiaries, resolveBeneficiaryAccount]);
+
   function updateBeneficiary(
     id: string,
     field: keyof Omit<BeneficiaryAccount, "id">,
     value: string,
   ) {
     setBeneficiaries((current) =>
+      current.map((beneficiary) => {
+        if (beneficiary.id !== id) {
+          return beneficiary;
+        }
+
+        if (field === "bank_code") {
+          const selectedBank = banks.find((bank) => bank.code === value);
+
+          return {
+            ...beneficiary,
+            bank_code: value,
+            bank_name: selectedBank?.name ?? "",
+            account_name: "",
+            resolved_account_name: "",
+            resolution_status: "idle",
+            resolution_message: "",
+          };
+        }
+
+        if (field === "account_number") {
+          return {
+            ...beneficiary,
+            account_number: value,
+            account_name: "",
+            resolved_account_name: "",
+            resolution_status: "idle",
+            resolution_message: "",
+          };
+        }
+
+        return {
+          ...beneficiary,
+          [field]: value,
+        };
+      }),
+    );
+  }
+
+  function selectBeneficiaryBank(beneficiaryId: string, bank: CampaignBank) {
+    updateBeneficiary(beneficiaryId, "bank_code", bank.code);
+    setActiveBankDropdown(null);
+    setBankSearch("");
+  }
+
+  function confirmResolvedAccount(beneficiaryId: string) {
+    setBeneficiaries((current) =>
       current.map((beneficiary) =>
-        beneficiary.id === id
-          ? { ...beneficiary, [field]: value }
+        beneficiary.id === beneficiaryId &&
+        beneficiary.resolution_status === "resolved"
+          ? {
+              ...beneficiary,
+              account_name: beneficiary.resolved_account_name,
+              resolution_status: "verified",
+              resolution_message: "Account name confirmed.",
+            }
           : beneficiary,
       ),
     );
@@ -336,7 +685,7 @@ export default function OrganizationCrowdfundingCampaignPage() {
 
     if (!allocationsAreValid) {
       setError(
-        "Please complete every beneficiary account and ensure allocations total exactly 100%.",
+        "Please complete every beneficiary account, confirm each resolved account name and ensure allocations total exactly 100%.",
       );
       return;
     }
@@ -362,7 +711,7 @@ export default function OrganizationCrowdfundingCampaignPage() {
     try {
       setSubmitting(true);
 
-      // Step 1: Obtain the CSRF token.
+      // Step 1: Obtain CSRF token.
       setSubmitStatus("Verifying your session...");
 
       const csrfResponse = await fetch(
@@ -387,7 +736,7 @@ export default function OrganizationCrowdfundingCampaignPage() {
 
       const csrfToken = csrfResult.csrfToken;
 
-      // Step 2: Request a secure R2 upload URL.
+      // Step 2: Request secure R2 upload URL.
       setSubmitStatus("Preparing your campaign image...");
 
       const uploadUrlResponse = await fetch(
@@ -426,7 +775,7 @@ export default function OrganizationCrowdfundingCampaignPage() {
         );
       }
 
-      // Step 3: Upload the image directly to Cloudflare R2.
+      // Step 3: Upload directly to Cloudflare R2.
       setSubmitStatus("Uploading your campaign image...");
 
       const imageUploadResponse = await fetch(uploadDetails.upload_url, {
@@ -441,7 +790,7 @@ export default function OrganizationCrowdfundingCampaignPage() {
         );
       }
 
-      // Step 4: Confirm that the image was successfully uploaded.
+      // Step 4: Confirm R2 upload.
       setSubmitStatus("Verifying your campaign image...");
 
       const completeUploadResponse = await fetch(
@@ -473,7 +822,7 @@ export default function OrganizationCrowdfundingCampaignPage() {
         throw new Error("The server could not confirm your campaign image.");
       }
 
-      // Step 5: Create the campaign.
+      // Step 5: Create campaign.
       setSubmitStatus("Creating your campaign...");
 
       const campaignResponse = await fetch(
@@ -497,12 +846,15 @@ export default function OrganizationCrowdfundingCampaignPage() {
             banner: completedImage.object_key,
             contact_phone: contactPhone.trim(),
             contact_address: contactAddress.trim(),
-
-            // Requires corresponding backend serializer support.
             payout_accounts: beneficiaries.map((beneficiary) => ({
+              beneficiary_type: beneficiary.beneficiary_type,
+              beneficiary_name: beneficiary.beneficiary_name.trim(),
               account_name: beneficiary.account_name.trim(),
               bank_name: beneficiary.bank_name.trim(),
-              account_number: beneficiary.account_number.trim(),
+              bank_code: beneficiary.bank_code,
+              account_number: beneficiary.account_number,
+              currency: "NGN",
+              country: "NG",
               allocation_percentage: Number(beneficiary.allocation_percentage),
             })),
           }),
@@ -603,6 +955,8 @@ export default function OrganizationCrowdfundingCampaignPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="mt-10 space-y-8">
+            {/* BASIC INFORMATION */}
+
             <section>
               <h2 className="text-lg font-bold text-[#190D2E]">
                 Basic information
@@ -649,7 +1003,9 @@ export default function OrganizationCrowdfundingCampaignPage() {
                   </p>
                 </div>
 
-                <div ref={dropdownRef} className="relative">
+                {/* CATEGORY DROPDOWN */}
+
+                <div ref={categoryDropdownRef} className="relative">
                   <label className="mb-2 block text-sm font-semibold text-zinc-700">
                     Campaign category *
                   </label>
@@ -657,11 +1013,12 @@ export default function OrganizationCrowdfundingCampaignPage() {
                   <button
                     type="button"
                     disabled={loadingCategories || categories.length === 0}
-                    onClick={() =>
+                    onClick={() => {
+                      setActiveBankDropdown(null);
                       setActiveDropdown((current) =>
                         current === "category" ? null : "category",
-                      )
-                    }
+                      );
+                    }}
                     className="flex w-full items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-3 text-left text-sm outline-none transition hover:border-[#6D28D9] focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100 disabled:cursor-not-allowed disabled:bg-zinc-50"
                   >
                     <span
@@ -685,7 +1042,7 @@ export default function OrganizationCrowdfundingCampaignPage() {
                   </button>
 
                   {activeDropdown === "category" && (
-                    <div className="absolute left-0 right-0 top-full z-30 mt-2 max-h-64 overflow-y-auto rounded-xl border border-zinc-100 bg-white p-2 shadow-xl">
+                    <div className="absolute left-0 right-0 top-full z-40 mt-2 max-h-64 overflow-y-auto rounded-xl border border-zinc-100 bg-white p-2 shadow-xl">
                       {categories.map((item) => (
                         <button
                           type="button"
@@ -725,14 +1082,6 @@ export default function OrganizationCrowdfundingCampaignPage() {
                       </button>
                     </div>
                   )}
-
-                  {!loadingCategories &&
-                    !categoryError &&
-                    categories.length === 0 && (
-                      <p className="mt-2 text-xs text-zinc-500">
-                        No campaign categories are currently available.
-                      </p>
-                    )}
                 </div>
 
                 <div>
@@ -750,6 +1099,8 @@ export default function OrganizationCrowdfundingCampaignPage() {
                 </div>
               </div>
             </section>
+
+            {/* FUNDRAISING TARGET */}
 
             <section className="border-t border-zinc-100 pt-8">
               <h2 className="text-lg font-bold text-[#190D2E]">
@@ -783,10 +1134,6 @@ export default function OrganizationCrowdfundingCampaignPage() {
                       className="min-w-0 flex-1 px-4 py-3 text-sm outline-none"
                     />
                   </div>
-
-                  <p className="mt-2 text-xs text-zinc-400">
-                    Amounts are automatically formatted with commas.
-                  </p>
                 </div>
 
                 <div>
@@ -803,13 +1150,11 @@ export default function OrganizationCrowdfundingCampaignPage() {
                       Fixed
                     </span>
                   </div>
-
-                  <p className="mt-2 text-xs text-zinc-400">
-                    All campaigns currently raise funds in Nigerian Naira.
-                  </p>
                 </div>
               </div>
             </section>
+
+            {/* DISBURSEMENT DROPDOWN */}
 
             <section className="border-t border-zinc-100 pt-8">
               <h2 className="text-lg font-bold text-[#190D2E]">
@@ -821,73 +1166,74 @@ export default function OrganizationCrowdfundingCampaignPage() {
                 selection will be locked once the campaign is created.
               </p>
 
-              <div className="mt-6">
+              <div ref={disbursementDropdownRef} className="relative mt-6">
                 <label className="mb-2 block text-sm font-semibold text-zinc-700">
                   Disbursement method *
                 </label>
 
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setActiveDropdown((current) =>
-                        current === "disbursement" ? null : "disbursement",
-                      )
-                    }
-                    className="flex w-full items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-3 text-left text-sm transition hover:border-[#6D28D9] focus:border-[#6D28D9] focus:outline-none focus:ring-2 focus:ring-purple-100"
-                  >
-                    <span className="font-semibold text-zinc-800">
-                      {selectedDisbursement?.label}
-                    </span>
-
-                    <FiChevronDown
-                      size={18}
-                      className={`text-zinc-400 transition ${
-                        activeDropdown === "disbursement" ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-
-                  {activeDropdown === "disbursement" && (
-                    <div className="absolute left-0 right-0 top-full z-20 mt-2 rounded-xl border border-zinc-100 bg-white p-2 shadow-xl">
-                      {DISBURSEMENT_OPTIONS.map((option) => (
-                        <button
-                          type="button"
-                          key={option.value}
-                          onClick={() => {
-                            setDisbursementMode(option.value);
-                            setActiveDropdown(null);
-                          }}
-                          className={`w-full rounded-lg p-4 text-left transition hover:bg-purple-50 ${
-                            disbursementMode === option.value
-                              ? "bg-purple-50"
-                              : ""
-                          }`}
-                        >
-                          <span className="block text-sm font-bold text-[#190D2E]">
-                            {option.label}
-                          </span>
-
-                          <span className="mt-1 block text-xs leading-5 text-zinc-500">
-                            {option.description}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-4 rounded-xl border border-purple-100 bg-purple-50/70 p-4">
-                  <p className="text-sm font-bold text-[#6D28D9]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveBankDropdown(null);
+                    setActiveDropdown((current) =>
+                      current === "disbursement" ? null : "disbursement",
+                    );
+                  }}
+                  className="flex w-full items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-3 text-left text-sm transition hover:border-[#6D28D9] focus:border-[#6D28D9] focus:outline-none focus:ring-2 focus:ring-purple-100"
+                >
+                  <span className="font-semibold text-zinc-800">
                     {selectedDisbursement?.label}
-                  </p>
+                  </span>
 
-                  <p className="mt-1 text-xs leading-6 text-zinc-600">
-                    {selectedDisbursement?.description}
-                  </p>
-                </div>
+                  <FiChevronDown
+                    size={18}
+                    className={`text-zinc-400 transition ${
+                      activeDropdown === "disbursement" ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {activeDropdown === "disbursement" && (
+                  <div className="absolute left-0 right-0 top-full z-40 mt-2 rounded-xl border border-zinc-100 bg-white p-2 shadow-xl">
+                    {DISBURSEMENT_OPTIONS.map((option) => (
+                      <button
+                        type="button"
+                        key={option.value}
+                        onClick={() => {
+                          setDisbursementMode(option.value);
+                          setActiveDropdown(null);
+                        }}
+                        className={`w-full rounded-lg p-4 text-left transition hover:bg-purple-50 ${
+                          disbursementMode === option.value
+                            ? "bg-purple-50"
+                            : ""
+                        }`}
+                      >
+                        <span className="block text-sm font-bold text-[#190D2E]">
+                          {option.label}
+                        </span>
+
+                        <span className="mt-1 block text-xs leading-5 text-zinc-500">
+                          {option.description}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-4 rounded-xl border border-purple-100 bg-purple-50/70 p-4">
+                <p className="text-sm font-bold text-[#6D28D9]">
+                  {selectedDisbursement?.label}
+                </p>
+
+                <p className="mt-1 text-xs leading-6 text-zinc-600">
+                  {selectedDisbursement?.description}
+                </p>
               </div>
             </section>
+
+            {/* BENEFICIARY BANK ACCOUNTS */}
 
             <section className="border-t border-zinc-100 pt-8">
               <div className="flex flex-wrap items-start justify-between gap-4">
@@ -897,8 +1243,8 @@ export default function OrganizationCrowdfundingCampaignPage() {
                   </h2>
 
                   <p className="mt-1 max-w-xl text-sm leading-6 text-zinc-500">
-                    Add the bank accounts that should receive campaign proceeds
-                    and specify the percentage allocated to each.
+                    Select a bank, enter the account number and confirm the
+                    account name returned by Paystack.
                   </p>
                 </div>
 
@@ -912,104 +1258,350 @@ export default function OrganizationCrowdfundingCampaignPage() {
                 </button>
               </div>
 
-              <div className="mt-6 space-y-5">
-                {beneficiaries.map((beneficiary, index) => (
-                  <div
-                    key={beneficiary.id}
-                    className="rounded-2xl border border-zinc-200 p-5 md:p-6"
+              {bankError && (
+                <div className="mt-5 rounded-xl border border-red-100 bg-red-50 p-4">
+                  <p className="text-sm text-red-700">{bankError}</p>
+
+                  <button
+                    type="button"
+                    onClick={() => window.location.reload()}
+                    className="mt-2 text-xs font-bold text-[#6D28D9]"
                   >
-                    <div className="mb-5 flex items-center justify-between gap-3">
-                      <div>
-                        <h3 className="text-sm font-bold text-[#190D2E]">
-                          Beneficiary {index + 1}
-                        </h3>
+                    Try again
+                  </button>
+                </div>
+              )}
 
-                        <p className="mt-1 text-xs text-zinc-400">
-                          Enter the beneficiary&apos;s bank details.
-                        </p>
+              <div className="mt-6 space-y-5">
+                {beneficiaries.map((beneficiary, index) => {
+                  const filteredBanks = banks.filter((bank) =>
+                    bank.name
+                      .toLowerCase()
+                      .includes(bankSearch.trim().toLowerCase()),
+                  );
+
+                  return (
+                    <div
+                      key={beneficiary.id}
+                      className="rounded-2xl border border-zinc-200 p-5 md:p-6"
+                    >
+                      <div className="mb-5 flex items-center justify-between gap-3">
+                        <div>
+                          <h3 className="text-sm font-bold text-[#190D2E]">
+                            Beneficiary {index + 1}
+                          </h3>
+
+                          <p className="mt-1 text-xs text-zinc-400">
+                            Provide the beneficiary&apos;s bank details.
+                          </p>
+                        </div>
+
+                        {beneficiaries.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeBeneficiary(beneficiary.id)}
+                            className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold text-red-500 transition hover:bg-red-50"
+                          >
+                            <FiTrash2 size={14} />
+                            Remove
+                          </button>
+                        )}
                       </div>
 
-                      {beneficiaries.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => removeBeneficiary(beneficiary.id)}
-                          className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold text-red-500 transition hover:bg-red-50"
+                      <div className="grid gap-5 md:grid-cols-2">
+                        <div>
+                          <label className="mb-2 block text-sm font-semibold text-zinc-700">
+                            Beneficiary type *
+                          </label>
+
+                          <select
+                            required
+                            value={beneficiary.beneficiary_type}
+                            onChange={(event) =>
+                              updateBeneficiary(
+                                beneficiary.id,
+                                "beneficiary_type",
+                                event.target.value,
+                              )
+                            }
+                            className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100"
+                          >
+                            <option value="owner">Account Owner</option>
+                            <option value="individual">
+                              Represented Individual
+                            </option>
+                            <option value="organization">Organization</option>
+                            <option value="other">Other Beneficiary</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="mb-2 block text-sm font-semibold text-zinc-700">
+                            Beneficiary name *
+                          </label>
+
+                          <input
+                            type="text"
+                            required
+                            maxLength={255}
+                            value={beneficiary.beneficiary_name}
+                            onChange={(event) =>
+                              updateBeneficiary(
+                                beneficiary.id,
+                                "beneficiary_name",
+                                event.target.value,
+                              )
+                            }
+                            placeholder="Name of the beneficiary"
+                            className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100"
+                          />
+                        </div>
+
+                        {/* CUSTOM BANK SELECT */}
+
+                        <div
+                          ref={
+                            activeBankDropdown === beneficiary.id
+                              ? bankDropdownRef
+                              : null
+                          }
+                          className="relative"
                         >
-                          <FiTrash2 size={14} />
-                          Remove
-                        </button>
+                          <label className="mb-2 block text-sm font-semibold text-zinc-700">
+                            Select bank *
+                          </label>
+
+                          <button
+                            type="button"
+                            disabled={loadingBanks || banks.length === 0}
+                            onClick={() => {
+                              setActiveDropdown(null);
+                              setBankSearch("");
+                              setActiveBankDropdown((current) =>
+                                current === beneficiary.id
+                                  ? null
+                                  : beneficiary.id,
+                              );
+                            }}
+                            className="flex w-full items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-3 text-left text-sm outline-none transition hover:border-[#6D28D9] focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100 disabled:cursor-not-allowed disabled:bg-zinc-50"
+                          >
+                            <span
+                              className={
+                                beneficiary.bank_name
+                                  ? "font-medium text-zinc-800"
+                                  : "text-zinc-400"
+                              }
+                            >
+                              {loadingBanks
+                                ? "Loading banks..."
+                                : beneficiary.bank_name || "Choose a bank"}
+                            </span>
+
+                            <FiChevronDown
+                              size={18}
+                              className={`text-zinc-400 transition ${
+                                activeBankDropdown === beneficiary.id
+                                  ? "rotate-180"
+                                  : ""
+                              }`}
+                            />
+                          </button>
+
+                          {activeBankDropdown === beneficiary.id && (
+                            <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-zinc-100 bg-white shadow-2xl">
+                              <div className="border-b border-zinc-100 p-3">
+                                <div className="flex items-center gap-2 rounded-lg border border-zinc-200 px-3">
+                                  <FiSearch
+                                    size={16}
+                                    className="shrink-0 text-zinc-400"
+                                  />
+
+                                  <input
+                                    type="text"
+                                    autoComplete="off"
+                                    value={bankSearch}
+                                    onChange={(event) =>
+                                      setBankSearch(event.target.value)
+                                    }
+                                    placeholder="Search for a bank..."
+                                    className="w-full border-0 py-3 text-sm outline-none focus:ring-0"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="max-h-64 overflow-y-auto p-2">
+                                {filteredBanks.length > 0 ? (
+                                  filteredBanks.map((bank) => (
+                                    <button
+                                      type="button"
+                                      key={`${bank.code}-${bank.id}`}
+                                      onClick={() =>
+                                        selectBeneficiaryBank(
+                                          beneficiary.id,
+                                          bank,
+                                        )
+                                      }
+                                      className={`w-full rounded-lg px-3 py-3 text-left text-sm transition hover:bg-purple-50 hover:text-[#6D28D9] ${
+                                        beneficiary.bank_code === bank.code
+                                          ? "bg-purple-50 font-bold text-[#6D28D9]"
+                                          : "text-zinc-700"
+                                      }`}
+                                    >
+                                      {bank.name}
+                                    </button>
+                                  ))
+                                ) : (
+                                  <p className="px-3 py-6 text-center text-sm text-zinc-400">
+                                    No matching bank found.
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* ACCOUNT NUMBER */}
+
+                        <div>
+                          <label className="mb-2 block text-sm font-semibold text-zinc-700">
+                            Account number *
+                          </label>
+
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            required
+                            maxLength={10}
+                            value={beneficiary.account_number}
+                            onChange={(event) =>
+                              updateBeneficiary(
+                                beneficiary.id,
+                                "account_number",
+                                event.target.value
+                                  .replace(/\D/g, "")
+                                  .slice(0, 10),
+                              )
+                            }
+                            placeholder="Enter 10-digit account number"
+                            className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100"
+                          />
+
+                          {beneficiary.account_number.length > 0 &&
+                            beneficiary.account_number.length < 10 && (
+                              <p className="mt-2 text-xs text-zinc-400">
+                                Enter all 10 digits to verify the account.
+                              </p>
+                            )}
+                        </div>
+                      </div>
+
+                      {/* PAYSTACK ACCOUNT RESOLUTION */}
+
+                      {beneficiary.resolution_status === "resolving" && (
+                        <div className="mt-5 flex items-center gap-3 rounded-xl border border-purple-100 bg-purple-50 p-4">
+                          <div className="h-5 w-5 animate-spin rounded-full border-2 border-purple-200 border-t-[#6D28D9]" />
+
+                          <p className="text-sm font-medium text-[#6D28D9]">
+                            Checking account details with Paystack...
+                          </p>
+                        </div>
                       )}
-                    </div>
 
-                    <div className="grid gap-5 md:grid-cols-2">
-                      <div>
-                        <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                          Account name *
-                        </label>
+                      {beneficiary.resolution_status === "resolved" && (
+                        <div className="mt-5 rounded-xl border border-green-100 bg-green-50 p-4">
+                          <p className="text-xs font-bold uppercase tracking-wide text-green-700">
+                            Account name found
+                          </p>
 
-                        <input
-                          type="text"
-                          required
-                          value={beneficiary.account_name}
-                          onChange={(event) =>
-                            updateBeneficiary(
-                              beneficiary.id,
-                              "account_name",
-                              event.target.value,
-                            )
-                          }
-                          placeholder="Name registered with the bank"
-                          className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100"
-                        />
-                      </div>
+                          <p className="mt-2 text-base font-bold text-zinc-900">
+                            {beneficiary.resolved_account_name}
+                          </p>
 
-                      <div>
-                        <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                          Bank name *
-                        </label>
+                          <p className="mt-1 text-xs leading-5 text-zinc-500">
+                            Does this match the intended beneficiary&apos;s bank
+                            account?
+                          </p>
 
-                        <input
-                          type="text"
-                          required
-                          value={beneficiary.bank_name}
-                          onChange={(event) =>
-                            updateBeneficiary(
-                              beneficiary.id,
-                              "bank_name",
-                              event.target.value,
-                            )
-                          }
-                          placeholder="Enter bank name"
-                          className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100"
-                        />
-                      </div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              confirmResolvedAccount(beneficiary.id)
+                            }
+                            className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-green-700 sm:w-auto"
+                          >
+                            <FiCheckCircle size={16} />
+                            Confirm this account name
+                          </button>
+                        </div>
+                      )}
 
-                      <div>
-                        <label className="mb-2 block text-sm font-semibold text-zinc-700">
-                          Account number *
-                        </label>
+                      {beneficiary.resolution_status === "verified" && (
+                        <div className="mt-5 rounded-xl border border-green-100 bg-green-50 p-4">
+                          <div className="flex items-center gap-2 text-green-700">
+                            <FiCheckCircle size={17} />
 
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          required
-                          maxLength={10}
-                          value={beneficiary.account_number}
-                          onChange={(event) =>
-                            updateBeneficiary(
-                              beneficiary.id,
-                              "account_number",
-                              event.target.value
-                                .replace(/\D/g, "")
-                                .slice(0, 10),
-                            )
-                          }
-                          placeholder="10-digit account number"
-                          className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none transition focus:border-[#6D28D9] focus:ring-2 focus:ring-purple-100"
-                        />
-                      </div>
+                            <span className="text-xs font-bold uppercase tracking-wide">
+                              Account name confirmed
+                            </span>
+                          </div>
 
-                      <div>
+                          <p className="mt-2 text-base font-bold text-zinc-900">
+                            {beneficiary.account_name}
+                          </p>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setBeneficiaries((current) =>
+                                current.map((item) =>
+                                  item.id === beneficiary.id
+                                    ? {
+                                        ...item,
+                                        account_name: "",
+                                        resolved_account_name: "",
+                                        resolution_status: "idle",
+                                        resolution_message: "",
+                                      }
+                                    : item,
+                                ),
+                              );
+                            }}
+                            className="mt-2 text-xs font-semibold text-[#6D28D9] underline"
+                          >
+                            Change account
+                          </button>
+                        </div>
+                      )}
+
+                      {beneficiary.resolution_status === "error" && (
+                        <div className="mt-5 rounded-xl border border-red-100 bg-red-50 p-4">
+                          <p className="text-sm font-semibold text-red-700">
+                            {beneficiary.resolution_message}
+                          </p>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setBeneficiaries((current) =>
+                                current.map((item) =>
+                                  item.id === beneficiary.id
+                                    ? {
+                                        ...item,
+                                        resolution_status: "idle",
+                                        resolution_message: "",
+                                      }
+                                    : item,
+                                ),
+                              );
+                            }}
+                            className="mt-2 text-xs font-bold text-[#6D28D9]"
+                          >
+                            Try again
+                          </button>
+                        </div>
+                      )}
+
+                      <div className="mt-5 max-w-sm">
                         <label className="mb-2 block text-sm font-semibold text-zinc-700">
                           Allocation percentage *
                         </label>
@@ -1039,8 +1631,8 @@ export default function OrganizationCrowdfundingCampaignPage() {
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-zinc-50 p-4">
@@ -1065,14 +1657,15 @@ export default function OrganizationCrowdfundingCampaignPage() {
                 </span>
               </div>
 
-              {beneficiaries.length > 0 &&
-                Math.abs(totalAllocation - 100) >= 0.001 && (
-                  <p className="mt-2 text-xs text-amber-700">
-                    Your allocations must total exactly 100% before you can
-                    create this campaign.
-                  </p>
-                )}
+              {Math.abs(totalAllocation - 100) >= 0.001 && (
+                <p className="mt-2 text-xs text-amber-700">
+                  Your allocations must total exactly 100% before you can create
+                  this campaign.
+                </p>
+              )}
             </section>
+
+            {/* CAMPAIGN BANNER */}
 
             <section className="border-t border-zinc-100 pt-8">
               <h2 className="text-lg font-bold text-[#190D2E]">
@@ -1110,6 +1703,8 @@ export default function OrganizationCrowdfundingCampaignPage() {
                 </p>
               </div>
             </section>
+
+            {/* CONTACT INFORMATION */}
 
             <section className="border-t border-zinc-100 pt-8">
               <h2 className="text-lg font-bold text-[#190D2E]">
@@ -1154,6 +1749,8 @@ export default function OrganizationCrowdfundingCampaignPage() {
               </div>
             </section>
 
+            {/* FORM FEEDBACK */}
+
             {error && (
               <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm leading-6 text-red-700">
                 {error}
@@ -1177,11 +1774,13 @@ export default function OrganizationCrowdfundingCampaignPage() {
                   submitting ||
                   loadingCategories ||
                   categories.length === 0 ||
+                  loadingBanks ||
                   !allocationsAreValid
                 }
                 className="flex items-center justify-center gap-2 rounded-xl bg-[#6D28D9] px-7 py-3.5 text-sm font-bold text-white transition hover:bg-[#5B21B6] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {submitting ? "Wait..." : "Create campaign"}
+                {submitting ? "Please wait..." : "Create campaign"}
+
                 {!submitting && <FiArrowRight size={16} />}
               </button>
             </div>
