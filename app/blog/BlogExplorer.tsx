@@ -257,7 +257,7 @@ export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search articles by title..."
                   aria-label="Search blog articles by title"
-                  className="h-12 min-w-0 flex-1 bg-transparent text-sm font-medium text-gray-900 outline-none placeholder:font-normal placeholder:text-gray-400 sm:text-base"
+                  className="h-12 min-w-0 flex-1 bg-transparent text-base font-medium text-gray-900 outline-none placeholder:font-normal placeholder:text-gray-400 sm:text-base"
                 />
 
                 {isSearching && (
