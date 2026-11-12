@@ -113,7 +113,7 @@ export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
         const params = new URLSearchParams({ q: query });
 
         const response = await fetch(
-          `https://api.tippified.com/api/auth/adminpanel/search/?${params.toString()}`,
+          `https://api.tippified.com/api/adminpanel/search/?${params.toString()}`,
           {
             method: "GET",
             signal: controller.signal,
