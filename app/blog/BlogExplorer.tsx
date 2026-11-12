@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CreatorSignupBanner from "../components/CreatorSignupBanner";
 
 export interface BlogCategory {
@@ -88,13 +88,73 @@ function formatViewCount(count: number = 0): string {
 
 export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
   const [activeCategory, setActiveCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<BlogPost[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState("");
 
-  const filteredBlogs = useMemo(() => {
-    if (activeCategory === "all") {
-      return blogs;
+  useEffect(() => {
+    const query = searchQuery.trim();
+
+    if (!query) {
+      setSearchResults([]);
+      setIsSearching(false);
+      setSearchError("");
+      return;
     }
 
-    return blogs.filter((blog) => {
+    const controller = new AbortController();
+
+    const timeout = setTimeout(async () => {
+      try {
+        setIsSearching(true);
+        setSearchError("");
+
+        const params = new URLSearchParams({ q: query });
+
+        const response = await fetch(
+          `https://api.tippified.com/api/auth/adminpanel/search/?${params.toString()}`,
+          {
+            method: "GET",
+            signal: controller.signal,
+          },
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error("Unable to search articles.");
+        }
+
+        setSearchResults(data.results || []);
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") {
+          return;
+        }
+
+        setSearchError("Something went wrong. Please try again.");
+        setSearchResults([]);
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsSearching(false);
+        }
+      }
+    }, 350);
+
+    return () => {
+      clearTimeout(timeout);
+      controller.abort();
+    };
+  }, [searchQuery]);
+
+  const filteredBlogs = useMemo(() => {
+    const sourceBlogs = searchQuery.trim() ? searchResults : blogs;
+
+    if (activeCategory === "all") {
+      return sourceBlogs;
+    }
+
+    return sourceBlogs.filter((blog) => {
       if (!blog.category) return false;
 
       if (typeof blog.category === "string") {
@@ -106,7 +166,7 @@ export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
         blog.category.slug === activeCategory
       );
     });
-  }, [blogs, activeCategory]);
+  }, [blogs, searchQuery, searchResults, activeCategory]);
 
   const featuredBlog = filteredBlogs[0];
   const remainingBlogs = filteredBlogs.slice(1);
@@ -156,6 +216,98 @@ export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
       </section>
 
       <main className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14 lg:px-10">
+        {/* Premium Blog Search */}
+        <section className="mb-12">
+          <div className="mx-auto max-w-3xl">
+            <div className="mb-4 text-center">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-purple-700">
+                The Tippified Journal
+              </p>
+
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-purple-950 sm:text-3xl">
+                What would you like to read?
+              </h2>
+
+              <p className="mt-2 text-sm text-gray-500">
+                Search our journal for stories, insights and creator resources.
+              </p>
+            </div>
+
+            <div className="group relative">
+              <div className="absolute -inset-1 rounded-2xl bg-linear-to-r from-purple-300/40 via-fuchsia-200/40 to-purple-300/40 opacity-0 blur-lg transition duration-500 group-focus-within:opacity-100" />
+
+              <div className="relative flex items-center rounded-2xl border border-purple-100 bg-white p-2 shadow-[0_8px_35px_rgba(88,28,135,0.07)] transition duration-300 focus-within:border-purple-300 focus-within:shadow-[0_12px_40px_rgba(88,28,135,0.12)]">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center text-purple-600">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                  >
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="m16 16 4 4" />
+                  </svg>
+                </div>
+
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search articles by title..."
+                  aria-label="Search blog articles by title"
+                  className="h-12 min-w-0 flex-1 bg-transparent text-sm font-medium text-gray-900 outline-none placeholder:font-normal placeholder:text-gray-400 sm:text-base"
+                />
+
+                {isSearching && (
+                  <div
+                    className="mr-3 h-5 w-5 shrink-0 animate-spin rounded-full border-2 border-purple-200 border-t-purple-700"
+                    aria-label="Searching"
+                  />
+                )}
+
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    aria-label="Clear search"
+                    className="mr-2 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-gray-400 transition hover:bg-purple-50 hover:text-purple-700"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className="h-4 w-4"
+                      aria-hidden="true"
+                    >
+                      <path d="m18 6-12 12M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+
+                <div className="hidden shrink-0 rounded-xl bg-purple-700 px-5 py-3 text-xs font-semibold text-white sm:block">
+                  Search
+                </div>
+              </div>
+            </div>
+
+            {searchQuery.trim() && !isSearching && !searchError && (
+              <p className="mt-3 text-center text-xs text-gray-500">
+                {filteredBlogs.length}{" "}
+                {filteredBlogs.length === 1 ? "article" : "articles"} found
+              </p>
+            )}
+
+            {searchError && (
+              <p className="mt-3 text-center text-sm text-red-500">
+                {searchError}
+              </p>
+            )}
+          </div>
+        </section>
+
         {/* Category navigation */}
         <section aria-label="Browse by category" className="mb-12">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
@@ -210,20 +362,25 @@ export default function BlogExplorer({ blogs, categories }: BlogExplorerProps) {
             </div>
 
             <h2 className="mt-5 text-xl font-bold text-gray-900">
-              No articles in this category yet
+              {searchQuery.trim()
+                ? "No matching articles found"
+                : "No articles in this category yet"}
             </h2>
-
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500">
-              We are working on more useful stories and guides. Explore another
-              topic or view all articles.
+              {searchQuery.trim()
+                ? "We couldn't find an article matching your search. Try another title or browse all articles."
+                : "We are working on more useful stories and guides. Explore another topic or view all articles."}
             </p>
 
             <button
               type="button"
-              onClick={() => setActiveCategory("all")}
+              onClick={() => {
+                setSearchQuery("");
+                setActiveCategory("all");
+              }}
               className="mt-6 rounded-xl bg-purple-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-purple-800"
             >
-              Browse all articles
+              {searchQuery.trim() ? "Clear search" : "Browse all articles"}
             </button>
           </section>
         ) : (
