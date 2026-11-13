@@ -45,6 +45,32 @@ interface CrowdfundingAccount {
   created_at?: string;
 }
 
+interface CrowdfundingSubscription {
+  plan: string;
+  is_pro: boolean;
+  status: string;
+  price: string | null;
+  currency: string;
+  billing_interval: string | null;
+  current_period_start: string | null;
+  current_period_end: string | null;
+  cancel_at_period_end: boolean;
+}
+
+interface CrowdfundingEntitlements {
+  max_active_campaigns: number;
+  max_bank_accounts_per_campaign: number;
+  max_gallery_images: number;
+  max_video_duration_seconds: number;
+}
+
+interface CrowdfundingSubscriptionResponse {
+  success: boolean;
+  subscription: CrowdfundingSubscription;
+  limits: CrowdfundingEntitlements;
+  features: Record<string, boolean>;
+}
+
 interface NavItem {
   label: string;
   icon: React.ElementType;
@@ -188,6 +214,139 @@ function SidebarItem({
   );
 }
 
+function SubscriptionCard({
+  data,
+  loading,
+  error,
+}: {
+  data: CrowdfundingSubscriptionResponse | null;
+  loading: boolean;
+  error: string;
+}) {
+  if (loading) {
+    return (
+      <section className="mb-8 rounded-3xl border border-purple-100 bg-white p-6">
+        <div className="h-4 w-36 animate-pulse rounded bg-purple-100" />
+        <div className="mt-4 h-7 w-48 animate-pulse rounded bg-zinc-100" />
+        <div className="mt-3 h-3 w-64 animate-pulse rounded bg-zinc-100" />
+      </section>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <section className="mb-8 rounded-3xl border border-red-100 bg-white p-6">
+        <h3 className="text-[13px] font-bold text-[#190D2E]">
+          Subscription information unavailable
+        </h3>
+
+        <p className="mt-2 text-[11px] text-zinc-500">
+          {error || "We couldn't retrieve your subscription information."}
+        </p>
+      </section>
+    );
+  }
+
+  const { subscription, limits } = data;
+  const isPro = subscription.is_pro;
+
+  const formattedPrice =
+    subscription.price !== null
+      ? new Intl.NumberFormat("en-NG", {
+          style: "currency",
+          currency: subscription.currency || "NGN",
+          maximumFractionDigits: 0,
+        }).format(Number(subscription.price))
+      : null;
+
+  return (
+    <section className="relative mb-8 overflow-hidden rounded-3xl border border-purple-100 bg-white p-6 md:p-7">
+      <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-purple-100/50 blur-3xl" />
+
+      <div className="relative flex flex-col justify-between gap-6 md:flex-row md:items-center">
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full bg-purple-50 px-3 py-1.5 text-[9px] font-extrabold uppercase tracking-wider text-[#6D28D9]">
+              Your subscription
+            </span>
+
+            <span
+              className={`rounded-full px-3 py-1.5 text-[9px] font-bold capitalize ${
+                isPro
+                  ? "bg-emerald-50 text-emerald-600"
+                  : "bg-zinc-100 text-zinc-500"
+              }`}
+            >
+              {isPro ? "Active Pro" : "Free plan"}
+            </span>
+          </div>
+
+          <h3 className="mt-4 text-2xl font-black text-[#190D2E]">
+            {isPro ? "Tippified Pro" : "Tippified Free"}
+          </h3>
+
+          <p className="mt-2 max-w-lg text-[11px] leading-6 text-zinc-500">
+            {isPro
+              ? "Your organisation has access to Pro crowdfunding features."
+              : "You're currently using the free crowdfunding plan. Upgrade to Pro to unlock more fundraising capabilities."}
+          </p>
+
+          {formattedPrice && (
+            <p className="mt-3 text-[12px] font-bold text-[#6D28D9]">
+              {formattedPrice}
+              <span className="font-medium text-zinc-400">
+                {" "}
+                / {subscription.billing_interval || "month"}
+              </span>
+            </p>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 md:min-w-65">
+          <div className="rounded-2xl bg-[#F8F5FF] p-4">
+            <p className="text-[10px] text-zinc-500">Active campaigns</p>
+
+            <p className="mt-2 text-2xl font-black text-[#190D2E]">
+              {limits.max_active_campaigns}
+            </p>
+
+            <p className="mt-1 text-[9px] text-zinc-400">Maximum allowed</p>
+          </div>
+
+          <div className="rounded-2xl bg-[#F8F5FF] p-4">
+            <p className="text-[10px] text-zinc-500">
+              Bank accounts per campaign
+            </p>
+
+            <p className="mt-2 text-2xl font-black text-[#190D2E]">
+              {limits.max_bank_accounts_per_campaign}
+            </p>
+
+            <p className="mt-1 text-[9px] text-zinc-400">Maximum allowed</p>
+          </div>
+        </div>
+      </div>
+
+      {isPro && subscription.current_period_end && (
+        <div className="relative mt-6 border-t border-zinc-100 pt-4">
+          <p className="text-[10px] text-zinc-500">
+            {subscription.cancel_at_period_end
+              ? "Your subscription is scheduled to end on"
+              : "Your current subscription period ends on"}{" "}
+            <span className="font-bold text-[#190D2E]">
+              {new Intl.DateTimeFormat("en-NG", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              }).format(new Date(subscription.current_period_end))}
+            </span>
+          </p>
+        </div>
+      )}
+    </section>
+  );
+}
+
 export default function CrowdfundingDashboard() {
   const router = useRouter();
 
@@ -200,6 +359,12 @@ export default function CrowdfundingDashboard() {
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
 
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [subscription, setSubscription] =
+    useState<CrowdfundingSubscriptionResponse | null>(null);
+
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
+
+  const [subscriptionError, setSubscriptionError] = useState("");
 
   const [logoutError, setLogoutError] = useState("");
   type OrganizationVerificationStatus =
@@ -268,6 +433,52 @@ export default function CrowdfundingDashboard() {
   useEffect(() => {
     fetchAccount();
   }, [fetchAccount]);
+
+  const fetchSubscription = useCallback(async () => {
+    if (account?.account_type !== "organisation") {
+      setSubscription(null);
+      return;
+    }
+
+    setSubscriptionLoading(true);
+    setSubscriptionError("");
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/crowdfunding/subscription/`,
+        {
+          method: "GET",
+          credentials: "include",
+          cache: "no-store",
+          headers: {
+            Accept: "application/json",
+          },
+        },
+      );
+
+      const data: CrowdfundingSubscriptionResponse = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error("Unable to retrieve your subscription information.");
+      }
+
+      setSubscription(data);
+    } catch (error) {
+      setSubscriptionError(
+        error instanceof Error
+          ? error.message
+          : "Unable to load subscription information.",
+      );
+    } finally {
+      setSubscriptionLoading(false);
+    }
+  }, [account?.account_type]);
+
+  useEffect(() => {
+    if (account?.account_type === "organisation") {
+      fetchSubscription();
+    }
+  }, [account?.account_type, fetchSubscription]);
 
   const handleStartCampaign = async () => {
     if (account?.account_type !== "organisation") {
@@ -806,6 +1017,15 @@ export default function CrowdfundingDashboard() {
                 <FiArrowRight size={14} />
               </button>
             </section>
+          )}
+
+          {/* ORGANISATION SUBSCRIPTION */}
+          {account.account_type === "organisation" && (
+            <SubscriptionCard
+              data={subscription}
+              loading={subscriptionLoading}
+              error={subscriptionError}
+            />
           )}
 
           {/* STATISTICS */}
