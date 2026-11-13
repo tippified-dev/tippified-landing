@@ -445,7 +445,7 @@ export default function CrowdfundingDashboard() {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/crowdfunding/subscription/`,
+        `${API_BASE_URL}/api/crowdfunding/subscriptions/`,
         {
           method: "GET",
           credentials: "include",
