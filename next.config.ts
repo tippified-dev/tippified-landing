@@ -27,6 +27,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "dc8d3382c3dee40ffbbd1fae9091c606.r2.cloudflarestorage.com",
       },
+      {
+        protocol: "https",
+        hostname: "blog-image.tippified.com",
+        pathname: "/**",
+      },
     ],
   },
 };
