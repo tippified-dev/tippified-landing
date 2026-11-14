@@ -202,6 +202,8 @@ export default function OrganizationCrowdfundingCampaignPage() {
   const [banks, setBanks] = useState<CampaignBank[]>([]);
   const [loadingBanks, setLoadingBanks] = useState(true);
   const [bankError, setBankError] = useState("");
+  const [showCampaignLimitModal, setShowCampaignLimitModal] = useState(false);
+  const [campaignLimitMessage, setCampaignLimitMessage] = useState("");
 
   const [activeDropdown, setActiveDropdown] = useState<
     "category" | "disbursement" | null
@@ -629,6 +631,45 @@ export default function OrganizationCrowdfundingCampaignPage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    // Check whether the organisation can create another campaign
+    try {
+      const eligibilityResponse = await fetch(
+        `${API_BASE_URL}/api/crowdfunding/subscription/`,
+        {
+          method: "GET",
+          credentials: "include",
+          cache: "no-store",
+          headers: {
+            Accept: "application/json",
+          },
+        },
+      );
+
+      const eligibilityData = await eligibilityResponse.json();
+
+      if (!eligibilityResponse.ok || !eligibilityData.success) {
+        alert(
+          eligibilityData.error ||
+            "Unable to verify your campaign eligibility. Please try again.",
+        );
+        return;
+      }
+
+      const eligibility = eligibilityData.campaign_eligibility;
+
+      if (!eligibility?.can_create_campaign) {
+        setCampaignLimitMessage(
+          `You have reached your campaign limit of ${eligibility?.campaign_limit} campaigns on your ${eligibilityData.subscription?.plan?.toUpperCase() || "FREE"} plan.`,
+        );
+
+        setShowCampaignLimitModal(true);
+        return;
+      }
+    } catch (error) {
+      console.error("Campaign eligibility check failed:", error);
+      alert("Unable to verify your campaign eligibility. Please try again.");
+      return;
+    }
     setError("");
     if (!banner) {
       setError("Please select a campaign banner image.");
@@ -1827,9 +1868,6 @@ export default function OrganizationCrowdfundingCampaignPage() {
             )}
 
             <div className="flex flex-col-reverse justify-between gap-4 border-t border-zinc-100 pt-6 sm:flex-row sm:items-center">
-              <p className="text-sm leading-6 text-zinc-400">
-                Your campaign will initially be saved as a draft.
-              </p>
               <button
                 type="submit"
                 disabled={
@@ -1849,9 +1887,43 @@ export default function OrganizationCrowdfundingCampaignPage() {
         </div>
 
         <p className="mt-5 text-center text-xs text-zinc-400">
-          Secured by Tippified • Account names are verified via Paystack
+          Secured by Tippified Crowdfunding•
         </p>
       </div>
+
+      {showCampaignLimitModal && (
+        <div className="fixed inset-0 z-9999 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Campaign limit reached
+            </h2>
+
+            <p className="mt-3 text-sm leading-6 text-gray-600">
+              {campaignLimitMessage} Upgrade your plan to create more campaigns.
+            </p>
+
+            <div className="mt-6 flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  window.location.href = "/crowdfunding/upgrade";
+                }}
+                className="w-full rounded-xl bg-purple-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-purple-800"
+              >
+                Upgrade Plan
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowCampaignLimitModal(false)}
+                className="w-full rounded-xl border border-gray-200 px-5 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+              >
+                Maybe Later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
