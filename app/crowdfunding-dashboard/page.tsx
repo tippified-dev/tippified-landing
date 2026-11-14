@@ -632,6 +632,12 @@ export default function CrowdfundingDashboard() {
       return;
     }
 
+    if (label === "My campaigns") {
+      router.push("/my-campaigns");
+
+      return;
+    }
+
     // Other dashboard sections will be connected
     // as their respective features are implemented.
   };
