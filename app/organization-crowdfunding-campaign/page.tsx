@@ -40,6 +40,11 @@ interface CampaignBank {
   code: string;
 }
 
+// interface CampaignUploadLimits {
+//   max_gallery_images: number;
+//   max_campaign_documents: number;
+// }
+
 interface ApiErrorResponse {
   detail?: unknown;
   error?: unknown;
@@ -204,6 +209,10 @@ export default function OrganizationCrowdfundingCampaignPage() {
   const [bankError, setBankError] = useState("");
   const [showCampaignLimitModal, setShowCampaignLimitModal] = useState(false);
   const [campaignLimitMessage, setCampaignLimitMessage] = useState("");
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+  const [documentFiles, setDocumentFiles] = useState<File[]>([]);
+  const [galleryError, setGalleryError] = useState("");
+  const [documentError, setDocumentError] = useState("");
 
   const [activeDropdown, setActiveDropdown] = useState<
     "category" | "disbursement" | null
@@ -218,6 +227,10 @@ export default function OrganizationCrowdfundingCampaignPage() {
   const [category, setCategory] = useState("");
   const [location, setLocation] = useState("");
   const [targetAmount, setTargetAmount] = useState("");
+  //   const [uploadLimits, setUploadLimits] = useState<CampaignUploadLimits>({
+  //   max_gallery_images: 2,
+  //   max_campaign_documents: 2,
+  // });
 
   const [disbursementMode, setDisbursementMode] =
     useState<DisbursementMode>("after_campaign");
@@ -408,6 +421,59 @@ export default function OrganizationCrowdfundingCampaignPage() {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []);
+
+  const handleGalleryFilesChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const files = Array.from(event.target.files || []);
+
+    setGalleryError("");
+
+    if (files.length === 0) return;
+
+    setGalleryFiles((previous) => {
+      const combined = [...previous, ...files];
+
+      // Prevent selecting the same file more than once.
+      return combined.filter(
+        (file, index, array) =>
+          array.findIndex(
+            (item) =>
+              item.name === file.name &&
+              item.size === file.size &&
+              item.lastModified === file.lastModified,
+          ) === index,
+      );
+    });
+
+    event.target.value = "";
+  };
+
+  const handleDocumentFilesChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const files = Array.from(event.target.files || []);
+
+    setDocumentError("");
+
+    if (files.length === 0) return;
+
+    setDocumentFiles((previous) => {
+      const combined = [...previous, ...files];
+
+      return combined.filter(
+        (file, index, array) =>
+          array.findIndex(
+            (item) =>
+              item.name === file.name &&
+              item.size === file.size &&
+              item.lastModified === file.lastModified,
+          ) === index,
+      );
+    });
+
+    event.target.value = "";
+  };
 
   // Resolve a bank account through the backend.
   const resolveBeneficiaryAccount = useCallback(
@@ -1807,6 +1873,138 @@ export default function OrganizationCrowdfundingCampaignPage() {
                 )}
               </div>
             </section>
+
+            {/* Campaign Gallery */}
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-base font-semibold text-gray-900">
+                  Campaign Gallery
+                </h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  Add photos that help people understand and connect with your
+                  campaign.
+                </p>
+              </div>
+
+              <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-6 text-center transition hover:border-purple-500">
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  multiple
+                  className="hidden"
+                  onChange={handleGalleryFilesChange}
+                />
+
+                <span className="font-medium text-purple-700">
+                  Add gallery photos
+                </span>
+                <span className="mt-1 text-xs text-gray-500">
+                  JPG, PNG or WebP
+                </span>
+              </label>
+
+              {galleryError && (
+                <p className="text-sm text-red-600">{galleryError}</p>
+              )}
+
+              {galleryFiles.length > 0 && (
+                <div className="space-y-2">
+                  {galleryFiles.map((file, index) => (
+                    <div
+                      key={`${file.name}-${file.size}-${file.lastModified}`}
+                      className="flex items-center justify-between rounded-lg border border-gray-200 p-3"
+                    >
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-gray-800">
+                          {file.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {(file.size / (1024 * 1024)).toFixed(2)} MB
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setGalleryFiles((previous) =>
+                            previous.filter((_, i) => i !== index),
+                          )
+                        }
+                        className="ml-3 text-sm font-medium text-red-600 hover:text-red-700"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Supporting Documents */}
+            <div className="mt-8 space-y-4">
+              <div>
+                <h3 className="text-base font-semibold text-gray-900">
+                  Supporting Documents
+                </h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  Upload documents that support your campaign and help establish
+                  credibility.
+                </p>
+              </div>
+
+              <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-6 text-center transition hover:border-purple-500">
+                <input
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                  multiple
+                  className="hidden"
+                  onChange={handleDocumentFilesChange}
+                />
+
+                <span className="font-medium text-purple-700">
+                  Add supporting documents
+                </span>
+                <span className="mt-1 text-xs text-gray-500">
+                  PDF, JPG, PNG, DOC or DOCX
+                </span>
+              </label>
+
+              {documentError && (
+                <p className="text-sm text-red-600">{documentError}</p>
+              )}
+
+              {documentFiles.length > 0 && (
+                <div className="space-y-2">
+                  {documentFiles.map((file, index) => (
+                    <div
+                      key={`${file.name}-${file.size}-${file.lastModified}`}
+                      className="flex items-center justify-between rounded-lg border border-gray-200 p-3"
+                    >
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-gray-800">
+                          {file.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {(file.size / (1024 * 1024)).toFixed(2)} MB
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setDocumentFiles((previous) =>
+                            previous.filter((_, i) => i !== index),
+                          )
+                        }
+                        className="ml-3 text-sm font-medium text-red-600 hover:text-red-700"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* CONTACT */}
             <section className="border-t border-zinc-100 pt-8">
