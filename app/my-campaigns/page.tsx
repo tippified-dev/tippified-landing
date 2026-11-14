@@ -296,7 +296,10 @@ export default function MyCampaignsPage() {
                     <Image
                       src={campaign.banner_url}
                       alt={campaign.name}
-                      className="h-52 w-full object-cover"
+                      fill
+                      priority
+                      sizes="(max-width: 640px) 100vw, 1200px"
+                      className="object-cover"
                     />
                   ) : (
                     <div className="flex h-52 items-center justify-center bg-purple-50">

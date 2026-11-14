@@ -297,11 +297,14 @@ export default function CampaignDetailsPage() {
         </div>
 
         {campaign.banner_url && (
-          <div className="mb-8 overflow-hidden rounded-2xl bg-white">
+          <div className="relative mb-8 h-65 w-full overflow-hidden rounded-2xl bg-gray-100 sm:h-100">
             <Image
               src={campaign.banner_url}
               alt={campaign.name}
-              className="max-h-110 w-full object-cover"
+              fill
+              priority
+              sizes="(max-width: 640px) 100vw, 1200px"
+              className="object-cover"
             />
           </div>
         )}
@@ -409,12 +412,20 @@ export default function CampaignDetailsPage() {
                 <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {campaign.gallery.map((image) => (
                     <div key={image.id} className="overflow-hidden rounded-xl">
-                      {image.image_url && (
-                        <Image
-                          src={image.image_url}
-                          alt={image.caption || campaign.name}
-                          className="h-56 w-full object-cover"
-                        />
+                      {image.image_url ? (
+                        <div className="relative h-56 w-full bg-gray-100">
+                          <Image
+                            src={image.image_url}
+                            alt={image.caption || campaign.name}
+                            fill
+                            sizes="(max-width: 640px) 100vw, 50vw"
+                            className="object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex h-56 items-center justify-center bg-gray-100 text-base text-gray-500">
+                          Image unavailable
+                        </div>
                       )}
 
                       {image.caption && (
