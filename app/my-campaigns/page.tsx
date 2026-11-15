@@ -292,20 +292,21 @@ export default function MyCampaignsPage() {
                   key={campaign.id}
                   className="overflow-hidden rounded-2xl border border-gray-200 bg-white transition hover:border-purple-200"
                 >
-                  {campaign.banner_url ? (
-                    <Image
-                      src={campaign.banner_url}
-                      alt={campaign.name}
-                      fill
-                      priority
-                      sizes="(max-width: 640px) 100vw, 1200px"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-52 items-center justify-center bg-purple-50">
-                      <FiTarget className="text-5xl text-purple-300" />
-                    </div>
-                  )}
+                  <div className="relative h-44 w-full overflow-hidden bg-purple-50 sm:h-52">
+                    {campaign.banner_url ? (
+                      <Image
+                        src={campaign.banner_url}
+                        alt={campaign.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, 50vw"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center">
+                        <FiTarget className="text-5xl text-purple-300" />
+                      </div>
+                    )}
+                  </div>
 
                   <div className="p-5 sm:p-6">
                     <div className="flex flex-wrap items-center justify-between gap-3">
