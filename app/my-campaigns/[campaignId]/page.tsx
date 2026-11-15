@@ -291,7 +291,7 @@ export default function CampaignDetailsPage() {
           <div className="rounded-xl border border-gray-200 bg-white px-4 py-3">
             <p className="text-sm text-gray-500">Campaign ID</p>
             <p className="mt-1 text-lg font-bold text-gray-900">
-              #{campaign.id}
+              tippified-funding-{campaign.id}
             </p>
           </div>
         </div>
