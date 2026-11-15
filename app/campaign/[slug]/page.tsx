@@ -125,7 +125,7 @@ export default function PublicCampaignPage() {
                       key={item}
                       className="flex aspect-4/3 items-center justify-center rounded-2xl bg-purple-100 text-sm text-purple-500"
                     >
-                      Campaign image
+                      Campaign Gallery
                     </div>
                   ))}
                 </div>
