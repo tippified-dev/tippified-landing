@@ -172,6 +172,7 @@ export default function CampaignDetailsPage() {
   const [campaign, setCampaign] = useState<CampaignDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [urlCopied, setUrlCopied] = useState(false);
 
   useEffect(() => {
     if (!campaignId) return;
@@ -251,6 +252,7 @@ export default function CampaignDetailsPage() {
   }
 
   const fundraising = campaign.fundraising;
+  const publicCampaignUrl = `https://tippified.com/campaign/${campaign.slug}`;
 
   const progress = Math.min(
     100,
@@ -295,6 +297,53 @@ export default function CampaignDetailsPage() {
             </p>
           </div>
         </div>
+
+        {campaign.status.value === "approved" && campaign.slug && (
+          <section className="mb-7 rounded-2xl border border-green-200 bg-green-50 p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-bold text-green-900">
+                  Your campaign is approved!
+                </h2>
+
+                <p className="mt-1 text-sm text-green-700">
+                  Your public campaign page is ready to share.
+                </p>
+              </div>
+
+              <span className="rounded-full bg-green-100 px-3 py-1.5 text-sm font-semibold text-green-800">
+                Approved
+              </span>
+            </div>
+
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+              <a
+                href={publicCampaignUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="min-w-0 flex-1 break-all rounded-xl border border-green-200 bg-white px-4 py-3 text-sm font-medium text-purple-700 hover:underline"
+              >
+                {publicCampaignUrl}
+              </a>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(publicCampaignUrl);
+                    setUrlCopied(true);
+                    setTimeout(() => setUrlCopied(false), 2500);
+                  } catch {
+                    setUrlCopied(false);
+                  }
+                }}
+                className="rounded-xl bg-green-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-800"
+              >
+                {urlCopied ? "Copied!" : "Copy URL"}
+              </button>
+            </div>
+          </section>
+        )}
 
         {campaign.banner_url && (
           <div className="relative mb-8 h-65 w-full overflow-hidden rounded-2xl bg-gray-100 sm:h-100">
