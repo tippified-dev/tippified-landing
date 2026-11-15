@@ -66,6 +66,40 @@ interface CampaignImageCompleteResponse {
   content_type: string;
 }
 
+interface CampaignCreatedResponse {
+  id: number;
+}
+
+interface CampaignMediaUploadResponse {
+  success: boolean;
+  upload_url: string;
+  object_key: string;
+  required_headers: Record<string, string>;
+}
+
+interface CampaignGalleryCompleteResponse {
+  success: boolean;
+  image: {
+    id: number;
+    object_key: string;
+    image_url: string;
+    caption: string;
+    display_order: number;
+  };
+}
+
+interface CampaignDocumentCompleteResponse {
+  success: boolean;
+  document: {
+    id: number;
+    title: string;
+    document_type: string;
+    description: string;
+    object_key: string;
+    document_url: string;
+  };
+}
+
 type BeneficiaryType = "owner" | "individual" | "organization" | "other";
 
 type AccountResolutionStatus =
@@ -894,8 +928,242 @@ export default function OrganizationCrowdfundingCampaignPage() {
         },
       );
       const campaignResult: unknown = await campaignResponse.json();
-      if (!campaignResponse.ok)
+
+      if (!campaignResponse.ok) {
         throw new Error(getErrorMessage(campaignResult));
+      }
+
+      const createdCampaign = campaignResult as CampaignCreatedResponse;
+      const campaignId = createdCampaign.id;
+
+      if (!Number.isInteger(campaignId) || campaignId <= 0) {
+        throw new Error("Unable to retrieve the newly created campaign ID.");
+      }
+
+      // ==========================================
+      // UPLOAD GALLERY IMAGES
+      // ==========================================
+
+      const allowedGalleryTypes: Record<string, string> = {
+        "image/jpeg": "jpg",
+        "image/png": "png",
+        "image/webp": "webp",
+      };
+
+      for (const file of galleryFiles) {
+        const extension = allowedGalleryTypes[file.type];
+
+        if (!extension) {
+          throw new Error(`${file.name} is not a supported gallery image.`);
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+          throw new Error(`${file.name} exceeds the 10 MB limit.`);
+        }
+
+        setSubmitStatus(`Preparing gallery image: ${file.name}`);
+
+        const uploadUrlResponse = await fetch(
+          `${API_BASE_URL}/api/crowdfunding/organization-campaigns/gallery/upload-url/`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrfToken,
+            },
+            body: JSON.stringify({
+              campaign_id: campaignId,
+              extension,
+              content_type: file.type,
+              file_size: file.size,
+            }),
+          },
+        );
+
+        const uploadUrlResult: unknown = await uploadUrlResponse.json();
+
+        if (!uploadUrlResponse.ok) {
+          throw new Error(getErrorMessage(uploadUrlResult));
+        }
+
+        const uploadDetails = uploadUrlResult as CampaignMediaUploadResponse;
+
+        setSubmitStatus(`Uploading gallery image: ${file.name}`);
+
+        const imageUploadResponse = await fetch(uploadDetails.upload_url, {
+          method: "PUT",
+          headers: uploadDetails.required_headers,
+          body: file,
+        });
+
+        if (!imageUploadResponse.ok) {
+          throw new Error(`Unable to upload gallery image: ${file.name}`);
+        }
+
+        setSubmitStatus(`Saving gallery image: ${file.name}`);
+
+        const completeResponse = await fetch(
+          `${API_BASE_URL}/api/crowdfunding/organization-campaigns/gallery/complete-upload/`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrfToken,
+            },
+            body: JSON.stringify({
+              campaign_id: campaignId,
+              object_key: uploadDetails.object_key,
+              caption: "",
+            }),
+          },
+        );
+
+        const completeResult: unknown = await completeResponse.json();
+
+        if (!completeResponse.ok) {
+          throw new Error(getErrorMessage(completeResult));
+        }
+
+        const completedImage =
+          completeResult as CampaignGalleryCompleteResponse;
+
+        if (!completedImage.image?.object_key) {
+          throw new Error(`Unable to save gallery image: ${file.name}`);
+        }
+      }
+
+      // ==========================================
+      // UPLOAD SUPPORTING DOCUMENTS
+      // ==========================================
+
+      const allowedDocumentTypes: Record<string, string> = {
+        pdf: "application/pdf",
+        jpg: "image/jpeg",
+        jpeg: "image/jpeg",
+        png: "image/png",
+        webp: "image/webp",
+      };
+
+      for (const file of documentFiles) {
+        const extension = file.name.split(".").pop()?.toLowerCase() || "";
+        const contentType = allowedDocumentTypes[extension];
+
+        if (!contentType) {
+          throw new Error(
+            `${file.name} has an unsupported format. Use PDF, JPG, JPEG, PNG or WEBP.`,
+          );
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+          throw new Error(`${file.name} exceeds the 10 MB limit.`);
+        }
+
+        setSubmitStatus(`Preparing document: ${file.name}`);
+
+        const uploadUrlResponse = await fetch(
+          `${API_BASE_URL}/api/crowdfunding/organization-campaigns/documents/upload-url/`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrfToken,
+            },
+            body: JSON.stringify({
+              campaign_id: campaignId,
+              extension,
+              content_type: contentType,
+              file_size: file.size,
+            }),
+          },
+        );
+
+        const uploadUrlResult: unknown = await uploadUrlResponse.json();
+
+        if (!uploadUrlResponse.ok) {
+          throw new Error(getErrorMessage(uploadUrlResult));
+        }
+
+        const uploadDetails = uploadUrlResult as CampaignMediaUploadResponse;
+
+        setSubmitStatus(`Uploading document: ${file.name}`);
+
+        const documentUploadResponse = await fetch(uploadDetails.upload_url, {
+          method: "PUT",
+          headers: uploadDetails.required_headers,
+          body: file,
+        });
+
+        if (!documentUploadResponse.ok) {
+          throw new Error(`Unable to upload document: ${file.name}`);
+        }
+
+        setSubmitStatus(`Saving document: ${file.name}`);
+
+        const completeResponse = await fetch(
+          `${API_BASE_URL}/api/crowdfunding/organization-campaigns/documents/complete-upload/`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrfToken,
+            },
+            body: JSON.stringify({
+              campaign_id: campaignId,
+              object_key: uploadDetails.object_key,
+              title: file.name,
+              document_type: "other",
+              description: "",
+            }),
+          },
+        );
+
+        const completeResult: unknown = await completeResponse.json();
+
+        if (!completeResponse.ok) {
+          throw new Error(getErrorMessage(completeResult));
+        }
+
+        const completedDocument =
+          completeResult as CampaignDocumentCompleteResponse;
+
+        if (!completedDocument.document?.object_key) {
+          throw new Error(`Unable to save document: ${file.name}`);
+        }
+      }
+
+      // ==========================================
+      // SUBMIT CAMPAIGN FOR ADMIN REVIEW
+      // ==========================================
+
+      setSubmitStatus("Submitting campaign for admin review...");
+
+      const submitCampaignResponse = await fetch(
+        `${API_BASE_URL}/api/crowdfunding/organization-campaigns/${campaignId}/submit/`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+          },
+        },
+      );
+
+      const submitCampaignResult: unknown = await submitCampaignResponse.json();
+
+      if (!submitCampaignResponse.ok) {
+        throw new Error(getErrorMessage(submitCampaignResult));
+      }
+
       setCampaignCreated(true);
     } catch (err) {
       setError(
@@ -1955,7 +2223,7 @@ export default function OrganizationCrowdfundingCampaignPage() {
               <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-6 text-center transition hover:border-purple-500">
                 <input
                   type="file"
-                  accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                  accept=".pdf,.jpg,.jpeg,.png,."
                   multiple
                   className="hidden"
                   onChange={handleDocumentFilesChange}
