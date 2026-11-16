@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
+  FiAlertCircle,
   FiArrowLeft,
   FiArrowRight,
   FiCheck,
+  FiCheckCircle,
   FiEye,
   FiEyeOff,
   FiHeart,
@@ -17,15 +19,47 @@ import {
   FiUsers,
 } from "react-icons/fi";
 import { CROWDFUNDING_ROUTES } from "../config/crowdfunding";
+import { bricolage, fredoka } from "../font";
 
 type SigninStep = "credentials" | "verification";
 
+interface SigninFormData {
+  email: string;
+  password: string;
+  otp: string;
+}
+
+interface ApiResponse {
+  message?: string;
+  detail?: string;
+  [key: string]: unknown;
+}
+
+function extractApiErrorMessage(data: unknown): string | null {
+  if (typeof data !== "object" || data === null) return null;
+
+  const record = data as Record<string, unknown>;
+
+  if (typeof record.detail === "string") return record.detail;
+  if (typeof record.message === "string") return record.message;
+
+  for (const value of Object.values(record)) {
+    if (typeof value === "string") return value;
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        if (typeof item === "string") return item;
+      }
+    }
+  }
+
+  return null;
+}
+
 export default function CrowdfundingSignin() {
   const [step, setStep] = useState<SigninStep>("credentials");
-
   const [showPassword, setShowPassword] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<SigninFormData>({
     email: "",
     password: "",
     otp: "",
@@ -105,22 +139,12 @@ export default function CrowdfundingSignin() {
         }),
       });
 
-      const data = await response.json().catch(() => ({}));
+      const data = (await response.json().catch(() => ({}))) as ApiResponse;
 
       if (!response.ok) {
-        const apiError =
-          data.detail ||
-          data.message ||
-          (typeof data === "object"
-            ? Object.values(data)
-                .flat()
-                .find((value) => typeof value === "string")
-            : null);
-
         throw new Error(
-          typeof apiError === "string"
-            ? apiError
-            : "Unable to sign in. Please check your details and try again.",
+          extractApiErrorMessage(data) ||
+            "Unable to sign in. Please check your details and try again.",
         );
       }
 
@@ -136,7 +160,7 @@ export default function CrowdfundingSignin() {
         data.message ||
           "A six-digit verification code has been sent to your email address.",
       );
-    } catch (err) {
+    } catch (err: unknown) {
       setError(
         err instanceof Error
           ? err.message
@@ -178,22 +202,12 @@ export default function CrowdfundingSignin() {
         },
       );
 
-      const data = await response.json().catch(() => ({}));
+      const data = (await response.json().catch(() => ({}))) as ApiResponse;
 
       if (!response.ok) {
-        const apiError =
-          data.detail ||
-          data.message ||
-          (typeof data === "object"
-            ? Object.values(data)
-                .flat()
-                .find((value) => typeof value === "string")
-            : null);
-
         throw new Error(
-          typeof apiError === "string"
-            ? apiError
-            : "Verification failed. Please check your code and try again.",
+          extractApiErrorMessage(data) ||
+            "Verification failed. Please check your code and try again.",
         );
       }
 
@@ -202,7 +216,7 @@ export default function CrowdfundingSignin() {
 
       router.replace(CROWDFUNDING_ROUTES.dashboard);
       router.refresh();
-    } catch (err) {
+    } catch (err: unknown) {
       setError(
         err instanceof Error
           ? err.message
@@ -214,35 +228,38 @@ export default function CrowdfundingSignin() {
   };
 
   const inputClass =
-    "w-full h-[54px] rounded-xl border border-zinc-200 bg-white px-4 text-base text-[#190D2E] outline-none transition placeholder:text-zinc-400 focus:border-[#8B5CF6] focus:ring-4 focus:ring-purple-100";
+    "w-full h-14 rounded-xl border border-zinc-200 bg-white px-4 text-[15px] text-[#190D2E] outline-none transition placeholder:text-zinc-400 focus:border-[#8B5CF6] focus:ring-4 focus:ring-purple-100";
 
-  const labelClass = "block text-[12px] font-bold text-[#292039] mb-2";
+  const labelClass = "block text-[13px] font-bold text-[#292039] mb-2.5";
 
   return (
-    <main className="min-h-screen bg-[#FAF9FC] text-[#190D2E]">
+    <main
+      className={`${bricolage.className} min-h-dvh bg-[#FAF9FC] text-[#190D2E]`}
+    >
       {/* BACKGROUND */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-52 -right-40 h-137.5 w-137.5 rounded-full bg-purple-200/30 blur-[120px]" />
-
-        <div className="absolute bottom-0 -left-40 h-112.5 w-112.5 rounded-full bg-violet-200/30 blur-[120px]" />
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-32 h-96 w-96 rounded-full bg-purple-200/30 blur-[120px] md:h-137.5 md:w-137.5" />
+        <div className="absolute bottom-0 -left-32 h-96 w-96 rounded-full bg-violet-200/30 blur-[120px] md:h-112.5 md:w-112.5" />
       </div>
 
-      <div className="relative z-10 min-h-screen flex flex-col">
+      <div className="relative z-10 flex min-h-dvh flex-col">
         {/* NAVIGATION */}
-        <header className="w-full px-6 py-6 md:px-12">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <header className="w-full px-4 py-5 sm:px-6 md:px-12 md:py-6">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
             <Link href="/" className="flex items-center">
-              <span className="text-[27px] font-black tracking-tight text-[#5B21B6]">
+              <span
+                className={`${fredoka.className} text-[26px] font-bold tracking-tight text-[#5B21B6] sm:text-[27px]`}
+              >
                 tippified<span className="text-[#A78BFA]">.</span>
               </span>
             </Link>
 
             <Link
               href="/crowdfunding-signup"
-              className="text-[13px] font-semibold text-zinc-600 hover:text-[#6D28D9] transition"
+              className="inline-flex h-11 shrink-0 items-center justify-center rounded-full border border-purple-100 bg-white px-4 text-[13px] font-semibold text-zinc-600 shadow-sm transition hover:border-purple-200 hover:text-[#6D28D9] sm:h-auto sm:border-0 sm:bg-transparent sm:px-0 sm:shadow-none"
             >
-              New to crowdfunding?
-              <span className="ml-1 text-[#6D28D9] font-bold">
+              <span className="hidden sm:inline">New to crowdfunding?</span>
+              <span className="ml-0 font-bold text-[#6D28D9] sm:ml-1.5">
                 Create account
               </span>
             </Link>
@@ -250,49 +267,49 @@ export default function CrowdfundingSignin() {
         </header>
 
         {/* MAIN CONTENT */}
-        <section className="flex-1 px-5 py-8 md:py-12 flex items-center">
-          <div className="max-w-6xl mx-auto w-full grid lg:grid-cols-[0.9fr_1.1fr] gap-12 items-center">
+        <section className="flex flex-1 items-center px-4 py-6 sm:px-6 md:py-10 lg:px-8">
+          <div className="mx-auto grid w-full max-w-6xl items-center gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
             {/* LEFT INFORMATION */}
-            <div className="pt-4">
+            <div className="pt-1 lg:pt-4">
               <Link
                 href="/"
-                className="inline-flex items-center gap-2 text-[12px] font-semibold text-zinc-500 hover:text-[#6D28D9] transition mb-10"
+                className="mb-6 inline-flex items-center gap-2 text-[13px] font-semibold text-zinc-500 transition hover:text-[#6D28D9] lg:mb-10"
               >
                 <FiArrowLeft />
                 Back to Tippified
               </Link>
 
-              <div className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-purple-100 text-[#6D28D9] text-[10px] font-extrabold uppercase tracking-[1.5px] mb-6">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-purple-100 px-3.5 py-2 text-[11px] font-bold uppercase tracking-[1.5px] text-[#6D28D9] lg:mb-6">
                 <FiHeart size={13} />
                 Tippified Crowdfunding
               </div>
 
-              <h1 className="text-[38px] md:text-[54px] leading-[1.05] tracking-tight font-black mb-6">
+              <h1
+                className={`${fredoka.className} text-[32px] leading-[1.05] tracking-tight sm:text-[42px] lg:text-[54px]`}
+              >
                 Your cause.
-                <span className="block text-transparent bg-clip-text bg-linear-to-r from-[#7C3AED] to-[#A78BFA]">
+                <span className="block bg-linear-to-r from-[#7C3AED] to-[#A78BFA] bg-clip-text text-transparent">
                   Your community.
                 </span>
               </h1>
 
-              <p className="text-[14px] md:text-[15px] leading-7 text-zinc-500 max-w-md mb-10">
+              <p className="mt-4 max-w-md text-[14px] leading-7 text-zinc-500 sm:text-[15px] lg:mb-10">
                 Sign in to manage your fundraising campaigns, follow
                 contributions, share updates and stay connected with the people
                 supporting your cause.
               </p>
 
               {/* FEATURES */}
-              <div className="space-y-6">
+              <div className="mt-8 space-y-5 lg:mt-0 lg:space-y-6">
                 <div className="flex items-start gap-4">
-                  <div className="h-11 w-11 rounded-xl bg-purple-100 flex items-center justify-center text-[#7C3AED] shrink-0">
-                    <FiTarget size={19} />
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-[#7C3AED]">
+                    <FiTarget size={20} />
                   </div>
-
                   <div>
-                    <h3 className="text-[13px] font-bold mb-1">
+                    <h3 className="text-[14px] font-bold">
                       Manage your campaigns
                     </h3>
-
-                    <p className="text-[12px] leading-5 text-zinc-500">
+                    <p className="mt-1 text-[13px] leading-6 text-zinc-500">
                       Keep track of your fundraising goals and campaign
                       progress.
                     </p>
@@ -300,16 +317,14 @@ export default function CrowdfundingSignin() {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="h-11 w-11 rounded-xl bg-purple-100 flex items-center justify-center text-[#7C3AED] shrink-0">
-                    <FiUsers size={19} />
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-[#7C3AED]">
+                    <FiUsers size={20} />
                   </div>
-
                   <div>
-                    <h3 className="text-[13px] font-bold mb-1">
+                    <h3 className="text-[14px] font-bold">
                       Stay connected with supporters
                     </h3>
-
-                    <p className="text-[12px] leading-5 text-zinc-500">
+                    <p className="mt-1 text-[13px] leading-6 text-zinc-500">
                       Follow contributions, engage with supporters and share
                       campaign updates.
                     </p>
@@ -317,16 +332,14 @@ export default function CrowdfundingSignin() {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="h-11 w-11 rounded-xl bg-purple-100 flex items-center justify-center text-[#7C3AED] shrink-0">
-                    <FiShield size={19} />
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-[#7C3AED]">
+                    <FiShield size={20} />
                   </div>
-
                   <div>
-                    <h3 className="text-[13px] font-bold mb-1">
+                    <h3 className="text-[14px] font-bold">
                       Additional account protection
                     </h3>
-
-                    <p className="text-[12px] leading-5 text-zinc-500">
+                    <p className="mt-1 text-[13px] leading-6 text-zinc-500">
                       Email verification adds another layer of protection to
                       your account.
                     </p>
@@ -335,14 +348,12 @@ export default function CrowdfundingSignin() {
               </div>
 
               {/* SECURITY CALLOUT */}
-              <div className="mt-12 p-5 rounded-2xl border border-purple-100 bg-white/80">
-                <div className="flex items-center gap-2 mb-2">
+              <div className="mt-10 hidden rounded-2xl border border-purple-100 bg-white/80 p-5 lg:block">
+                <div className="mb-2 flex items-center gap-2">
                   <FiLock className="text-[#7C3AED]" />
-
-                  <p className="text-[12px] font-bold">Secure account access</p>
+                  <p className="text-[13px] font-bold">Secure account access</p>
                 </div>
-
-                <p className="text-[12px] leading-5 text-zinc-500">
+                <p className="text-[13px] leading-6 text-zinc-500">
                   Your account sign-in will include an email verification step.
                 </p>
               </div>
@@ -350,22 +361,24 @@ export default function CrowdfundingSignin() {
 
             {/* SIGNIN CARD */}
             <div className="w-full">
-              <div className="bg-white border border-zinc-100 rounded-[28px] shadow-[0_20px_80px_-30px_rgba(60,30,100,0.16)] p-6 md:p-10">
+              <div className="rounded-3x1 border border-zinc-100 bg-white p-5 shadow-[0_20px_80px_-30px_rgba(60,30,100,0.16)] sm:rounded-[28px] sm:p-8 lg:p-10">
                 {/* FORM HEADER */}
-                <div className="mb-8">
-                  <p className="text-[10px] uppercase tracking-[2px] font-extrabold text-[#8B5CF6] mb-3">
+                <div className="mb-7">
+                  <p className="mb-3 text-[11px] font-bold uppercase tracking-[2px] text-[#8B5CF6]">
                     {step === "credentials"
                       ? "Welcome back"
                       : "Account verification"}
                   </p>
 
-                  <h2 className="text-[25px] md:text-[30px] font-black tracking-tight">
+                  <h2
+                    className={`${fredoka.className} text-[26px] leading-tight tracking-tight sm:text-[30px]`}
+                  >
                     {step === "credentials"
                       ? "Sign in to your account."
                       : "Verify your email."}
                   </h2>
 
-                  <p className="text-[13px] text-zinc-500 mt-2 leading-6">
+                  <p className="mt-2.5 text-[14px] leading-6 text-zinc-500">
                     {step === "credentials"
                       ? "Enter your account details to continue to your crowdfunding dashboard."
                       : "Enter the six-digit verification code associated with your email address."}
@@ -373,24 +386,40 @@ export default function CrowdfundingSignin() {
                 </div>
 
                 {/* STEP INDICATOR */}
-                <div className="flex items-center gap-3 mb-8">
+                <div className="mb-8 flex items-start gap-3">
                   <div className="flex-1">
-                    <div className="h-1.5 rounded-full bg-[#7C3AED]" />
-
-                    <p className="text-[10px] font-bold text-[#7C3AED] mt-2">
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#7C3AED] text-[12px] font-bold text-white">
+                        {step === "verification" ? <FiCheck size={14} /> : "1"}
+                      </span>
+                      <div className="h-1.5 flex-1 rounded-full bg-[#7C3AED]" />
+                    </div>
+                    <p className="mt-2.5 text-[12px] font-bold text-[#7C3AED]">
                       Account details
                     </p>
                   </div>
 
                   <div className="flex-1">
-                    <div
-                      className={`h-1.5 rounded-full transition ${
-                        step === "verification" ? "bg-[#7C3AED]" : "bg-zinc-100"
-                      }`}
-                    />
-
+                    <div className="flex items-center gap-2.5">
+                      <span
+                        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[12px] font-bold transition ${
+                          step === "verification"
+                            ? "bg-[#7C3AED] text-white"
+                            : "bg-zinc-100 text-zinc-400"
+                        }`}
+                      >
+                        2
+                      </span>
+                      <div
+                        className={`h-1.5 flex-1 rounded-full transition ${
+                          step === "verification"
+                            ? "bg-[#7C3AED]"
+                            : "bg-zinc-100"
+                        }`}
+                      />
+                    </div>
                     <p
-                      className={`text-[10px] font-bold mt-2 ${
+                      className={`mt-2.5 text-[12px] font-bold ${
                         step === "verification"
                           ? "text-[#7C3AED]"
                           : "text-zinc-400"
@@ -405,16 +434,16 @@ export default function CrowdfundingSignin() {
                 {step === "credentials" && (
                   <form
                     onSubmit={handleCredentialsSubmit}
-                    className="space-y-6"
+                    className="space-y-5 sm:space-y-6"
                   >
-                    {/* EMAIL */}
                     <div>
-                      <label className={labelClass}>Email address</label>
-
+                      <label htmlFor="email" className={labelClass}>
+                        Email address
+                      </label>
                       <div className="relative">
                         <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
-
                         <input
+                          id="email"
                           type="email"
                           name="email"
                           placeholder="you@example.com"
@@ -427,14 +456,14 @@ export default function CrowdfundingSignin() {
                       </div>
                     </div>
 
-                    {/* PASSWORD */}
                     <div>
-                      <label className={labelClass}>Password</label>
-
+                      <label htmlFor="password" className={labelClass}>
+                        Password
+                      </label>
                       <div className="relative">
                         <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
-
                         <input
+                          id="password"
                           type={showPassword ? "text" : "password"}
                           name="password"
                           placeholder="Enter your password"
@@ -444,44 +473,45 @@ export default function CrowdfundingSignin() {
                           autoComplete="current-password"
                           required
                         />
-
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-[#7C3AED]"
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 transition hover:text-[#7C3AED]"
                           aria-label="Toggle password visibility"
                         >
-                          {showPassword ? <FiEyeOff /> : <FiEye />}
+                          {showPassword ? (
+                            <FiEyeOff size={19} />
+                          ) : (
+                            <FiEye size={19} />
+                          )}
                         </button>
                       </div>
                     </div>
 
-                    {/* ERROR */}
                     {error && (
-                      <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-[12px] text-red-600">
-                        {error}
+                      <div className="flex items-start gap-2.5 rounded-xl border border-red-100 bg-red-50 px-4 py-3.5 text-[13px] leading-6 text-red-600">
+                        <FiAlertCircle size={17} className="mt-0.5 shrink-0" />
+                        <span>{error}</span>
                       </div>
                     )}
 
-                    {/* NOTICE */}
                     {notice && (
-                      <div className="rounded-xl border border-purple-100 bg-purple-50 px-4 py-3 text-[12px] leading-5 text-[#6D28D9]">
-                        {notice}
+                      <div className="flex items-start gap-2.5 rounded-xl border border-purple-100 bg-purple-50 px-4 py-3.5 text-[13px] leading-6 text-[#6D28D9]">
+                        <FiCheckCircle size={17} className="mt-0.5 shrink-0" />
+                        <span>{notice}</span>
                       </div>
                     )}
 
-                    {/* SUBMIT */}
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="group w-full h-13.5 flex items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] text-white text-[14px] font-bold shadow-[0_12px_25px_-12px_rgba(109,40,217,0.7)] hover:shadow-[0_16px_30px_-12px_rgba(109,40,217,0.8)] hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                      className={`${fredoka.className} group flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] text-[15px] font-bold text-white shadow-[0_12px_25px_-12px_rgba(109,40,217,0.7)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_30px_-12px_rgba(109,40,217,0.8)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0`}
                     >
                       {isSubmitting
                         ? "Sending verification code..."
                         : "Continue"}
-
                       {!isSubmitting && (
-                        <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                        <FiArrowRight className="transition-transform group-hover:translate-x-1" />
                       )}
                     </button>
                   </form>
@@ -491,20 +521,18 @@ export default function CrowdfundingSignin() {
                 {step === "verification" && (
                   <form
                     onSubmit={handleVerificationSubmit}
-                    className="space-y-6"
+                    className="space-y-5 sm:space-y-6"
                   >
                     <div className="rounded-2xl border border-purple-100 bg-purple-50/70 p-4">
                       <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center text-[#7C3AED]">
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-[#7C3AED]">
                           <FiMail size={19} />
                         </div>
-
                         <div className="min-w-0">
-                          <p className="text-[11px] text-zinc-500">
+                          <p className="text-[12px] text-zinc-500">
                             Verification email
                           </p>
-
-                          <p className="text-[13px] font-bold text-[#190D2E] break-all">
+                          <p className="break-all text-[14px] font-bold text-[#190D2E]">
                             {formData.email}
                           </p>
                         </div>
@@ -512,11 +540,11 @@ export default function CrowdfundingSignin() {
                     </div>
 
                     <div>
-                      <label className={labelClass}>
+                      <label htmlFor="otp" className={labelClass}>
                         Six-digit verification code
                       </label>
-
                       <input
+                        id="otp"
                         type="text"
                         name="otp"
                         inputMode="numeric"
@@ -525,39 +553,36 @@ export default function CrowdfundingSignin() {
                         value={formData.otp}
                         onChange={handleChange}
                         maxLength={6}
-                        className={`${inputClass} text-center text-base tracking-[12px] font-bold`}
+                        className={`${inputClass} text-center text-[20px] font-bold tracking-[12px]`}
                         required
                       />
-
-                      <p className="text-[10px] text-zinc-400 mt-2">
+                      <p className="mt-2.5 text-[12px] leading-5 text-zinc-400">
                         Enter the six-digit code sent to your registered email.
                       </p>
                     </div>
 
-                    {/* ERROR */}
                     {error && (
-                      <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-[12px] text-red-600">
-                        {error}
+                      <div className="flex items-start gap-2.5 rounded-xl border border-red-100 bg-red-50 px-4 py-3.5 text-[13px] leading-6 text-red-600">
+                        <FiAlertCircle size={17} className="mt-0.5 shrink-0" />
+                        <span>{error}</span>
                       </div>
                     )}
 
-                    {/* NOTICE */}
                     {notice && (
-                      <div className="rounded-xl border border-purple-100 bg-purple-50 px-4 py-3 text-[12px] leading-5 text-[#6D28D9]">
-                        {notice}
+                      <div className="flex items-start gap-2.5 rounded-xl border border-purple-100 bg-purple-50 px-4 py-3.5 text-[13px] leading-6 text-[#6D28D9]">
+                        <FiCheckCircle size={17} className="mt-0.5 shrink-0" />
+                        <span>{notice}</span>
                       </div>
                     )}
 
-                    {/* VERIFY */}
                     <button
                       type="submit"
                       disabled={isVerifying}
-                      className="group w-full h-13.5 flex items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] text-white text-[14px] font-bold shadow-[0_12px_25px_-12px_rgba(109,40,217,0.7)] hover:shadow-[0_16px_30px_-12px_rgba(109,40,217,0.8)] hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                      className={`${fredoka.className} group flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] text-[15px] font-bold text-white shadow-[0_12px_25px_-12px_rgba(109,40,217,0.7)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_30px_-12px_rgba(109,40,217,0.8)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0`}
                     >
                       {isVerifying ? "Verifying..." : "Verify and sign in"}
-
                       {!isVerifying && (
-                        <FiCheck className="group-hover:scale-110 transition-transform" />
+                        <FiCheck className="transition-transform group-hover:scale-110" />
                       )}
                     </button>
 
@@ -572,19 +597,17 @@ export default function CrowdfundingSignin() {
                         setError("");
                         setNotice("");
                       }}
-                      className="w-full text-[12px] font-semibold text-zinc-500 hover:text-[#7C3AED] transition"
+                      className="flex w-full items-center justify-center gap-2 py-1 text-[13px] font-semibold text-zinc-500 transition hover:text-[#7C3AED]"
                     >
-                      <span className="inline-flex items-center gap-2">
-                        <FiArrowLeft />
-                        Back to account details
-                      </span>
+                      <FiArrowLeft />
+                      Back to account details
                     </button>
                   </form>
                 )}
 
                 {/* SIGNUP FOOTER */}
-                <div className="mt-8 pt-6 border-t border-zinc-100 text-center">
-                  <p className="text-[12px] text-zinc-500">
+                <div className="mt-8 border-t border-zinc-100 pt-6 text-center">
+                  <p className="text-[13px] leading-6 text-zinc-500">
                     Don&apos;t have a crowdfunding account?{" "}
                     <Link
                       href="/crowdfunding-signup"
@@ -597,8 +620,8 @@ export default function CrowdfundingSignin() {
               </div>
 
               {/* SECURITY FOOTER */}
-              <div className="flex items-center justify-center gap-2 mt-6 text-[10px] text-zinc-400">
-                <FiShield />
+              <div className="mt-6 flex items-center justify-center gap-2 text-[12px] text-zinc-400">
+                <FiShield size={14} />
                 Your information is handled securely.
               </div>
             </div>

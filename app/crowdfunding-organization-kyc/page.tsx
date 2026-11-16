@@ -3,13 +3,16 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
+  FiAlertCircle,
   FiArrowLeft,
   FiCheckCircle,
   FiClock,
   FiFileText,
+  FiShield,
   FiUploadCloud,
   FiXCircle,
 } from "react-icons/fi";
+import { bricolage, fredoka } from "../font";
 
 const API_BASE_URL = "https://api.tippified.com";
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -111,6 +114,19 @@ const allowedMimeTypes: Record<string, string> = {
   png: "image/png",
 };
 
+function DetailItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p className="mb-1.5 text-[12px] font-bold uppercase tracking-[1.2px] text-gray-400">
+        {label}
+      </p>
+      <p className="wrap-break-words text-[15px] font-semibold leading-6 text-gray-900">
+        {value || "Not provided"}
+      </p>
+    </div>
+  );
+}
+
 export default function OrganizationKYCPage() {
   const router = useRouter();
 
@@ -188,7 +204,6 @@ export default function OrganizationKYCPage() {
         throw new Error(getErrorMessage(kycData));
       }
 
-      // Support common response structures from the account endpoint.
       if (!isJsonObject(accountData) || !isJsonObject(kycData)) {
         throw new Error("Invalid response received from the server.");
       }
@@ -314,10 +329,8 @@ export default function OrganizationKYCPage() {
     try {
       setIsSubmitting(true);
 
-      // Step 1: Obtain a CSRF token.
       const csrfToken = await getCSRFToken();
 
-      // Step 2: Request a signed R2 upload URL.
       const uploadURLResponse = await fetch(
         `${API_BASE_URL}/api/crowdfunding/organization-kyc/upload-url/`,
         {
@@ -337,12 +350,10 @@ export default function OrganizationKYCPage() {
 
       const uploadURLResult: unknown = await uploadURLResponse.json();
 
-      // First check whether the backend request succeeded.
       if (!uploadURLResponse.ok) {
         throw new Error(getErrorMessage(uploadURLResult));
       }
 
-      // Only validate the upload URL structure after a successful response.
       if (!isUploadURLResponse(uploadURLResult)) {
         throw new Error(
           "The server returned an unexpected upload URL response.",
@@ -351,16 +362,10 @@ export default function OrganizationKYCPage() {
 
       const uploadURLData = uploadURLResult;
 
-      if (!uploadURLResponse.ok) {
-        throw new Error(getErrorMessage(uploadURLData));
-      }
-
       if (!uploadURLData.upload_url) {
         throw new Error("The server did not return an upload URL.");
       }
 
-      // Step 3: Upload the certificate directly to private Cloudflare R2.
-      // Do not send crowdfunding session cookies to R2.
       const r2Response = await fetch(uploadURLData.upload_url, {
         method: "PUT",
         headers: {
@@ -376,7 +381,6 @@ export default function OrganizationKYCPage() {
         );
       }
 
-      // Step 4: Tell the backend that the upload has completed.
       const completeResponse = await fetch(
         `${API_BASE_URL}/api/crowdfunding/organization-kyc/complete-upload/`,
         {
@@ -433,10 +437,50 @@ export default function OrganizationKYCPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAF9FC] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-9 h-9 border-4 border-purple-200 border-t-purple-700 rounded-full animate-spin mx-auto" />
-          <p className="text-sm text-gray-500 mt-4">
+      <div
+        className={`${bricolage.className} min-h-screen bg-[#FAF9FC] px-4 py-8 sm:px-6`}
+      >
+        <div className="mx-auto max-w-3xl animate-pulse">
+          <div className="mb-7 h-5 w-32 rounded bg-gray-200" />
+          <div className="mb-7 flex items-start gap-4">
+            <div className="h-12 w-12 shrink-0 rounded-2xl bg-purple-100" />
+            <div className="flex-1 space-y-3 pt-1">
+              <div className="h-7 w-3/4 rounded bg-gray-200" />
+              <div className="h-4 w-full rounded bg-gray-100" />
+              <div className="h-4 w-2/3 rounded bg-gray-100" />
+            </div>
+          </div>
+
+          <div className="mb-6 rounded-3x1 border border-gray-100 bg-white p-5 sm:p-6">
+            <div className="mb-4 flex gap-2">
+              <div className="h-7 w-24 rounded-full bg-purple-100" />
+              <div className="h-7 w-24 rounded-full bg-gray-100" />
+              <div className="h-7 w-24 rounded-full bg-gray-100" />
+            </div>
+            <div className="h-4 w-full rounded bg-gray-100" />
+            <div className="mt-2 h-4 w-2/3 rounded bg-gray-100" />
+          </div>
+
+          <div className="mb-6 rounded-3x1 border border-gray-100 bg-white p-5 sm:p-7">
+            <div className="mb-6 h-6 w-56 rounded bg-gray-200" />
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              {[0, 1, 2, 3, 4].map((item) => (
+                <div key={item} className="space-y-2">
+                  <div className="h-3 w-28 rounded bg-gray-100" />
+                  <div className="h-5 w-40 rounded bg-gray-200" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-3x1 border border-gray-100 bg-white p-5 sm:p-7">
+            <div className="mb-3 h-6 w-40 rounded bg-gray-200" />
+            <div className="mb-6 h-4 w-3/4 rounded bg-gray-100" />
+            <div className="h-40 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50" />
+            <div className="mt-6 h-14 rounded-xl bg-purple-100" />
+          </div>
+
+          <p className="mt-6 text-center text-[13px] font-medium text-gray-400">
             Loading organisation details...
           </p>
         </div>
@@ -446,19 +490,29 @@ export default function OrganizationKYCPage() {
 
   if (!organisation) {
     return (
-      <div className="min-h-screen bg-[#FAF9FC] flex items-center justify-center px-5">
-        <div className="bg-white rounded-2xl p-7 max-w-md w-full text-center shadow-sm border border-gray-100">
-          <p className="text-gray-700 font-medium">
+      <div
+        className={`${bricolage.className} flex min-h-screen items-center justify-center bg-[#FAF9FC] px-4`}
+      >
+        <div className="w-full max-w-md rounded-[28px] border border-gray-100 bg-white p-8 text-center shadow-xl shadow-purple-100/40">
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 text-red-500">
+            <FiAlertCircle size={26} />
+          </div>
+          <h1
+            className={`${fredoka.className} text-[22px] font-bold leading-tight text-gray-900`}
+          >
+            We could not load your details
+          </h1>
+          <p className="mt-3 text-[14px] leading-6 text-gray-500">
             We could not load your organisation details.
           </p>
-
           {errorMessage && (
-            <p className="text-sm text-red-600 mt-3">{errorMessage}</p>
+            <p className="mt-3 text-[13px] leading-6 text-red-600">
+              {errorMessage}
+            </p>
           )}
-
           <button
             onClick={() => router.push("/crowdfunding-dashboard")}
-            className="mt-5 text-purple-700 font-semibold text-sm"
+            className={`${fredoka.className} mt-7 inline-flex h-12 items-center justify-center rounded-xl bg-purple-700 px-7 text-[15px] font-bold text-white transition hover:bg-purple-800`}
           >
             Return to dashboard
           </button>
@@ -468,49 +522,134 @@ export default function OrganizationKYCPage() {
   }
 
   const status = kycStatus?.verification_status || "incomplete";
-
   const isLocked = status === "pending" || status === "approved";
 
+  const statusLabel =
+    status === "pending"
+      ? "Under review"
+      : status === "approved"
+        ? "Verified"
+        : status === "rejected"
+          ? "Needs attention"
+          : "Not started";
+
+  const statusPillClass =
+    status === "pending"
+      ? "bg-amber-100 text-amber-800"
+      : status === "approved"
+        ? "bg-green-100 text-green-800"
+        : status === "rejected"
+          ? "bg-red-100 text-red-800"
+          : "bg-gray-100 text-gray-700";
+
+  const stepIndex = status === "pending" ? 1 : status === "approved" ? 2 : 0;
+
+  const steps = [
+    { label: "Upload certificate", description: "Submit your CAC" },
+    { label: "Under review", description: "Team is reviewing" },
+    { label: "Verified", description: "Ready to fundraise" },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#FAF9FC] px-4 py-8 sm:px-6">
-      <div className="max-w-3xl mx-auto">
-        {/* Back navigation */}
+    <div
+      className={`${bricolage.className} relative min-h-screen overflow-hidden bg-[#FAF9FC] px-4 py-8 sm:px-6`}
+    >
+      <div className="pointer-events-none absolute -top-24 right-0 h-72 w-72 rounded-full bg-purple-200/30 blur-3xl" />
+      <div className="pointer-events-none absolute top-96 -left-24 h-72 w-72 rounded-full bg-purple-100/40 blur-3xl" />
+
+      <div className="relative mx-auto max-w-3xl">
         <button
           type="button"
           onClick={() => router.push("/crowdfunding-dashboard")}
-          className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-purple-700 mb-7"
+          className="mb-7 inline-flex items-center gap-2 text-[14px] font-medium text-gray-600 transition hover:text-purple-700"
         >
           <FiArrowLeft />
           Back to dashboard
         </button>
 
-        {/* Page heading */}
+        {/* PAGE HEADING */}
         <div className="mb-7">
-          <div className="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center mb-4">
-            <FiFileText size={23} />
+          <div className="mb-5 flex flex-wrap items-center gap-2.5">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-100 text-purple-700">
+              <FiFileText size={23} />
+            </div>
+            <span
+              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-bold ${statusPillClass}`}
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-current" />
+              {statusLabel}
+            </span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+          <h1
+            className={`${fredoka.className} text-[28px] font-bold leading-[1.1] tracking-tight text-gray-900 sm:text-[34px]`}
+          >
             Organisation verification
           </h1>
 
-          <p className="text-gray-500 text-sm sm:text-base mt-2 leading-relaxed">
+          <p className="mt-3 max-w-2xl text-[14px] leading-7 text-gray-500 sm:text-[15px]">
             Submit your organisation&apos;s CAC certificate to verify your
             crowdfunding account. Our team will review your submission.
           </p>
         </div>
 
-        {/* Verification status */}
-        {status === "pending" && (
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-6 flex gap-3">
-            <FiClock className="text-amber-600 mt-0.5 shrink-0" size={21} />
+        {/* STEPPER */}
+        <div className="mb-6 rounded-3x1 border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
+          <div className="flex items-start gap-2 sm:gap-3">
+            {steps.map((item, index) => {
+              const isActive = index <= stepIndex;
+              const isCurrent = index === stepIndex;
+              return (
+                <div key={item.label} className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[12px] font-bold transition ${
+                        isActive
+                          ? "bg-purple-700 text-white"
+                          : "bg-gray-100 text-gray-400"
+                      }`}
+                    >
+                      {index + 1}
+                    </span>
+                    <div
+                      className={`h-1.5 flex-1 rounded-full ${
+                        isActive ? "bg-purple-700" : "bg-gray-100"
+                      }`}
+                    />
+                  </div>
+                  <p
+                    className={`mt-2.5 text-[12px] font-bold sm:text-[13px] ${
+                      isCurrent
+                        ? "text-purple-700"
+                        : isActive
+                          ? "text-gray-900"
+                          : "text-gray-400"
+                    }`}
+                  >
+                    {item.label}
+                  </p>
+                  <p className="mt-0.5 hidden text-[12px] text-gray-400 sm:block">
+                    {item.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
+        {/* VERIFICATION STATUS */}
+        {status === "pending" && (
+          <div className="mb-6 flex gap-3.5 rounded-3x1 border border-amber-200 bg-amber-50 p-5 sm:p-6">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-amber-600 shadow-sm">
+              <FiClock size={21} />
+            </div>
             <div>
-              <h3 className="font-semibold text-amber-900">
+              <h3
+                className={`${fredoka.className} text-[17px] font-bold leading-6 text-amber-900`}
+              >
                 Verification under review
               </h3>
-
-              <p className="text-sm text-amber-800 mt-1 leading-relaxed">
+              <p className="mt-1.5 text-[14px] leading-6 text-amber-800">
                 Your CAC certificate has been submitted. Our team is currently
                 reviewing your organisation&apos;s information.
               </p>
@@ -519,18 +658,17 @@ export default function OrganizationKYCPage() {
         )}
 
         {status === "approved" && (
-          <div className="bg-green-50 border border-green-200 rounded-2xl p-5 mb-6 flex gap-3">
-            <FiCheckCircle
-              className="text-green-600 mt-0.5 shrink-0"
-              size={21}
-            />
-
+          <div className="mb-6 flex gap-3.5 rounded-3x1 border border-green-200 bg-green-50 p-5 sm:p-6">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-green-600 shadow-sm">
+              <FiCheckCircle size={21} />
+            </div>
             <div>
-              <h3 className="font-semibold text-green-900">
+              <h3
+                className={`${fredoka.className} text-[17px] font-bold leading-6 text-green-900`}
+              >
                 Organisation verified
               </h3>
-
-              <p className="text-sm text-green-800 mt-1 leading-relaxed">
+              <p className="mt-1.5 text-[14px] leading-6 text-green-800">
                 Your organisation has successfully completed verification. No
                 further action is required.
               </p>
@@ -539,27 +677,27 @@ export default function OrganizationKYCPage() {
         )}
 
         {status === "rejected" && (
-          <div className="bg-red-50 border border-red-200 rounded-2xl p-5 mb-6">
-            <div className="flex gap-3">
-              <FiXCircle className="text-red-600 mt-0.5 shrink-0" size={21} />
-
-              <div>
-                <h3 className="font-semibold text-red-900">
+          <div className="mb-6 rounded-3x1 border border-red-200 bg-red-50 p-5 sm:p-6">
+            <div className="flex gap-3.5">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-red-600 shadow-sm">
+                <FiXCircle size={21} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3
+                  className={`${fredoka.className} text-[17px] font-bold leading-6 text-red-900`}
+                >
                   Verification requires attention
                 </h3>
-
-                <p className="text-sm text-red-800 mt-1 leading-relaxed">
+                <p className="mt-1.5 text-[14px] leading-6 text-red-800">
                   Your previous submission was not approved. Please review the
                   reason below and submit a corrected CAC certificate.
                 </p>
-
                 {kycStatus?.rejection_reason && (
-                  <div className="mt-3 bg-white/70 rounded-xl p-3">
-                    <p className="text-xs font-semibold text-red-900 mb-1">
-                      REASON FOR REJECTION
+                  <div className="mt-4 rounded-xl bg-white/70 p-4">
+                    <p className="mb-1.5 text-[11px] font-bold uppercase tracking-[1.2px] text-red-900">
+                      Reason for rejection
                     </p>
-
-                    <p className="text-sm text-red-800">
+                    <p className="text-[14px] leading-6 text-red-800">
                       {kycStatus.rejection_reason}
                     </p>
                   </div>
@@ -569,94 +707,72 @@ export default function OrganizationKYCPage() {
           </div>
         )}
 
-        {/* Organisation details */}
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 sm:p-7 shadow-sm mb-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-1">
+        {/* ORGANISATION DETAILS */}
+        <div className="mb-6 rounded-3x1 border border-gray-100 bg-white p-5 shadow-sm sm:p-7">
+          <h2
+            className={`${fredoka.className} text-[19px] font-bold leading-7 text-gray-900`}
+          >
             Registered organisation details
           </h2>
-
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="mt-1.5 text-[14px] leading-6 text-gray-500">
             These details were provided when you created your organisation
             account.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div>
-              <p className="text-xs text-gray-500 mb-1">
-                Registered organisation name
-              </p>
-
-              <p className="font-semibold text-gray-900 wrap-break-words">
-                {organisation.organisation_name || "Not provided"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-xs text-gray-500 mb-1">
-                CAC registration number
-              </p>
-
-              <p className="font-semibold text-gray-900 wrap-break-words">
-                {organisation.cac_number || "Not provided"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-xs text-gray-500 mb-1">
-                Representative&apos;s name
-              </p>
-
-              <p className="font-semibold text-gray-900 wrap-break-words">
-                {organisation.representative_name || "Not provided"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-xs text-gray-500 mb-1">
-                Representative&apos;s position
-              </p>
-
-              <p className="font-semibold text-gray-900 wrap-break-words">
-                {organisation.representative_position || "Not provided"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-xs text-gray-500 mb-1">Location</p>
-
-              <p className="font-semibold text-gray-900">
-                {[organisation.city, organisation.country]
+          <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <DetailItem
+              label="Registered organisation name"
+              value={organisation.organisation_name || "Not provided"}
+            />
+            <DetailItem
+              label="CAC registration number"
+              value={organisation.cac_number || "Not provided"}
+            />
+            <DetailItem
+              label="Representative's name"
+              value={organisation.representative_name || "Not provided"}
+            />
+            <DetailItem
+              label="Representative's position"
+              value={organisation.representative_position || "Not provided"}
+            />
+            <DetailItem
+              label="Location"
+              value={
+                [organisation.city, organisation.country]
                   .filter(Boolean)
-                  .join(", ") || "Not provided"}
-              </p>
-            </div>
+                  .join(", ") || "Not provided"
+              }
+            />
           </div>
 
           {organisation.about && (
-            <div className="mt-5 pt-5 border-t border-gray-100">
-              <p className="text-xs text-gray-500 mb-1">
+            <div className="mt-6 border-t border-gray-100 pt-6">
+              <p className="mb-1.5 text-[12px] font-bold uppercase tracking-[1.2px] text-gray-400">
                 About the organisation
               </p>
-
-              <p className="text-sm text-gray-700 leading-relaxed">
+              <p className="text-[14px] leading-7 text-gray-700">
                 {organisation.about}
               </p>
             </div>
           )}
         </div>
 
-        {/* CAC certificate upload */}
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 sm:p-7 shadow-sm">
-          <h2 className="text-lg font-bold text-gray-900">CAC certificate</h2>
-
-          <p className="text-sm text-gray-500 mt-1 mb-6">
+        {/* CAC CERTIFICATE UPLOAD */}
+        <div className="rounded-3x1 border border-gray-100 bg-white p-5 shadow-sm sm:p-7">
+          <h2
+            className={`${fredoka.className} text-[19px] font-bold leading-7 text-gray-900`}
+          >
+            CAC certificate
+          </h2>
+          <p className="mt-1.5 text-[14px] leading-6 text-gray-500">
             Upload the official CAC registration certificate belonging to the
             organisation shown above.
           </p>
 
           {kycStatus?.certificate_uploaded && status === "rejected" && (
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 mb-5">
-              <p className="text-sm text-gray-600">
+            <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50 p-4">
+              <p className="text-[14px] leading-6 text-gray-600">
                 A previous certificate was uploaded. You can select a corrected
                 certificate below to resubmit your application.
               </p>
@@ -664,42 +780,45 @@ export default function OrganizationKYCPage() {
           )}
 
           {errorMessage && (
-            <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 text-sm mb-5">
-              {errorMessage}
+            <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 p-4 text-[14px] leading-6 text-red-700">
+              <FiAlertCircle size={18} className="mt-0.5 shrink-0" />
+              <span>{errorMessage}</span>
             </div>
           )}
 
           {successMessage && (
-            <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl p-4 text-sm mb-5">
-              {successMessage}
+            <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-green-200 bg-green-50 p-4 text-[14px] leading-6 text-green-700">
+              <FiCheckCircle size={18} className="mt-0.5 shrink-0" />
+              <span>{successMessage}</span>
             </div>
           )}
 
           {!isLocked && (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="mt-6">
               <label
                 htmlFor="cac-certificate"
-                className={`block border-2 border-dashed rounded-2xl p-7 text-center transition ${
+                className={`block cursor-pointer rounded-2xl border-2 border-dashed p-7 text-center transition sm:p-8 ${
                   selectedFile
                     ? "border-purple-400 bg-purple-50"
                     : "border-gray-300 hover:border-purple-400 hover:bg-purple-50/40"
-                } cursor-pointer`}
+                }`}
               >
-                <FiUploadCloud
-                  size={32}
-                  className="mx-auto text-purple-700 mb-3"
-                />
-
-                <span className="block font-semibold text-gray-800">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-purple-700 shadow-sm">
+                  <FiUploadCloud size={26} />
+                </div>
+                <span
+                  className={`${fredoka.className} block text-[16px] font-bold text-gray-900`}
+                >
                   {selectedFile
                     ? "Certificate selected"
                     : "Choose your CAC certificate"}
                 </span>
-
-                <span className="block text-sm text-gray-500 mt-2">
+                <span className="mt-2 block text-[13px] leading-5 text-gray-500">
                   PDF, JPG or PNG · Maximum file size 10 MB
                 </span>
-
+                <span className="mt-4 inline-flex rounded-full bg-purple-700 px-4 py-2 text-[12px] font-bold text-white">
+                  Browse files
+                </span>
                 <input
                   id="cac-certificate"
                   type="file"
@@ -710,21 +829,24 @@ export default function OrganizationKYCPage() {
               </label>
 
               {selectedFile && (
-                <div className="mt-4 bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-gray-800 truncate">
-                      {selectedFile.name}
-                    </p>
-
-                    <p className="text-xs text-gray-500 mt-1">
-                      {formatFileSize(selectedFile.size)}
-                    </p>
+                <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-purple-700 shadow-sm">
+                      <FiFileText size={19} />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-[14px] font-semibold text-gray-900">
+                        {selectedFile.name}
+                      </p>
+                      <p className="mt-0.5 text-[12px] text-gray-500">
+                        {formatFileSize(selectedFile.size)} · Ready to upload
+                      </p>
+                    </div>
                   </div>
-
                   <button
                     type="button"
                     onClick={() => setSelectedFile(null)}
-                    className="text-sm text-red-600 hover:text-red-700 font-medium shrink-0"
+                    className="shrink-0 text-[13px] font-semibold text-red-600 transition hover:text-red-700"
                   >
                     Remove
                   </button>
@@ -734,11 +856,11 @@ export default function OrganizationKYCPage() {
               <button
                 type="submit"
                 disabled={isSubmitting || !selectedFile}
-                className="w-full mt-6 bg-purple-700 hover:bg-purple-800 disabled:bg-purple-300 disabled:cursor-not-allowed text-white font-semibold rounded-xl py-3.5 transition flex items-center justify-center gap-2"
+                className={`${fredoka.className} mt-6 flex h-14 w-full items-center justify-center gap-2.5 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] text-[15px] font-bold text-white shadow-[0_12px_25px_-12px_rgba(109,40,217,0.7)] transition-all hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0`}
               >
                 {isSubmitting ? (
                   <>
-                    <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
                     Uploading certificate...
                   </>
                 ) : status === "rejected" ? (
@@ -751,8 +873,8 @@ export default function OrganizationKYCPage() {
           )}
 
           {isLocked && (
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-              <p className="text-sm text-gray-600">
+            <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
+              <p className="text-[14px] leading-6 text-gray-600">
                 {status === "approved"
                   ? "Your organisation has been verified. Certificate uploads are no longer required."
                   : "Your certificate has been submitted and is awaiting review. You cannot replace it while the application is pending."}
@@ -761,10 +883,13 @@ export default function OrganizationKYCPage() {
           )}
         </div>
 
-        <p className="text-xs text-gray-400 text-center mt-6 leading-relaxed">
-          Your CAC certificate is stored in a private, secure storage location
-          and is only made available to authorised reviewers.
-        </p>
+        <div className="mt-6 flex items-center justify-center gap-2 text-center">
+          <FiShield size={14} className="shrink-0 text-gray-400" />
+          <p className="text-[12px] leading-5 text-gray-400">
+            Your CAC certificate is stored in a private, secure storage location
+            and is only made available to authorised reviewers.
+          </p>
+        </div>
       </div>
     </div>
   );
