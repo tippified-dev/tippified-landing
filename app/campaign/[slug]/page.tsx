@@ -1,7 +1,9 @@
 "use client";
 
+import CampaignNotActivePage from "@/app/CampaignNotActivePage";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   FiArrowLeft,
   FiCalendar,
@@ -11,10 +13,107 @@ import {
   FiUsers,
 } from "react-icons/fi";
 
+const API_BASE_URL = "https://api.tippified.com";
+
+interface CampaignResponse {
+  success: boolean;
+  campaign: {
+    id: number;
+    name: string;
+    slug: string;
+    status: string;
+  };
+  subscription_active: boolean;
+  can_receive_contributions: boolean;
+  message?: string;
+}
+
 export default function PublicCampaignPage() {
   const params = useParams<{ slug: string }>();
   const slug = params.slug;
 
+  const [campaign, setCampaign] = useState<CampaignResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchCampaign = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await fetch(
+          `${API_BASE_URL}/api/crowdfunding/public/campaigns/${slug}/`,
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.detail || "Unable to load this campaign.");
+        }
+
+        setCampaign(data);
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Something went wrong while loading this campaign.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (slug) {
+      fetchCampaign();
+    }
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#F8F7FC]">
+        <p className="text-sm font-medium text-purple-700">
+          Loading campaign...
+        </p>
+      </div>
+    );
+  }
+
+  if (error || !campaign) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#F8F7FC] px-5">
+        <p className="text-center text-sm text-gray-600">
+          {error || "Campaign not found."}
+        </p>
+      </div>
+    );
+  }
+
+  if (campaign.campaign.status === "approved") {
+    return <CampaignNotActivePage />;
+  }
+
+  if (campaign.campaign.status !== "active") {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#F8F7FC] px-5">
+        <p className="text-center text-sm text-gray-600">
+          This campaign is currently unavailable.
+        </p>
+      </div>
+    );
+  }
+
+  if (!campaign.can_receive_contributions) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#F8F7FC] px-5">
+        <p className="text-center text-sm text-gray-600">
+          This campaign is currently unavailable for contributions.
+        </p>
+      </div>
+    );
+  }
+
+  // Your existing active campaign JSX continues below.
   return (
     <main className="min-h-screen bg-[#F8F7FC] text-[#190D2E]">
       {/* Header */}
