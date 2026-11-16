@@ -7,11 +7,15 @@ import {
   FiArrowLeft,
   FiArrowRight,
   FiCalendar,
+  FiCheckCircle,
+  FiClock,
+  FiLayers,
   FiMapPin,
   FiPlus,
   FiRefreshCw,
   FiTarget,
 } from "react-icons/fi";
+import { bricolage, fredoka } from "../font";
 
 const API_BASE_URL = "https://api.tippified.com";
 
@@ -159,128 +163,236 @@ export default function MyCampaignsPage() {
     return campaigns.filter((campaign) => campaign.status === activeFilter);
   }, [campaigns, activeFilter]);
 
+  const totalCount = campaigns.length;
+  const activeCount = campaigns.filter((c) => c.status === "active").length;
+  const pendingCount = campaigns.filter(
+    (c) => c.status === "pending_review",
+  ).length;
+
+  const getFilterCount = (value: "all" | CampaignStatus): number => {
+    if (value === "all") return campaigns.length;
+    return campaigns.filter((c) => c.status === value).length;
+  };
+
   return (
-    <main className="min-h-screen bg-[#F8F8FC] px-4 py-8 sm:px-6 lg:px-10">
-      <div className="mx-auto max-w-7xl">
+    <main
+      className={`${bricolage.className} relative min-h-screen overflow-hidden bg-[#F8F8FC] px-4 py-8 sm:px-6 lg:px-10`}
+    >
+      <div className="pointer-events-none absolute -top-24 right-0 h-72 w-72 rounded-full bg-purple-100/50 blur-3xl" />
+      <div className="pointer-events-none absolute top-96 -left-24 h-72 w-72 rounded-full bg-purple-100/40 blur-3xl" />
+
+      <div className="relative mx-auto max-w-7xl">
         <Link
           href="/crowdfunding-dashboard"
-          className="mb-7 inline-flex items-center gap-2 text-base font-medium text-gray-600 transition hover:text-purple-700"
+          className="mb-8 inline-flex items-center gap-2 text-[15px] font-medium text-gray-600 transition hover:text-purple-700"
         >
           <FiArrowLeft />
           Back to dashboard
         </Link>
 
-        <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+        {/* HEADER */}
+        <div className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">My campaigns</h1>
+            <div className="mb-4 inline-flex items-center gap-2.5 rounded-full border border-purple-100 bg-purple-50 px-3.5 py-2">
+              <span className="h-2 w-2 rounded-full bg-purple-700" />
+              <span className="text-[11px] font-bold uppercase tracking-[1.5px] text-purple-700">
+                Your crowdfunding workspace
+              </span>
+            </div>
 
-            <p className="mt-2 text-base text-gray-600">
-              Manage and monitor all your crowdfunding campaigns.
+            <h1
+              className={`${fredoka.className} text-[34px] font-bold leading-[1.1] tracking-tight text-gray-900 md:text-[42px]`}
+            >
+              My campaigns
+            </h1>
+
+            <p className="mt-3 max-w-xl text-[15px] leading-7 text-gray-600 md:text-base">
+              Manage and monitor all your crowdfunding campaigns, from draft to
+              fully funded.
             </p>
           </div>
 
           <Link
             href="/organization-crowdfunding-campaign"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-purple-700 px-5 py-3 text-base font-semibold text-white transition hover:bg-purple-800"
+            className="group flex h-14 shrink-0 items-center justify-center gap-2.5 rounded-xl bg-purple-700 px-7 text-[15px] font-bold text-white shadow-[0_12px_25px_-12px_rgba(126,34,206,0.65)] transition hover:-translate-y-0.5 hover:bg-purple-800 hover:shadow-[0_16px_30px_-12px_rgba(126,34,206,0.8)]"
           >
-            <FiPlus />
+            <FiPlus size={19} />
             Create campaign
+            <FiArrowRight
+              size={16}
+              className="transition-transform group-hover:translate-x-1"
+            />
           </Link>
         </div>
 
-        <div className="mb-7 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-gray-200 bg-white p-5">
-            <p className="text-base text-gray-500">Total campaigns</p>
-
-            <p className="mt-2 text-3xl font-bold text-gray-900">
-              {campaigns.length}
+        {/* SUMMARY */}
+        <div className="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-3">
+          <div className="group rounded-3x1 border border-gray-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_-25px_rgba(126,34,206,0.22)] md:p-7">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Total campaigns
+                </p>
+                <p
+                  className={`${fredoka.className} mt-3 text-[32px] font-bold leading-none tracking-tight text-gray-900`}
+                >
+                  {totalCount}
+                </p>
+              </div>
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2x1 bg-purple-50 text-purple-700">
+                <FiLayers size={22} />
+              </div>
+            </div>
+            <p className="mt-6 text-sm leading-6 text-gray-400">
+              All campaigns you have created
             </p>
           </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-5">
-            <p className="text-base text-gray-500">Active campaigns</p>
-
-            <p className="mt-2 text-3xl font-bold text-green-700">
-              {campaigns.filter((c) => c.status === "active").length}
+          <div className="group rounded-3x1 border border-gray-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_-25px_rgba(22,163,74,0.22)] md:p-7">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Active campaigns
+                </p>
+                <p
+                  className={`${fredoka.className} mt-3 text-[32px] font-bold leading-none tracking-tight text-green-700`}
+                >
+                  {activeCount}
+                </p>
+              </div>
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2x1 bg-green-100 text-green-700">
+                <FiCheckCircle size={22} />
+              </div>
+            </div>
+            <p className="mt-6 text-sm leading-6 text-gray-400">
+              Currently live and receiving support
             </p>
           </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-5">
-            <p className="text-base text-gray-500">Awaiting review</p>
-
-            <p className="mt-2 text-3xl font-bold text-amber-600">
-              {campaigns.filter((c) => c.status === "pending_review").length}
+          <div className="group rounded-3x1 border border-gray-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_-25px_rgba(217,119,6,0.22)] md:p-7">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Awaiting review
+                </p>
+                <p
+                  className={`${fredoka.className} mt-3 text-[32px] font-bold leading-none tracking-tight text-amber-600`}
+                >
+                  {pendingCount}
+                </p>
+              </div>
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2x1 bg-amber-100 text-amber-700">
+                <FiClock size={22} />
+              </div>
+            </div>
+            <p className="mt-6 text-sm leading-6 text-gray-400">
+              Waiting for review by Tippified
             </p>
           </div>
         </div>
 
-        <div className="mb-6 flex flex-wrap gap-2">
-          {filters.map((filter) => (
-            <button
-              key={filter.value}
-              type="button"
-              onClick={() => setActiveFilter(filter.value)}
-              className={`rounded-full px-4 py-2.5 text-sm font-semibold transition ${
-                activeFilter === filter.value
-                  ? "bg-purple-700 text-white"
-                  : "border border-gray-200 bg-white text-gray-600 hover:border-purple-300 hover:text-purple-700"
-              }`}
-            >
-              {filter.label}
-            </button>
-          ))}
+        {/* FILTERS */}
+        <div className="mb-8 flex flex-wrap gap-2.5">
+          {filters.map((filter) => {
+            const isActive = activeFilter === filter.value;
+            const count = getFilterCount(filter.value);
+            return (
+              <button
+                key={filter.value}
+                type="button"
+                aria-pressed={isActive}
+                onClick={() => setActiveFilter(filter.value)}
+                className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-[15px] font-semibold transition ${
+                  isActive
+                    ? "bg-purple-700 text-white shadow-[0_10px_20px_-10px_rgba(126,34,206,0.7)]"
+                    : "border border-gray-200 bg-white text-gray-600 hover:border-purple-300 hover:text-purple-700"
+                }`}
+              >
+                {filter.label}
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs font-bold ${
+                    isActive
+                      ? "bg-white/20 text-white"
+                      : "bg-gray-100 text-gray-500"
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {loading ? (
-          <div className="rounded-2xl border border-gray-200 bg-white py-20 text-center">
-            <FiRefreshCw className="mx-auto animate-spin text-3xl text-purple-700" />
-
-            <p className="mt-4 text-base text-gray-600">
-              Loading your campaigns...
-            </p>
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {[0, 1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="overflow-hidden rounded-3x1 border border-gray-200 bg-white"
+              >
+                <div className="h-52 animate-pulse bg-purple-50" />
+                <div className="space-y-4 p-6">
+                  <div className="h-5 w-32 animate-pulse rounded bg-gray-100" />
+                  <div className="h-7 w-3/4 animate-pulse rounded bg-gray-100" />
+                  <div className="h-4 w-1/2 animate-pulse rounded bg-gray-100" />
+                  <div className="h-2.5 w-full animate-pulse rounded-full bg-gray-100" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : error ? (
-          <div className="rounded-2xl border border-red-200 bg-white p-8 text-center">
-            <p className="text-base font-medium text-red-600">{error}</p>
-
+          <div className="rounded-3x1 border border-red-200 bg-white p-8 text-center md:p-10">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 text-red-500">
+              <FiRefreshCw size={26} />
+            </div>
+            <h2
+              className={`${fredoka.className} mt-6 text-[22px] font-bold leading-tight text-gray-900`}
+            >
+              Unable to load your campaigns
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-[15px] leading-7 text-gray-600">
+              {error}
+            </p>
             <button
               type="button"
               onClick={() => void fetchCampaigns()}
-              className="mt-5 rounded-xl bg-purple-700 px-5 py-3 text-base font-semibold text-white"
+              className="mt-7 inline-flex h-14 items-center justify-center rounded-xl bg-purple-700 px-7 text-[15px] font-bold text-white transition hover:bg-purple-800"
             >
               Try again
             </button>
           </div>
         ) : filteredCampaigns.length === 0 ? (
-          <div className="rounded-2xl border border-gray-200 bg-white px-6 py-16 text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-purple-50">
+          <div className="rounded-3x1 border border-gray-200 bg-white px-6 py-16 text-center md:py-20">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-50">
               <FiTarget className="text-3xl text-purple-700" />
             </div>
 
-            <h2 className="mt-5 text-xl font-bold text-gray-900">
+            <h2
+              className={`${fredoka.className} mt-6 text-[22px] font-bold leading-tight text-gray-900 md:text-2xl`}
+            >
               {campaigns.length === 0
                 ? "You haven't created a campaign yet"
                 : "No campaigns found"}
             </h2>
 
-            <p className="mx-auto mt-2 max-w-md text-base text-gray-600">
+            <p className="mx-auto mt-3 max-w-md text-[15px] leading-7 text-gray-600">
               {campaigns.length === 0
                 ? "Create your first campaign and start raising support for something meaningful."
-                : "There are no campaigns matching this status."}
+                : "There are no campaigns matching this status. Try another filter."}
             </p>
 
             {campaigns.length === 0 && (
               <Link
                 href="/organization-crowdfunding-campaign"
-                className="mt-6 inline-flex items-center gap-2 rounded-xl bg-purple-700 px-5 py-3 text-base font-semibold text-white"
+                className="mt-7 inline-flex h-14 items-center gap-2 rounded-xl bg-purple-700 px-7 text-[15px] font-bold text-white transition hover:bg-purple-800"
               >
-                <FiPlus />
+                <FiPlus size={19} />
                 Create your first campaign
               </Link>
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {filteredCampaigns.map((campaign) => {
               const progress = Math.min(
                 100,
@@ -290,108 +402,120 @@ export default function MyCampaignsPage() {
               return (
                 <article
                   key={campaign.id}
-                  className="overflow-hidden rounded-2xl border border-gray-200 bg-white transition hover:border-purple-200"
+                  className="group overflow-hidden rounded-3x1 border border-gray-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-purple-200 hover:shadow-[0_20px_50px_-25px_rgba(126,34,206,0.25)]"
                 >
-                  <div className="relative h-44 w-full overflow-hidden bg-purple-50 sm:h-52">
+                  <div className="relative h-48 w-full overflow-hidden bg-purple-50 sm:h-56">
                     {campaign.banner_url ? (
                       <Image
                         src={campaign.banner_url}
                         alt={campaign.name}
                         fill
                         sizes="(max-width: 640px) 100vw, 50vw"
-                        className="object-cover"
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center">
                         <FiTarget className="text-5xl text-purple-300" />
                       </div>
                     )}
+
+                    {campaign.category && (
+                      <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3.5 py-2 text-xs font-bold text-gray-900 shadow-sm">
+                        {campaign.category.name}
+                      </span>
+                    )}
                   </div>
 
-                  <div className="p-5 sm:p-6">
+                  <div className="p-6 sm:p-7">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <span
-                        className={`rounded-full px-3 py-1.5 text-sm font-semibold ${
+                        className={`inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-[13px] font-bold ${
                           statusStyles[campaign.status] ||
                           "bg-gray-100 text-gray-700"
                         }`}
                       >
+                        <span className="h-1.5 w-1.5 rounded-full bg-current" />
                         {campaign.status_label}
                       </span>
 
-                      {campaign.category && (
-                        <span className="text-sm font-medium text-gray-500">
-                          {campaign.category.name}
-                        </span>
-                      )}
+                      <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-gray-500">
+                        <FiCalendar size={14} />
+                        Created {formatDate(campaign.created_at)}
+                      </span>
                     </div>
 
-                    <h2 className="mt-4 text-xl font-bold text-gray-900">
+                    <h2
+                      className={`${fredoka.className} mt-4 text-[22px] font-bold leading-tight text-gray-900`}
+                    >
                       {campaign.name}
                     </h2>
 
-                    <div className="mt-3 flex flex-wrap gap-4 text-sm text-gray-500">
+                    <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-gray-500">
                       <span className="inline-flex items-center gap-1.5">
-                        <FiMapPin />
+                        <FiMapPin size={15} />
                         {campaign.location || "Location not specified"}
                       </span>
 
                       <span className="inline-flex items-center gap-1.5">
-                        <FiCalendar />
-                        {formatDate(campaign.created_at)}
+                        <FiCalendar size={15} />
+                        Ends {formatDate(campaign.end_date)}
                       </span>
                     </div>
 
-                    <div className="mt-6">
-                      <div className="mb-2 flex items-center justify-between gap-3">
+                    <div className="mt-7">
+                      <div className="mb-3 flex items-center justify-between gap-3">
                         <span className="text-sm font-medium text-gray-600">
                           Amount raised
                         </span>
 
-                        <span className="text-sm font-bold text-purple-700">
+                        <span className="rounded-full bg-purple-50 px-3 py-1.5 text-sm font-bold text-purple-700">
                           {progress.toFixed(1)}%
                         </span>
                       </div>
 
-                      <div className="h-2.5 overflow-hidden rounded-full bg-gray-100">
+                      <div className="h-3 overflow-hidden rounded-full bg-gray-100">
                         <div
                           className="h-full rounded-full bg-purple-700 transition-all"
                           style={{ width: `${progress}%` }}
                         />
                       </div>
 
-                      <div className="mt-3 flex flex-wrap justify-between gap-2">
+                      <div className="mt-4 flex flex-wrap justify-between gap-3">
                         <div>
-                          <p className="text-lg font-bold text-gray-900">
+                          <p
+                            className={`${fredoka.className} text-xl font-bold leading-6 text-gray-900`}
+                          >
                             {formatAmount(
                               campaign.total_raised,
                               campaign.currency,
                             )}
                           </p>
 
-                          <p className="text-sm text-gray-500">raised</p>
+                          <p className="mt-1 text-sm text-gray-500">raised</p>
                         </div>
 
                         <div className="text-right">
-                          <p className="text-lg font-bold text-gray-900">
+                          <p
+                            className={`${fredoka.className} text-xl font-bold leading-6 text-gray-900`}
+                          >
                             {formatAmount(
                               campaign.target_amount,
                               campaign.currency,
                             )}
                           </p>
 
-                          <p className="text-sm text-gray-500">target</p>
+                          <p className="mt-1 text-sm text-gray-500">target</p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="mt-6 border-t border-gray-100 pt-5">
+                    <div className="mt-7 border-t border-gray-100 pt-5">
                       <Link
                         href={`/my-campaigns/${campaign.id}`}
-                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-purple-700 px-5 py-3 text-base font-semibold text-purple-700 transition hover:bg-purple-700 hover:text-white"
+                        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-purple-700 px-5 text-[15px] font-bold text-purple-700 transition hover:bg-purple-700 hover:text-white"
                       >
                         View campaign details
-                        <FiArrowRight />
+                        <FiArrowRight size={16} />
                       </Link>
                     </div>
                   </div>
