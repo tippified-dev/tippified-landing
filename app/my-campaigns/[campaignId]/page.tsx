@@ -130,6 +130,7 @@ interface CampaignDetails {
 
 interface CampaignDetailsResponse {
   success: boolean;
+  subscription_active: boolean;
   campaign: CampaignDetails;
   message?: string;
 }
@@ -227,6 +228,7 @@ export default function CampaignDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [urlCopied, setUrlCopied] = useState(false);
+  const [subscriptionActive, setSubscriptionActive] = useState(false);
 
   useEffect(() => {
     if (!campaignId) return;
@@ -254,6 +256,7 @@ export default function CampaignDetailsPage() {
         }
 
         setCampaign(data.campaign);
+        setSubscriptionActive(data.subscription_active);
       } catch (err: unknown) {
         setError(
           err instanceof Error
@@ -478,6 +481,15 @@ export default function CampaignDetailsPage() {
                 {urlCopied ? "Copied!" : "Copy URL"}
               </button>
             </div>
+            {!subscriptionActive && (
+              <Link
+                href={`/crowdfunding/checkout/${campaign.id}`}
+                className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-purple-700 px-6 text-sm font-bold text-white transition hover:bg-purple-800 sm:w-auto"
+              >
+                Activate this campaign
+                <FiExternalLink size={16} />
+              </Link>
+            )}
           </section>
         )}
 
