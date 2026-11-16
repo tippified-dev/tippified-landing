@@ -22,6 +22,18 @@ interface CampaignResponse {
     name: string;
     slug: string;
     status: string;
+    about: string;
+    category: string | null;
+    location: string | null;
+    target_amount: string;
+    total_raised: string;
+    currency: string;
+    banner_url: string | null;
+    start_date: string | null;
+    end_date: string | null;
+    organisation: {
+      name: string;
+    };
   };
   subscription_active: boolean;
   can_receive_contributions: boolean;
@@ -90,7 +102,7 @@ export default function PublicCampaignPage() {
   }
 
   if (campaign.campaign.status === "approved") {
-    return <CampaignNotActivePage />;
+    return <CampaignNotActivePage campaign={campaign.campaign} />;
   }
 
   if (campaign.campaign.status !== "active") {

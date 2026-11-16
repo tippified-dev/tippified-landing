@@ -12,13 +12,24 @@ import {
   FiUsers,
 } from "react-icons/fi";
 
-export default function CampaignNotActivePage() {
+interface CampaignNotActivePageProps {
+  campaign: {
+    name: string;
+    organisation: {
+      name: string;
+    };
+  };
+}
+
+export default function CampaignNotActivePage({
+  campaign,
+}: CampaignNotActivePageProps) {
   const params = useParams<{ slug: string }>();
   const slug = params.slug;
 
   // These values will come from the public campaign API.
-  const campaignName = "Campaign name will appear here";
-  const organisationName = "Organisation name will appear here";
+  const campaignName = campaign.name;
+  const organisationName = campaign.organisation.name;
 
   return (
     <main className="min-h-screen bg-[#F8F7FC] text-[#190D2E]">
