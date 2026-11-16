@@ -156,25 +156,25 @@ function StatCard({
   iconStyle: string;
 }) {
   return (
-    <div className="group rounded-[22px] border border-zinc-100 bg-white p-5 md:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_-25px_rgba(91,33,182,0.22)]">
-      <div className="flex items-start justify-between">
+    <div className="group rounded-3x1 border border-zinc-100 bg-white p-6 md:p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_-25px_rgba(91,33,182,0.22)]">
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-[12px] font-medium text-zinc-500">{title}</p>
+          <p className="text-sm font-medium text-zinc-500">{title}</p>
 
-          <h3 className="mt-3 text-[27px] font-black tracking-tight text-[#190D2E]">
+          <h3 className="mt-3 text-[32px] font-black leading-none tracking-tight text-[#190D2E]">
             {value}
           </h3>
         </div>
 
         <div
-          className={`flex h-11 w-11 items-center justify-center rounded-[14px] ${iconStyle}`}
+          className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2x1 ${iconStyle}`}
         >
-          <Icon size={19} />
+          <Icon size={22} />
         </div>
       </div>
 
-      <div className="mt-5 flex items-center gap-2">
-        <span className="text-[11px] text-zinc-400">{description}</span>
+      <div className="mt-6 flex items-center gap-2">
+        <span className="text-sm leading-6 text-zinc-400">{description}</span>
       </div>
     </div>
   );
@@ -193,20 +193,20 @@ function SidebarItem({
     <button
       type="button"
       onClick={onClick}
-      className={`group flex w-full items-center justify-between rounded-xl px-4 py-3 text-left transition-all ${
+      className={`group flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-left transition-all ${
         item.active
           ? "bg-[#6D28D9] text-white shadow-[0_8px_20px_-8px_rgba(109,40,217,0.65)]"
           : "text-zinc-500 hover:bg-purple-50 hover:text-[#6D28D9]"
       }`}
     >
       <span className="flex items-center gap-3">
-        <Icon size={17} />
+        <Icon size={20} />
 
-        <span className="text-[12px] font-semibold">{item.label}</span>
+        <span className="text-[15px] font-semibold">{item.label}</span>
       </span>
 
       {item.badge && (
-        <span className="rounded-md bg-purple-100 px-2 py-1 text-[9px] font-bold text-[#6D28D9]">
+        <span className="rounded-md bg-purple-100 px-2.5 py-1 text-[11px] font-bold text-[#6D28D9]">
           {item.badge}
         </span>
       )}
@@ -225,22 +225,22 @@ function SubscriptionCard({
 }) {
   if (loading) {
     return (
-      <section className="mb-8 rounded-3xl border border-purple-100 bg-white p-6">
-        <div className="h-4 w-36 animate-pulse rounded bg-purple-100" />
-        <div className="mt-4 h-7 w-48 animate-pulse rounded bg-zinc-100" />
-        <div className="mt-3 h-3 w-64 animate-pulse rounded bg-zinc-100" />
+      <section className="mb-8 rounded-3xl border border-purple-100 bg-white p-6 md:p-8">
+        <div className="h-5 w-40 animate-pulse rounded bg-purple-100" />
+        <div className="mt-4 h-8 w-52 animate-pulse rounded bg-zinc-100" />
+        <div className="mt-3 h-4 w-72 animate-pulse rounded bg-zinc-100" />
       </section>
     );
   }
 
   if (error || !data) {
     return (
-      <section className="mb-8 rounded-3xl border border-red-100 bg-white p-6">
-        <h3 className="text-[13px] font-bold text-[#190D2E]">
+      <section className="mb-8 rounded-3xl border border-red-100 bg-white p-6 md:p-8">
+        <h3 className="text-base font-bold text-[#190D2E]">
           Subscription information unavailable
         </h3>
 
-        <p className="mt-2 text-[11px] text-zinc-500">
+        <p className="mt-2 text-sm leading-6 text-zinc-500">
           {error || "We couldn't retrieve your subscription information."}
         </p>
       </section>
@@ -260,18 +260,18 @@ function SubscriptionCard({
       : null;
 
   return (
-    <section className="relative mb-8 overflow-hidden rounded-3xl border border-purple-100 bg-white p-6 md:p-7">
+    <section className="relative mb-8 overflow-hidden rounded-3xl border border-purple-100 bg-white p-6 md:p-8">
       <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-purple-100/50 blur-3xl" />
 
-      <div className="relative flex flex-col justify-between gap-6 md:flex-row md:items-center">
+      <div className="relative flex flex-col justify-between gap-7 md:flex-row md:items-center">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-purple-50 px-3 py-1.5 text-[9px] font-extrabold uppercase tracking-wider text-[#6D28D9]">
+            <span className="rounded-full bg-purple-50 px-3.5 py-2 text-xs font-extrabold uppercase tracking-wider text-[#6D28D9]">
               Your subscription
             </span>
 
             <span
-              className={`rounded-full px-3 py-1.5 text-[9px] font-bold capitalize ${
+              className={`rounded-full px-3.5 py-2 text-xs font-bold capitalize ${
                 isPro
                   ? "bg-emerald-50 text-emerald-600"
                   : "bg-zinc-100 text-zinc-500"
@@ -281,18 +281,18 @@ function SubscriptionCard({
             </span>
           </div>
 
-          <h3 className="mt-4 text-2xl font-black text-[#190D2E]">
+          <h3 className="mt-5 text-[28px] font-black leading-tight text-[#190D2E]">
             {isPro ? "Tippified Pro" : "Tippified Free"}
           </h3>
 
-          <p className="mt-2 max-w-lg text-[11px] leading-6 text-zinc-500">
+          <p className="mt-2.5 max-w-lg text-[15px] leading-7 text-zinc-500">
             {isPro
               ? "Your organisation has access to Pro crowdfunding features."
               : "You're currently using the free crowdfunding plan. Upgrade to Pro to unlock more fundraising capabilities."}
           </p>
 
           {formattedPrice && (
-            <p className="mt-3 text-[12px] font-bold text-[#6D28D9]">
+            <p className="mt-4 text-base font-bold text-[#6D28D9]">
               {formattedPrice}
               <span className="font-medium text-zinc-400">
                 {" "}
@@ -302,34 +302,36 @@ function SubscriptionCard({
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-3 md:min-w-65">
-          <div className="rounded-2xl bg-[#F8F5FF] p-4">
-            <p className="text-[10px] text-zinc-500">Active campaigns</p>
+        <div className="grid grid-cols-2 gap-3 md:min-w-72">
+          <div className="rounded-2xl bg-[#F8F5FF] p-5">
+            <p className="text-[13px] leading-5 text-zinc-500">
+              Active campaigns
+            </p>
 
-            <p className="mt-2 text-2xl font-black text-[#190D2E]">
+            <p className="mt-2 text-[28px] font-black leading-none text-[#190D2E]">
               {limits.max_active_campaigns}
             </p>
 
-            <p className="mt-1 text-[9px] text-zinc-400">Maximum allowed</p>
+            <p className="mt-2 text-xs text-zinc-400">Maximum allowed</p>
           </div>
 
-          <div className="rounded-2xl bg-[#F8F5FF] p-4">
-            <p className="text-[10px] text-zinc-500">
+          <div className="rounded-2xl bg-[#F8F5FF] p-5">
+            <p className="text-[13px] leading-5 text-zinc-500">
               Bank accounts per campaign
             </p>
 
-            <p className="mt-2 text-2xl font-black text-[#190D2E]">
+            <p className="mt-2 text-[28px] font-black leading-none text-[#190D2E]">
               {limits.max_bank_accounts_per_campaign}
             </p>
 
-            <p className="mt-1 text-[9px] text-zinc-400">Maximum allowed</p>
+            <p className="mt-2 text-xs text-zinc-400">Maximum allowed</p>
           </div>
         </div>
       </div>
 
       {isPro && subscription.current_period_end && (
-        <div className="relative mt-6 border-t border-zinc-100 pt-4">
-          <p className="text-[10px] text-zinc-500">
+        <div className="relative mt-7 border-t border-zinc-100 pt-5">
+          <p className="text-sm leading-6 text-zinc-500">
             {subscription.cancel_at_period_end
               ? "Your subscription is scheduled to end on"
               : "Your current subscription period ends on"}{" "}
@@ -646,15 +648,15 @@ export default function CrowdfundingDashboard() {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#FAF9FC]">
         <div className="text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-100">
-            <div className="h-6 w-6 animate-spin rounded-full border-[3px] border-purple-200 border-t-[#6D28D9]" />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-100">
+            <div className="h-7 w-7 animate-spin rounded-full border-[3px] border-purple-200 border-t-[#6D28D9]" />
           </div>
 
-          <p className="mt-5 text-[13px] font-semibold text-[#190D2E]">
+          <p className="mt-6 text-base font-semibold text-[#190D2E]">
             Preparing your dashboard
           </p>
 
-          <p className="mt-1 text-[11px] text-zinc-400">
+          <p className="mt-1.5 text-sm text-zinc-400">
             Please wait a moment...
           </p>
         </div>
@@ -665,22 +667,22 @@ export default function CrowdfundingDashboard() {
   if (loadError || !account) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#FAF9FC] px-5">
-        <div className="w-full max-w-md rounded-[28px] border border-zinc-100 bg-white p-8 text-center shadow-xl shadow-purple-100/40">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-500">
-            <FiActivity size={23} />
+        <div className="w-full max-w-md rounded-[28px] border border-zinc-100 bg-white p-8 text-center shadow-xl shadow-purple-100/40 md:p-10">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 text-red-500">
+            <FiActivity size={26} />
           </div>
 
-          <h2 className="mt-5 text-xl font-black text-[#190D2E]">
+          <h2 className="mt-6 text-[22px] font-black leading-tight text-[#190D2E]">
             Unable to load your dashboard
           </h2>
 
-          <p className="mt-2 text-sm leading-6 text-zinc-500">
+          <p className="mt-3 text-[15px] leading-7 text-zinc-500">
             {loadError || "We couldn't retrieve your account information."}
           </p>
 
           <button
             onClick={fetchAccount}
-            className="mt-7 flex h-12 w-full items-center justify-center rounded-xl bg-[#6D28D9] text-sm font-bold text-white transition hover:bg-[#5B21B6]"
+            className="mt-8 flex h-14 w-full items-center justify-center rounded-xl bg-[#6D28D9] text-[15px] font-bold text-white transition hover:bg-[#5B21B6]"
           >
             Try again
           </button>
@@ -701,41 +703,41 @@ export default function CrowdfundingDashboard() {
 
       {/* SIDEBAR */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-67.5 flex-col border-r border-zinc-100 bg-white transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-zinc-100 bg-white transition-transform duration-300 lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* LOGO */}
         <div className="flex h-21 items-center justify-between border-b border-zinc-100 px-7">
           <Link href="/" className="flex items-center">
-            <span className="text-[25px] font-black tracking-tight text-[#5B21B6]">
+            <span className="text-[28px] font-black tracking-tight text-[#5B21B6]">
               tippified<span className="text-[#A78BFA]">.</span>
             </span>
           </Link>
 
           <button
             onClick={() => setSidebarOpen(false)}
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-100 lg:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-100 lg:hidden"
             aria-label="Close navigation"
           >
-            <FiX size={19} />
+            <FiX size={20} />
           </button>
         </div>
 
         {/* WORKSPACE */}
         <div className="px-6 pt-7">
-          <div className="rounded-2xl border border-purple-100 bg-linear-to-br from-purple-50 to-white p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#6D28D9] text-white">
-                <FiHeart size={18} />
+          <div className="rounded-2xl border border-purple-100 bg-linear-to-br from-purple-50 to-white p-5">
+            <div className="flex items-center gap-3.5">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#6D28D9] text-white">
+                <FiHeart size={20} />
               </div>
 
               <div className="min-w-0">
-                <p className="text-[11px] font-bold text-[#190D2E]">
+                <p className="text-[15px] font-bold leading-6 text-[#190D2E]">
                   Crowdfunding
                 </p>
 
-                <p className="mt-0.5 text-[10px] text-zinc-400">
+                <p className="mt-0.5 text-[13px] leading-5 text-zinc-400">
                   Your fundraising space
                 </p>
               </div>
@@ -745,11 +747,11 @@ export default function CrowdfundingDashboard() {
 
         {/* NAVIGATION */}
         <div className="flex-1 overflow-y-auto px-5 pt-8">
-          <p className="mb-3 px-3 text-[9px] font-extrabold uppercase tracking-[1.8px] text-zinc-400">
+          <p className="mb-3.5 px-3 text-[11px] font-extrabold uppercase tracking-[1.8px] text-zinc-400">
             Workspace
           </p>
 
-          <nav className="space-y-1">
+          <nav className="space-y-1.5">
             {mainNavigation.map((item) => (
               <SidebarItem
                 key={item.label}
@@ -759,11 +761,11 @@ export default function CrowdfundingDashboard() {
             ))}
           </nav>
 
-          <p className="mb-3 mt-9 px-3 text-[9px] font-extrabold uppercase tracking-[1.8px] text-zinc-400">
+          <p className="mb-3.5 mt-10 px-3 text-[11px] font-extrabold uppercase tracking-[1.8px] text-zinc-400">
             Account
           </p>
 
-          <nav className="space-y-1">
+          <nav className="space-y-1.5">
             {accountNavigation.map((item) => (
               <SidebarItem
                 key={item.label}
@@ -774,68 +776,68 @@ export default function CrowdfundingDashboard() {
           </nav>
 
           {/* HELP CARD */}
-          <div className="mt-10 rounded-2xl bg-[#F8F5FF] p-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-[#7C3AED] shadow-sm">
-              <FiHelpCircle size={17} />
+          <div className="mt-10 rounded-2xl bg-[#F8F5FF] p-5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-[#7C3AED] shadow-sm">
+              <FiHelpCircle size={19} />
             </div>
 
-            <h4 className="mt-3 text-[12px] font-bold text-[#190D2E]">
+            <h4 className="mt-4 text-[15px] font-bold leading-6 text-[#190D2E]">
               Need a hand?
             </h4>
 
-            <p className="mt-1 text-[10px] leading-5 text-zinc-500">
+            <p className="mt-1.5 text-[13px] leading-6 text-zinc-500">
               We are here to help you make your fundraising journey easier.
             </p>
 
             <button
               type="button"
-              className="mt-3 inline-flex items-center gap-2 text-[10px] font-bold text-[#6D28D9]"
+              className="mt-4 inline-flex items-center gap-2 text-[13px] font-bold text-[#6D28D9]"
             >
               Visit help centre
-              <FiArrowRight size={12} />
+              <FiArrowRight size={14} />
             </button>
           </div>
         </div>
 
         {/* SIDEBAR PROFILE */}
         <div className="border-t border-zinc-100 p-5">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-[12px] font-black text-[#6D28D9]">
+          <div className="flex items-center gap-3.5">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-sm font-black text-[#6D28D9]">
               {initials}
             </div>
 
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[11px] font-bold text-[#190D2E]">
+              <p className="truncate text-[15px] font-bold leading-6 text-[#190D2E]">
                 {accountName}
               </p>
 
-              <p className="truncate text-[10px] text-zinc-400">
+              <p className="truncate text-[13px] leading-5 text-zinc-400">
                 {account.email}
               </p>
             </div>
 
-            <FiChevronRight className="text-zinc-300" size={15} />
+            <FiChevronRight className="text-zinc-300" size={17} />
           </div>
         </div>
       </aside>
 
       {/* MAIN AREA */}
-      <div className="min-h-screen lg:ml-67.5">
+      <div className="min-h-screen lg:ml-72">
         {/* TOP BAR */}
         <header className="sticky top-0 z-30 flex h-21 items-center justify-between border-b border-zinc-100 bg-white/90 px-5 backdrop-blur-xl md:px-9">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-100 text-zinc-600 lg:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-zinc-100 text-zinc-600 lg:hidden"
               aria-label="Open navigation"
             >
-              <FiMenu size={19} />
+              <FiMenu size={20} />
             </button>
 
             <div>
-              <p className="text-[10px] font-medium text-zinc-400">Workspace</p>
+              <p className="text-xs font-medium text-zinc-400">Workspace</p>
 
-              <h1 className="text-[15px] font-black text-[#190D2E]">
+              <h1 className="mt-0.5 text-[19px] font-black leading-6 text-[#190D2E]">
                 Overview
               </h1>
             </div>
@@ -843,13 +845,13 @@ export default function CrowdfundingDashboard() {
 
           <div className="flex items-center gap-3 md:gap-5">
             <div className="hidden text-right sm:block">
-              <p className="text-[11px] font-bold text-[#190D2E]">
+              <p className="text-sm font-bold leading-6 text-[#190D2E]">
                 {account.account_type === "organisation"
                   ? "Organisation account"
                   : "Individual account"}
               </p>
 
-              <p className="mt-0.5 text-[10px] text-zinc-400">
+              <p className="mt-0.5 text-[13px] leading-5 text-zinc-400">
                 Member since {formatDate(account.created_at)}
               </p>
             </div>
@@ -857,23 +859,23 @@ export default function CrowdfundingDashboard() {
             <div className="relative">
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
-                className="flex items-center gap-2 rounded-xl border border-zinc-100 p-1.5 pr-3 transition hover:bg-purple-50"
+                className="flex items-center gap-2 rounded-xl border border-zinc-100 p-1.5 pr-3.5 transition hover:bg-purple-50"
               >
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-linear-to-br from-[#7C3AED] to-[#A78BFA] text-[11px] font-black text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-br from-[#7C3AED] to-[#A78BFA] text-[13px] font-black text-white">
                   {initials}
                 </div>
 
-                <FiChevronDown size={14} className="text-zinc-400" />
+                <FiChevronDown size={16} className="text-zinc-400" />
               </button>
 
               {profileOpen && (
-                <div className="absolute right-0 top-14 w-64 rounded-2xl border border-zinc-100 bg-white p-3 shadow-[0_20px_60px_-20px_rgba(25,13,46,0.2)]">
-                  <div className="border-b border-zinc-100 px-3 py-3">
-                    <p className="truncate text-[12px] font-bold text-[#190D2E]">
+                <div className="absolute right-0 top-14 w-72 rounded-2xl border border-zinc-100 bg-white p-3 shadow-[0_20px_60px_-20px_rgba(25,13,46,0.2)]">
+                  <div className="border-b border-zinc-100 px-3 py-3.5">
+                    <p className="truncate text-[15px] font-bold leading-6 text-[#190D2E]">
                       {accountName}
                     </p>
 
-                    <p className="mt-1 truncate text-[10px] text-zinc-400">
+                    <p className="mt-1 truncate text-[13px] leading-5 text-zinc-400">
                       {account.email}
                     </p>
                   </div>
@@ -884,9 +886,9 @@ export default function CrowdfundingDashboard() {
                         setProfileOpen(false);
                         handleNavigation("Account settings");
                       }}
-                      className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-[11px] font-semibold text-zinc-600 hover:bg-purple-50 hover:text-[#6D28D9]"
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold text-zinc-600 hover:bg-purple-50 hover:text-[#6D28D9]"
                     >
-                      <FiSettings size={15} />
+                      <FiSettings size={17} />
                       Account settings
                     </button>
 
@@ -897,9 +899,9 @@ export default function CrowdfundingDashboard() {
                         setLogoutError("");
                         setLogoutModalOpen(true);
                       }}
-                      className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-[11px] font-semibold text-red-500 transition hover:bg-red-50"
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left text-sm font-semibold text-red-500 transition hover:bg-red-50"
                     >
-                      <FiLogOut size={15} />
+                      <FiLogOut size={17} />
                       Sign out
                     </button>
                   </div>
@@ -910,20 +912,20 @@ export default function CrowdfundingDashboard() {
         </header>
 
         {/* DASHBOARD CONTENT */}
-        <div className="mx-auto max-w-375 px-5 py-8 md:px-9 md:py-10">
+        <div className="mx-auto max-w-360 px-5 py-9 md:px-9 md:py-11">
           {/* WELCOME */}
-          <section className="mb-9">
-            <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+          <section className="mb-10">
+            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <div>
-                <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-purple-100 bg-purple-50 px-3 py-1.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#7C3AED]" />
+                <div className="mb-4 inline-flex items-center gap-2.5 rounded-full border border-purple-100 bg-purple-50 px-3.5 py-2">
+                  <span className="h-2 w-2 rounded-full bg-[#7C3AED]" />
 
-                  <span className="text-[9px] font-extrabold uppercase tracking-[1.5px] text-[#6D28D9]">
+                  <span className="text-[11px] font-extrabold uppercase tracking-[1.5px] text-[#6D28D9]">
                     Your crowdfunding workspace
                   </span>
                 </div>
 
-                <h2 className="text-[27px] font-black tracking-tight text-[#190D2E] md:text-[35px]">
+                <h2 className="text-[34px] font-black leading-[1.1] tracking-tight text-[#190D2E] md:text-[42px]">
                   Welcome back,{" "}
                   <span className="text-transparent bg-clip-text bg-linear-to-r from-[#7C3AED] to-[#A78BFA]">
                     {account.account_type === "organisation"
@@ -932,7 +934,7 @@ export default function CrowdfundingDashboard() {
                   </span>
                 </h2>
 
-                <p className="mt-2 max-w-xl text-[12px] leading-6 text-zinc-500 md:text-[13px]">
+                <p className="mt-3 max-w-xl text-[15px] leading-7 text-zinc-500 md:text-base">
                   This is your space to bring meaningful causes to life, connect
                   with supporters and make every contribution count.
                 </p>
@@ -948,14 +950,14 @@ export default function CrowdfundingDashboard() {
                   }
                 }}
                 disabled={checkingOrganizationKYC}
-                className="group flex h-12 items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] px-6 text-[12px] font-bold text-white shadow-[0_12px_25px_-12px_rgba(109,40,217,0.65)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_30px_-12px_rgba(109,40,217,0.8)]"
+                className="group flex h-14 shrink-0 items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#6D28D9] to-[#5B21B6] px-7 text-[15px] font-bold text-white shadow-[0_12px_25px_-12px_rgba(109,40,217,0.65)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_30px_-12px_rgba(109,40,217,0.8)]"
               >
-                <FiPlus size={17} />
+                <FiPlus size={19} />
                 {checkingOrganizationKYC
                   ? "Checking verification..."
                   : "Create a campaign"}
                 <FiArrowRight
-                  size={14}
+                  size={16}
                   className="transition-transform group-hover:translate-x-1"
                 />
               </button>
@@ -964,18 +966,18 @@ export default function CrowdfundingDashboard() {
 
           {/* INDIVIDUAL KYC NOTICE */}
           {account.account_type === "individual" && (
-            <section className="mb-8 flex flex-col gap-4 rounded-2xl border border-purple-100 bg-purple-50/70 p-5 md:flex-row md:items-center md:justify-between">
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#6D28D9]">
-                  <FiShield size={18} />
+            <section className="mb-8 flex flex-col gap-5 rounded-2xl border border-purple-100 bg-purple-50/70 p-6 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-start gap-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-[#6D28D9]">
+                  <FiShield size={20} />
                 </div>
 
                 <div>
-                  <h3 className="text-[12px] font-bold text-[#190D2E]">
+                  <h3 className="text-[15px] font-bold leading-6 text-[#190D2E]">
                     Complete your personal verification
                   </h3>
 
-                  <p className="mt-1 text-[11px] leading-5 text-zinc-500">
+                  <p className="mt-1.5 text-sm leading-6 text-zinc-500">
                     Complete your KYC information to establish your identity and
                     build trust with your supporters.
                   </p>
@@ -985,28 +987,28 @@ export default function CrowdfundingDashboard() {
               <button
                 type="button"
                 onClick={() => router.push("/crowdfunding-individual-kyc")}
-                className="flex items-center gap-2 rounded-xl bg-[#6D28D9] px-5 py-3 text-[11px] font-bold text-white transition hover:bg-[#5B21B6]"
+                className="flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#6D28D9] px-6 text-sm font-bold text-white transition hover:bg-[#5B21B6]"
               >
                 Complete KYC
-                <FiArrowRight size={14} />
+                <FiArrowRight size={16} />
               </button>
             </section>
           )}
 
           {/* ORGANISATION KYC NOTICE */}
           {account.account_type === "organisation" && (
-            <section className="mb-8 flex flex-col gap-4 rounded-2xl border border-purple-100 bg-purple-50/70 p-5 md:flex-row md:items-center md:justify-between">
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#6D28D9]">
-                  <FiShield size={18} />
+            <section className="mb-8 flex flex-col gap-5 rounded-2xl border border-purple-100 bg-purple-50/70 p-6 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-start gap-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-[#6D28D9]">
+                  <FiShield size={20} />
                 </div>
 
                 <div>
-                  <h3 className="text-[12px] font-bold text-[#190D2E]">
+                  <h3 className="text-[15px] font-bold leading-6 text-[#190D2E]">
                     Complete your organisation verification
                   </h3>
 
-                  <p className="mt-1 text-[11px] leading-5 text-zinc-500">
+                  <p className="mt-1.5 text-sm leading-6 text-zinc-500">
                     Upload your organisation&apos;s CAC certificate to verify
                     your crowdfunding account and establish trust with your
                     supporters.
@@ -1017,10 +1019,10 @@ export default function CrowdfundingDashboard() {
               <button
                 type="button"
                 onClick={() => router.push("/crowdfunding-organization-kyc")}
-                className="flex items-center gap-2 rounded-xl bg-[#6D28D9] px-5 py-3 text-[11px] font-bold text-white transition hover:bg-[#5B21B6]"
+                className="flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#6D28D9] px-6 text-sm font-bold text-white transition hover:bg-[#5B21B6]"
               >
                 Complete Organisation KYC
-                <FiArrowRight size={14} />
+                <FiArrowRight size={16} />
               </button>
             </section>
           )}
@@ -1035,7 +1037,7 @@ export default function CrowdfundingDashboard() {
           )}
 
           {/* STATISTICS */}
-          <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             <StatCard
               title="Total funds raised"
               value="₦0.00"
@@ -1072,33 +1074,33 @@ export default function CrowdfundingDashboard() {
           {/* MAIN GRID */}
           <section className="mt-8 grid gap-6 xl:grid-cols-[1.55fr_0.85fr]">
             {/* FUNDRAISING PERFORMANCE */}
-            <div className="rounded-3xl border border-zinc-100 bg-white p-6 md:p-7">
-              <div className="flex items-center justify-between">
+            <div className="rounded-3xl border border-zinc-100 bg-white p-6 md:p-8">
+              <div className="flex items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-[14px] font-black text-[#190D2E]">
+                  <h3 className="text-[18px] font-black leading-7 text-[#190D2E]">
                     Fundraising overview
                   </h3>
 
-                  <p className="mt-1 text-[11px] text-zinc-400">
+                  <p className="mt-1.5 text-sm leading-6 text-zinc-400">
                     Track the progress of your fundraising activities.
                   </p>
                 </div>
 
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-[#7C3AED]">
-                  <FiTrendingUp size={18} />
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-[#7C3AED]">
+                  <FiTrendingUp size={20} />
                 </div>
               </div>
 
-              <div className="mt-8 flex min-h-57.5 flex-col items-center justify-center rounded-2xl border border-dashed border-purple-100 bg-[#FCFAFF] px-5 text-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[#8B5CF6] shadow-[0_8px_25px_-12px_rgba(109,40,217,0.25)]">
-                  <FiActivity size={23} />
+              <div className="mt-8 flex min-h-60 flex-col items-center justify-center rounded-2xl border border-dashed border-purple-100 bg-[#FCFAFF] px-6 py-10 text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-[#8B5CF6] shadow-[0_8px_25px_-12px_rgba(109,40,217,0.25)]">
+                  <FiActivity size={26} />
                 </div>
 
-                <h4 className="mt-5 text-[13px] font-bold text-[#190D2E]">
+                <h4 className="mt-6 text-base font-bold leading-6 text-[#190D2E]">
                   Your fundraising story starts here
                 </h4>
 
-                <p className="mt-2 max-w-sm text-[11px] leading-6 text-zinc-400">
+                <p className="mt-2.5 max-w-sm text-sm leading-6 text-zinc-400">
                   Once you launch your first campaign, your fundraising
                   performance, contributions and growth will appear here.
                 </p>
@@ -1113,89 +1115,83 @@ export default function CrowdfundingDashboard() {
                     }
                   }}
                   disabled={checkingOrganizationKYC}
-                  className="mt-5 inline-flex items-center gap-2 text-[11px] font-bold text-[#6D28D9] hover:text-[#4C1D95]"
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#6D28D9] hover:text-[#4C1D95]"
                 >
                   Start your first campaign
-                  <FiArrowRight size={14} />
+                  <FiArrowRight size={16} />
                 </button>
               </div>
             </div>
 
             {/* ACCOUNT OVERVIEW */}
-            <div className="rounded-3xl border border-zinc-100 bg-white p-6 md:p-7">
-              <div className="flex items-center justify-between">
+            <div className="rounded-3xl border border-zinc-100 bg-white p-6 md:p-8">
+              <div className="flex items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-[14px] font-black text-[#190D2E]">
+                  <h3 className="text-[18px] font-black leading-7 text-[#190D2E]">
                     Account overview
                   </h3>
 
-                  <p className="mt-1 text-[11px] text-zinc-400">
+                  <p className="mt-1.5 text-sm leading-6 text-zinc-400">
                     Your crowdfunding account.
                   </p>
                 </div>
 
-                <FiShield className="text-[#8B5CF6]" size={19} />
+                <FiShield className="text-[#8B5CF6]" size={21} />
               </div>
 
-              <div className="mt-7 flex items-center gap-4">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-[#7C3AED] to-[#A78BFA] text-lg font-black text-white">
+              <div className="mt-8 flex items-center gap-4">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-[#7C3AED] to-[#A78BFA] text-xl font-black text-white">
                   {initials}
                 </div>
 
                 <div className="min-w-0">
-                  <h4 className="truncate text-[13px] font-bold text-[#190D2E]">
+                  <h4 className="truncate text-base font-bold leading-6 text-[#190D2E]">
                     {accountName}
                   </h4>
 
-                  <p className="mt-1 truncate text-[10px] text-zinc-400">
+                  <p className="mt-1 truncate text-[13px] leading-5 text-zinc-400">
                     {account.email}
                   </p>
                 </div>
               </div>
 
-              <div className="mt-7 space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-50 pb-4">
-                  <span className="text-[11px] text-zinc-400">
-                    Account type
-                  </span>
+              <div className="mt-8 space-y-5">
+                <div className="flex items-center justify-between gap-4 border-b border-zinc-50 pb-5">
+                  <span className="text-sm text-zinc-400">Account type</span>
 
-                  <span className="rounded-lg bg-purple-50 px-3 py-1.5 text-[10px] font-bold capitalize text-[#6D28D9]">
+                  <span className="rounded-lg bg-purple-50 px-3.5 py-2 text-xs font-bold capitalize text-[#6D28D9]">
                     {account.account_type}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between border-b border-zinc-50 pb-4">
-                  <span className="text-[11px] text-zinc-400">
-                    Email status
-                  </span>
+                <div className="flex items-center justify-between gap-4 border-b border-zinc-50 pb-5">
+                  <span className="text-sm text-zinc-400">Email status</span>
 
-                  <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-600">
-                    <FiCheckCircle size={13} />
+                  <span className="flex items-center gap-2 text-sm font-bold text-emerald-600">
+                    <FiCheckCircle size={15} />
                     {account.is_email_verified ? "Verified" : "Unverified"}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] text-zinc-400">
-                    Member since
-                  </span>
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-sm text-zinc-400">Member since</span>
 
-                  <span className="text-[10px] font-semibold text-[#190D2E]">
+                  <span className="text-sm font-semibold text-[#190D2E]">
                     {formatDate(account.created_at)}
                   </span>
                 </div>
               </div>
 
-              <div className="mt-7 rounded-xl bg-[#F8F5FF] p-4">
-                <div className="flex items-center gap-2">
-                  <FiHeart className="text-[#7C3AED]" size={15} />
+              <div className="mt-8 rounded-xl bg-[#F8F5FF] p-5">
+                <div className="flex items-center gap-2.5">
+                  <FiHeart className="text-[#7C3AED]" size={17} />
 
-                  <p className="text-[11px] font-bold text-[#190D2E]">
+                  <p className="text-sm font-bold leading-6 text-[#190D2E]">
                     Your cause matters.
                   </p>
                 </div>
 
-                <p className="mt-2 text-[10px] leading-5 text-zinc-500">
+                <p className="mt-2.5 text-[13px] leading-6 text-zinc-500">
                   Every great campaign begins with a purpose. Tell your story
                   and give people a reason to support it.
                 </p>
@@ -1204,33 +1200,33 @@ export default function CrowdfundingDashboard() {
           </section>
 
           {/* RECENT CONTRIBUTIONS */}
-          <section className="mt-8 rounded-3xl border border-zinc-100 bg-white p-6 md:p-7">
-            <div className="flex items-center justify-between">
+          <section className="mt-8 rounded-3xl border border-zinc-100 bg-white p-6 md:p-8">
+            <div className="flex items-center justify-between gap-4">
               <div>
-                <h3 className="text-[14px] font-black text-[#190D2E]">
+                <h3 className="text-[18px] font-black leading-7 text-[#190D2E]">
                   Recent contributions
                 </h3>
 
-                <p className="mt-1 text-[11px] text-zinc-400">
+                <p className="mt-1.5 text-sm leading-6 text-zinc-400">
                   Keep track of the people supporting your campaigns.
                 </p>
               </div>
 
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-[#7C3AED]">
-                <FiCreditCard size={18} />
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-[#7C3AED]">
+                <FiCreditCard size={20} />
               </div>
             </div>
 
-            <div className="mt-7 flex min-h-42.7 flex-col items-center justify-center rounded-2xl bg-[#FCFAFF] px-5 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#8B5CF6] shadow-sm">
-                <FiUsers size={20} />
+            <div className="mt-8 flex min-h-48 flex-col items-center justify-center rounded-2xl bg-[#FCFAFF] px-6 py-9 text-center">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[#8B5CF6] shadow-sm">
+                <FiUsers size={22} />
               </div>
 
-              <h4 className="mt-4 text-[12px] font-bold text-[#190D2E]">
+              <h4 className="mt-5 text-[15px] font-bold leading-6 text-[#190D2E]">
                 No contributions yet
               </h4>
 
-              <p className="mt-2 max-w-sm text-[10px] leading-5 text-zinc-400">
+              <p className="mt-2 max-w-sm text-[13px] leading-6 text-zinc-400">
                 When supporters contribute to your campaigns, their activity
                 will appear here.
               </p>
@@ -1238,18 +1234,18 @@ export default function CrowdfundingDashboard() {
           </section>
 
           {/* FOOTER */}
-          <footer className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-zinc-100 py-7 text-center sm:flex-row sm:text-left">
-            <p className="text-[10px] text-zinc-400">
-              © {new Date().getFullYear()} Tippified. All rights reserved.
+          <footer className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-zinc-100 py-8 text-center sm:flex-row sm:text-left">
+            <p className="text-xs leading-5 text-zinc-400">
+              ©️ {new Date().getFullYear()} Tippified. All rights reserved.
             </p>
 
-            <div className="flex items-center gap-5 text-[10px] font-medium text-zinc-400">
+            <div className="flex items-center gap-5 text-xs font-medium text-zinc-400">
               <Link href="/" className="transition hover:text-[#6D28D9]">
                 Visit Tippified
               </Link>
 
               <span className="flex items-center gap-1.5">
-                <FiShield size={11} />
+                <FiShield size={13} />
                 Secure crowdfunding
               </span>
             </div>
@@ -1269,18 +1265,18 @@ export default function CrowdfundingDashboard() {
             className="w-full max-w-md overflow-hidden rounded-[28px] border border-white/70 bg-white shadow-[0_30px_100px_-25px_rgba(25,13,46,0.35)]"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="relative flex justify-center px-7 pt-9">
+            <div className="relative flex justify-center px-8 pt-10">
               <button
                 type="button"
                 onClick={() => setOrganizationKYCModalOpen(false)}
-                className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700"
+                className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700"
                 aria-label="Close modal"
               >
-                <FiX size={18} />
+                <FiX size={20} />
               </button>
 
               <div
-                className={`flex h-17 w-17 items-center justify-center rounded-[22px] ${
+                className={`flex h-18 w-18 items-center justify-center rounded-[22px] ${
                   organizationKYCError || organizationKYCStatus === "rejected"
                     ? "bg-red-50 text-red-500"
                     : organizationKYCStatus === "approved"
@@ -1289,17 +1285,17 @@ export default function CrowdfundingDashboard() {
                 }`}
               >
                 {organizationKYCStatus === "approved" ? (
-                  <FiCheckCircle size={28} />
+                  <FiCheckCircle size={30} />
                 ) : (
-                  <FiShield size={28} />
+                  <FiShield size={30} />
                 )}
               </div>
             </div>
 
-            <div className="px-7 pb-8 pt-6 text-center">
+            <div className="px-8 pb-9 pt-6 text-center">
               <h3
                 id="organization-kyc-modal-title"
-                className="text-[20px] font-black tracking-tight text-[#190D2E]"
+                className="text-[24px] font-black leading-tight tracking-tight text-[#190D2E]"
               >
                 {organizationKYCError
                   ? "Unable to verify your account"
@@ -1312,7 +1308,7 @@ export default function CrowdfundingDashboard() {
                         : "Complete your organisation verification"}
               </h3>
 
-              <p className="mx-auto mt-3 max-w-sm text-[12px] leading-6 text-zinc-500">
+              <p className="mx-auto mt-3.5 max-w-sm text-[15px] leading-7 text-zinc-500">
                 {organizationKYCError
                   ? organizationKYCError
                   : organizationKYCStatus === "approved"
@@ -1326,18 +1322,18 @@ export default function CrowdfundingDashboard() {
 
               {organizationKYCStatus === "rejected" &&
                 organizationKYCRejectionReason && (
-                  <div className="mt-5 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-left">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-red-500">
+                  <div className="mt-6 rounded-xl border border-red-100 bg-red-50 px-5 py-4 text-left">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-red-500">
                       Reason for rejection
                     </p>
 
-                    <p className="mt-2 text-[11px] leading-5 text-red-700">
+                    <p className="mt-2.5 text-sm leading-6 text-red-700">
                       {organizationKYCRejectionReason}
                     </p>
                   </div>
                 )}
 
-              <div className="mt-8 space-y-3">
+              <div className="mt-9 space-y-3">
                 {!organizationKYCError &&
                   organizationKYCStatus !== "approved" && (
                     <button
@@ -1346,7 +1342,7 @@ export default function CrowdfundingDashboard() {
                         setOrganizationKYCModalOpen(false);
                         router.push("/crowdfunding-organization-kyc");
                       }}
-                      className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#6D28D9] text-[12px] font-bold text-white transition hover:bg-[#5B21B6]"
+                      className="flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-[#6D28D9] text-[15px] font-bold text-white transition hover:bg-[#5B21B6]"
                     >
                       {organizationKYCStatus === "pending"
                         ? "View verification status"
@@ -1354,14 +1350,14 @@ export default function CrowdfundingDashboard() {
                           ? "Review and resubmit KYC"
                           : "Complete organisation KYC"}
 
-                      <FiArrowRight size={15} />
+                      <FiArrowRight size={17} />
                     </button>
                   )}
 
                 <button
                   type="button"
                   onClick={() => setOrganizationKYCModalOpen(false)}
-                  className="flex h-12 w-full items-center justify-center rounded-xl border border-zinc-200 bg-white text-[12px] font-bold text-zinc-600 transition hover:bg-zinc-50"
+                  className="flex h-14 w-full items-center justify-center rounded-xl border border-zinc-200 bg-white text-[15px] font-bold text-zinc-600 transition hover:bg-zinc-50"
                 >
                   {organizationKYCStatus === "approved" ? "Continue" : "Close"}
                 </button>
@@ -1390,7 +1386,7 @@ export default function CrowdfundingDashboard() {
             onClick={(event) => event.stopPropagation()}
           >
             {/* MODAL HEADER */}
-            <div className="relative flex justify-center px-7 pt-8">
+            <div className="relative flex justify-center px-8 pt-9">
               <button
                 type="button"
                 onClick={() => {
@@ -1400,41 +1396,41 @@ export default function CrowdfundingDashboard() {
                   }
                 }}
                 disabled={isLoggingOut}
-                className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700 disabled:opacity-40"
+                className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700 disabled:opacity-40"
                 aria-label="Close confirmation"
               >
-                <FiX size={18} />
+                <FiX size={20} />
               </button>
 
-              <div className="flex h-17 w-17 items-center justify-center rounded-[22px] bg-red-50 text-red-500 ring-8 ring-red-50/50">
-                <FiLogOut size={27} />
+              <div className="flex h-18 w-18 items-center justify-center rounded-[22px] bg-red-50 text-red-500 ring-8 ring-red-50/50">
+                <FiLogOut size={29} />
               </div>
             </div>
 
             {/* MODAL CONTENT */}
-            <div className="px-7 pb-8 pt-6 text-center">
+            <div className="px-8 pb-9 pt-6 text-center">
               <h3
                 id="logout-modal-title"
-                className="text-[20px] font-black tracking-tight text-[#190D2E]"
+                className="text-[24px] font-black leading-tight tracking-tight text-[#190D2E]"
               >
                 Sign out of Tippified?
               </h3>
 
-              <p className="mx-auto mt-3 max-w-75 text-[12px] leading-6 text-zinc-500">
+              <p className="mx-auto mt-3.5 max-w-75 text-[15px] leading-7 text-zinc-500">
                 Are you sure you want to sign out of your crowdfunding account?
                 You will need to sign in again to access your dashboard.
               </p>
 
               {logoutError && (
-                <div className="mt-5 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-left">
-                  <p className="text-[11px] leading-5 text-red-600">
+                <div className="mt-6 rounded-xl border border-red-100 bg-red-50 px-5 py-4 text-left">
+                  <p className="text-sm leading-6 text-red-600">
                     {logoutError}
                   </p>
                 </div>
               )}
 
               {/* ACTION BUTTONS */}
-              <div className="mt-8 grid grid-cols-2 gap-3">
+              <div className="mt-9 grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => {
@@ -1442,7 +1438,7 @@ export default function CrowdfundingDashboard() {
                     setLogoutError("");
                   }}
                   disabled={isLoggingOut}
-                  className="flex h-12.25 items-center justify-center rounded-xl border border-zinc-200 bg-white text-[12px] font-bold text-zinc-600 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex h-14 items-center justify-center rounded-xl border border-zinc-200 bg-white text-[15px] font-bold text-zinc-600 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -1451,7 +1447,7 @@ export default function CrowdfundingDashboard() {
                   type="button"
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className="flex h-12.25 items-center justify-center gap-2 rounded-xl bg-[#6D28D9] text-[12px] font-bold text-white shadow-[0_10px_20px_-10px_rgba(109,40,217,0.7)] transition hover:bg-[#5B21B6] disabled:cursor-not-allowed disabled:opacity-70"
+                  className="flex h-14 items-center justify-center gap-2 rounded-xl bg-[#6D28D9] text-[15px] font-bold text-white shadow-[0_10px_20px_-10px_rgba(109,40,217,0.7)] transition hover:bg-[#5B21B6] disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {isLoggingOut ? (
                     <>
@@ -1460,14 +1456,14 @@ export default function CrowdfundingDashboard() {
                     </>
                   ) : (
                     <>
-                      <FiLogOut size={15} />
+                      <FiLogOut size={17} />
                       Yes, sign out
                     </>
                   )}
                 </button>
               </div>
 
-              <p className="mt-6 text-[9px] font-medium uppercase tracking-[1.5px] text-zinc-300">
+              <p className="mt-7 text-[11px] font-medium uppercase tracking-[1.5px] text-zinc-300">
                 Tippified · Secure crowdfunding
               </p>
             </div>
