@@ -108,6 +108,25 @@ export default function CrowdfundingCheckoutPage() {
       setStartingPayment(true);
       setError("");
 
+      // STEP 1: Obtain CSRF token
+      const csrfResponse = await fetch(
+        `${API_BASE_URL}/api/crowdfunding/csrf/`,
+        {
+          method: "GET",
+          credentials: "include",
+          cache: "no-store",
+        },
+      );
+
+      const csrfData = await csrfResponse.json();
+
+      if (!csrfResponse.ok || !csrfData.success || !csrfData.csrfToken) {
+        throw new Error(
+          "Unable to establish secure checkout. Please try again.",
+        );
+      }
+
+      // STEP 2: Initialise subscription payment
       const response = await fetch(
         `${API_BASE_URL}/api/crowdfunding/subscription/setup/${campaignId}/`,
         {
@@ -115,7 +134,11 @@ export default function CrowdfundingCheckoutPage() {
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
+            "X-CSRFToken": csrfData.csrfToken,
           },
+          body: JSON.stringify({
+            billing_terms_accepted: acceptedTerms,
+          }),
         },
       );
 
@@ -131,6 +154,7 @@ export default function CrowdfundingCheckoutPage() {
         throw new Error("Paystack checkout URL was not returned.");
       }
 
+      // STEP 3: Redirect to Paystack
       window.location.assign(data.authorization_url);
     } catch (err: unknown) {
       setError(
